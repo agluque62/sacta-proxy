@@ -1,6 +1,8 @@
 ﻿{
   "General": {
-    "WebPort": 8091
+    "WebPort": 8091,
+    "public" "string",
+    "ActivateSactaLogic": "AND"
   },
   "Proxy": {
     "Comm": {
@@ -8,6 +10,8 @@
         "Port": 15101,
         "Ip1": "",
         "Ip2": "",
+        "FromMask1": "",
+        "FromMask2": "",
         "NetworkIf": ""
       },
       "SendTo": {
@@ -39,15 +43,18 @@
       "Id": "TWR",
       "Comm": {
         "Listen": {
-          "Port": 15101,
-          "Ip1": "",
+          "Port": 15100,
+          "Ip1": "192.168.90.50",
           "Ip2": "",
+          "FromMask1": "",
+          "FromMask2": "",
           "NetworkIf": ""
         },
         "SendTo": {
-          "Port": 19205,
-          "Ip1": "",
-          "Ip2": ""
+          "Port": 19204,
+          "Ip1": "225.12.101.1",
+          "Ip2": "225.212.101.1",
+          "NetworkIf": "127.0.0.1"
         }
       },
       "SactaProtocol": {
@@ -77,20 +84,24 @@
       "Id": "APP",
       "Comm": {
         "Listen": {
-          "Port": 15101,
-          "Ip1": "",
+          "Port": 15100,
+          "Ip1": "192.168.1.41",
           "Ip2": "",
+          "FromMask1": "",
+          "FromMask2": "",
           "NetworkIf": ""
         },
         "SendTo": {
-          "Port": 19205,
-          "Ip1": "",
-          "Ip2": ""
+          "Port": 19204,
+          "Ip1": "225.12.101.1",
+          "Ip2": "225.212.101.1",
+          "NetworkIf": "127.0.0.1"
         }
       },
       "SactaProtocol": {
         "TickAlive": 5,
         "TimeoutAlive": 30,
+        "SectorizationTimeout": 60,
         "Sacta": {
           "Domain": 1,
           "Center": 107,
