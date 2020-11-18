@@ -110,45 +110,47 @@ namespace sacta_proxy.Helpers
                 DataGram dg = new DataGram();
                 IPEndPoint client = new IPEndPoint(IPAddress.Any, 0);
                 bool processData = false;
-                if (_Udp == null) return;
-                dg.Data = _Udp.EndReceive(ar, ref client);
-                dg.Client = client;
-
-                SafeLaunchEvent(this, dg);
-                lock (_Datagrams)
+                if (_Udp != null /*&& _Udp.Available > 0*/)
                 {
-                    while (_Udp.Available > 0)
-                    {
-                        DataGram dgToEnqueue = new DataGram();
-                        client = new IPEndPoint(IPAddress.Any, 0);
+                    dg.Data = _Udp.EndReceive(ar, ref client);
+                    dg.Client = client;
+                    SafeLaunchEvent(this, dg);
 
-                        dgToEnqueue.Data = _Udp.Receive(ref client);
-                        dgToEnqueue.Client = client;
-
-                        _Datagrams.Enqueue(dgToEnqueue);
-                    }
-
-                    if (_NumRecevieThreads < _MaxReceiveThreads)
-                    {
-                        processData = true;
-                        _NumRecevieThreads++;
-                    }
-                }
-
-                _Udp.BeginReceive(ReceiveCallback, null);
-                while (processData)
-                {
                     lock (_Datagrams)
                     {
-                        if ((_Datagrams.Count > 0) && (_NumRecevieThreads <= _MaxReceiveThreads))
+                        while (_Udp.Available > 0)
                         {
-                            dg = _Datagrams.Dequeue();
-                            SafeLaunchEvent(this, dg);
+                            DataGram dgToEnqueue = new DataGram();
+                            client = new IPEndPoint(IPAddress.Any, 0);
+
+                            dgToEnqueue.Data = _Udp.Receive(ref client);
+                            dgToEnqueue.Client = client;
+
+                            _Datagrams.Enqueue(dgToEnqueue);
                         }
-                        else
+
+                        if (_NumRecevieThreads < _MaxReceiveThreads)
                         {
-                            _NumRecevieThreads--;
-                            processData = false;
+                            processData = true;
+                            _NumRecevieThreads++;
+                        }
+                    }
+
+                    _Udp.BeginReceive(ReceiveCallback, null);
+                    while (processData)
+                    {
+                        lock (_Datagrams)
+                        {
+                            if ((_Datagrams.Count > 0) && (_NumRecevieThreads <= _MaxReceiveThreads))
+                            {
+                                dg = _Datagrams.Dequeue();
+                                SafeLaunchEvent(this, dg);
+                            }
+                            else
+                            {
+                                _NumRecevieThreads--;
+                                processData = false;
+                            }
                         }
                     }
                 }

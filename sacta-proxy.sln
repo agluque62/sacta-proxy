@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sacta-proxy", "sacta-proxy\sacta-proxy.csproj", "{850B95CF-B8D0-4565-A6EA-C37D869A5266}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sacta-proxy-tests", "sacta-proxy-tests\sacta-proxy-tests.csproj", "{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{850B95CF-B8D0-4565-A6EA-C37D869A5266}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{850B95CF-B8D0-4565-A6EA-C37D869A5266}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{850B95CF-B8D0-4565-A6EA-C37D869A5266}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

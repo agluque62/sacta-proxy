@@ -9,7 +9,7 @@ using System.Net.Sockets;
 
 namespace sacta_proxy.Helpers
 {
-    class IpHelper
+    public class IpHelper
     {
         /// <summary>
         /// Determina si una IP está en una subred. 
