@@ -342,7 +342,7 @@ namespace sacta_proxy.WebServer
                             AuthenticateUser?.Invoke(WebUtility.UrlDecode(data), (accepted, cause) => 
                             { 
                                 if (accepted)
-                                    SessionExpiredAt = DateTime.Now + TimeSpan.FromSeconds(Config.SessionDuration);
+                                    SessionExpiredAt = DateTime.Now + TimeSpan.FromMinutes(Config.SessionDuration);
                                 else
                                 {
                                     //context.Response.Redirect(Config?.LoginUrl);

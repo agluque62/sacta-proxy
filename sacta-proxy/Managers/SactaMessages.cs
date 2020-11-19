@@ -79,7 +79,13 @@ namespace sacta_proxy.Managers
 					Sectors[i].SectorCode = sectorUcs[i * 2];
 					Sectors[i].Ucs = Byte.Parse(sectorUcs[(i * 2) + 1]);
 				}
-			}
+			}	
+			public SectInfo(uint version, Dictionary<string, int> SectorMap)
+            {
+				Version = version;
+				NumSectors = (ushort)SectorMap.Count();
+				Sectors = SectorMap.Select(sm => new SectorInfo() { SectorCode = sm.Key, Ucs = (byte)sm.Value, UcsType = 0 }).ToArray();
+            }
 		}
 
 		[Serializable]
@@ -125,7 +131,7 @@ namespace sacta_proxy.Managers
 					throw new Exception("Invalid SactaMsg type (" + (int)Type + ")");
 			}
 		}
-        public SactaMsg(MsgType type, int id, int seq, string[] sectorUcs=null, int version = 0, int result = 0)
+        public SactaMsg(MsgType type, int id, int seq, Dictionary<string,int> sectorUcs=null, int version = 0, int result = 0)
         {
 			Type = type;
             Id = (ushort)((id & 0xE000) | (seq & 0x1FFF));
@@ -161,7 +167,6 @@ namespace sacta_proxy.Managers
 
             return $"SactaMsg: Origen {Origen}, Destino {Destino}, Tipo {Type}, Id {Id}";
         }
-
         public static void Deserialize(byte[] data, Action<SactaMsg> deliver, Action<string> deliverError)
         {
             try
@@ -195,9 +200,9 @@ namespace sacta_proxy.Managers
 			}
 			return msg;
 		}
-		public static SactaMsg MsgToScv(Configuration.DependecyConfig cfg, MsgType type, int id, int seq, string[] sectorUcs = null)
+		public static SactaMsg MsgToScv(Configuration.DependecyConfig cfg, MsgType type, int id, int seq, int version=0, Dictionary<string,int> sectorUcs = null)
 		{
-			var msg = new SactaMsg(type, id, seq, sectorUcs)
+			var msg = new SactaMsg(type, id, seq, sectorUcs, version)
 			{
 				DomainOrg = (byte)cfg.SactaProtocol.Sacta.Domain,
 				CenterOrg = (byte)cfg.SactaProtocol.Sacta.Center,

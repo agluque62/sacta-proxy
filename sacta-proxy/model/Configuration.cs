@@ -20,11 +20,13 @@ namespace sacta_proxy.model
         public class GeneralConfig
         {
             public int WebPort { get; set; }
+            public int WebActivityMinTimeout { get; set; }
             public string ActivateSactaLogic { get; set; }
             public GeneralConfig()
             {
                 WebPort = 8091;
                 ActivateSactaLogic = "AND";
+                WebActivityMinTimeout = 30;
             }
         }
         public class LanItem
