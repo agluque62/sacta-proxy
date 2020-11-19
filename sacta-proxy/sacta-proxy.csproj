@@ -88,8 +88,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="todo.txt" />
+    <Content Include="webclient\app\controllers\SprxConfig-ctrl.js" />
+    <Content Include="webclient\app\controllers\SprxStatus-ctrl.js" />
+    <Content Include="webclient\app\controllers\SprxGlobal-ctrl.js" />
+    <Content Include="webclient\app\modules\sacta_proxy.js" />
+    <Content Include="webclient\app\routes\SprxRoutes.js" />
+    <Content Include="webclient\app\services\SprxCommService.js" />
+    <Content Include="webclient\app\services\SprxLocalService.js" />
+    <Content Include="webclient\app\views\SprxConfig.html" />
+    <Content Include="webclient\app\views\SprxStatus.html" />
     <Content Include="webclient\favicon.ico" />
     <Content Include="webclient\images\corporativo-a.png" />
+    <Content Include="webclient\index.html" />
     <Content Include="webclient\login.html" />
     <Content Include="webclient\scripts\alertify.min.js" />
     <Content Include="webclient\scripts\angular\angular-cookies.min.js" />
@@ -237,6 +247,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="webclient\scripts\linq_3.2.1\linq.d.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="webclient\app\templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
