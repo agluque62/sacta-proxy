@@ -16,85 +16,86 @@
  -->
 </head>
 <body>
-    <div id="agrupar" data-ng-controller="SprxGlobalCtrl as ctrl">
-        <header id="cabecera">
-            <div id="_contSupIzq">
-                <div id="_logo" style="width:90%;">
-                    <!-- <img src="./images/nucleo-df-new.jpg" /> -->
-                    <img src="./images/corporativo-a.png"
-                         style="width:100%; height: 100%; margin: 0;" />
+    <div id="__agrupar" data-ng-controller="SprxGlobalCtrl as ctrl">
+        <header>
+            <div class="row cabecera">
+                <div class="col-md-2 logo"></div>
+                <div class="col-md-8 title"><span>Nucleo Sacta Proxy<span></span></div>
+                <div class="col-md-2 fecha">
+                    <span>{{ctrl.date}}</span>
+                    <span>{{ctrl.hora}}</span>
                 </div>
-            </div>
-            <div id="_tit_ppal">{{ctrl.title}}</div>
-            <div id="_contSupDrcha">
-                <!--                <div id="_usuario">
-                    Usuario: <b>{{ctrl.user}}</b>
-                </div>-->
-                <div id="_hfecha"><b>{{ctrl.date}}</b></div>
-                <div id="_hsolohora">{{ctrl.hora}}</div>
             </div>
         </header>
-        <!--<section id="_separador"></section>-->
-        <nav id="_menu" class="container">
-            <div class="panel panel-default" style="margin: 1em 1em 1em 1em">
-                <div class="panel-heading">Opciones</div>
-                <div class="panel-body">
-                    <ul class="nav nav-pills nav-stacked">
-                        <li data-ng-class="{'active': ctrl.pagina==0}">
-                            <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
-                        </li>
-                        <li data-ng-class="{'active': ctrl.pagina==1}">
-                            <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
-                        </li>
-                        <li><br /></li>
-                        <li data-ng-class="{'active': ctrl.pagina==2}">
-                            <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
-                        </li>
-                        <li><br /></li>
-                        <li><br /></li>
-                        <li>
-                            <form method="POST" action="/logout">
-                                <div>
-                                    <!-- Submit Button -->
-                                    <input type="submit" class="btn btn-default" style="width: 100%;" value="Logout" />
-                                </div>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <!--<h3 translate>Opciones</h3>-->
-            <!--<h3><span class="label label-default" translate>Opciones</span></h3>-->
-            <!--<div class="panel panel-default">
-                <div class="panel-body">Opciones</div>
-            </div>
-            <ul class="nav nav-pills nav-stacked">
-                <li data-ng-class="{'active': ctrl.pagina==0}">
-                    <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
-                </li>
-                <li data-ng-class="{'active': ctrl.pagina==1}">
-                    <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
-                </li>
-                <li><br /></li>
-                <li data-ng-class="{'active': ctrl.pagina==2}">
-                    <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
-                </li>
-                <li><br /></li>
-                <li><br /></li>
-                <li>
-                    <form method="POST" action="/logout">
-                        <div>
-                            <input type="submit" class="btn btn-default" style="width: 100%;" value="Logout" />
+        <div class="row">
+            <div class="col-md-2" style="padding:0;">
+                <nav id="_menu">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Opciones</div>
+                        <div class="panel-body">
+                            <ul class="nav nav-pills nav-stacked">
+                                <li data-ng-class="{'active': ctrl.pagina==0}">
+                                    <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
+                                </li>
+                                <li data-ng-class="{'active': ctrl.pagina==1}">
+                                    <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
+                                </li>
+                                <li><br /></li>
+                                <li data-ng-class="{'active': ctrl.pagina==2}">
+                                    <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
+                                </li>
+                                <li><br /></li>
+                                <li><br /></li>
+                                <li>
+                                    <form method="POST" action="/logout">
+                                        <div>
+                                            <!-- Submit Button -->
+                                            <input type="submit" class="btn btn-default" style="width: 100%;" value="Logout" />
+                                        </div>
+                                    </form>
+                                </li>
+                            </ul>
                         </div>
-                    </form>
-                </li>
-            </ul>-->
-        </nav>
-
-        <section id="_ppal">
-            <div data-ng-view></div>
-        </section>
-        <footer id="_pie" translate>Nucleo Copyright @ 2015-2021. Todos los Derechos Reservados.</footer>
+                    </div>
+                    <!--<h3 translate>Opciones</h3>-->
+                    <!--<h3><span class="label label-default" translate>Opciones</span></h3>-->
+                    <!--<div class="panel panel-default">
+            <div class="panel-body">Opciones</div>
+        </div>
+        <ul class="nav nav-pills nav-stacked">
+            <li data-ng-class="{'active': ctrl.pagina==0}">
+                <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
+            </li>
+            <li data-ng-class="{'active': ctrl.pagina==1}">
+                <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
+            </li>
+            <li><br /></li>
+            <li data-ng-class="{'active': ctrl.pagina==2}">
+                <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
+            </li>
+            <li><br /></li>
+            <li><br /></li>
+            <li>
+                <form method="POST" action="/logout">
+                    <div>
+                        <input type="submit" class="btn btn-default" style="width: 100%;" value="Logout" />
+                    </div>
+                </form>
+            </li>
+        </ul>-->
+                </nav>
+            </div>
+            <div class="col-md-10" style="padding:0;">
+                <section id="__ppal">
+                    <div data-ng-view></div>
+                </section>
+            </div>
+        </div>
+        <footer>
+            <div class="row cabecera pie">
+                <div class="col-md-12">Nucleo CC Copyright @ 2020-2021. Todos los Derechos Reservados</div>
+            </div>
+        </footer>
     </div>
 
     <!-- inject-vendor:js -->

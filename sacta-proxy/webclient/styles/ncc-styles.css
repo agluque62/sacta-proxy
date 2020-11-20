@@ -13,17 +13,52 @@ html
 
 body
 {
-    text-align: center;
+    text-align: left;
     background-size: 28%; 
     margin: 2%;
     padding: 0;
-    margin-left: 0%;
 }
 
+.cabecera {
+    /*    border: 1px solid #4A7729;*/
+    background-color: #C1E1A2;
+    color: #4A7729;
+}
+.logo {
+    height: 70px;
+    overflow: hidden;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url('/images/corporativo-a.png');
+    margin: 10px 0 0 0
+}
+.title {
+    height: 70px;
+    margin: 10px 0 0 0;
+    text-align: center;
+    font-size: 30px;
+    padding-top:10px;
+}
+.fecha {
+    height: 70px;
+    margin: 10px 0 0 0;
+    padding-top: 10px;
+    font-size: 15px;
+}
+.login {
+    margin: 5% 30% 5% 30%;
+}
+.ncc-panel{
+    text-align: left;
+    font-size: 110%;
+}
+.pie {
+    height: 30px;
+    padding-top: 5px;
+}
 
-
-div#agrupar
-{
+div#agrupar {
     margin-left: 2%;
     width: 96%;
     height: 90%;
@@ -37,8 +72,7 @@ div#agrupar
 } */
 
     /** */
-    div#agrupar header#cabecera
-    {
+    div#agrupar header#cabecera {
         height: 70px;
         padding: 0;
     }
@@ -184,9 +218,7 @@ div#agrupar nav#_menu {
         margin-bottom: 10em;
     }
 
-.login {
-    margin: 5% 30% 15% 30%;
-}
+
 
     .login .btn
     {
