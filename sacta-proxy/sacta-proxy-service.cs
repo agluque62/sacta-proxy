@@ -9,14 +9,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+
 using sacta_proxy.Helpers;
 using sacta_proxy.WebServer;
 using sacta_proxy.model;
 using sacta_proxy.Managers;
 
+
 namespace sacta_proxy
 {
     using SectMap = Dictionary<string, int>;
+
     public class DependencyControl
     {
         public Configuration.DependecyConfig Cfg { get; set; }
@@ -29,6 +32,14 @@ namespace sacta_proxy
             Manager = null;
             Activity = false;
             MapOfSectors = new Dictionary<string, int>();
+        }
+        public List<SectorizationItem> Sectorization
+        {
+            get
+            {
+                var sect = MapOfSectors.Select(m => new SectorizationItem() { Sector = m.Key, Position = m.Value }).ToList();
+                return sect;
+            }
         }
         public static SectMap CopyMap(SectMap src, SectMap dst)
         {
@@ -112,10 +123,29 @@ namespace sacta_proxy
                     {
                         dependency.Manager.Start(dependency.Cfg);
                     });
-                    webCallbacks.Add("/config", OnConfig);
-                    webCallbacks.Add("/status", OnState);
+                    webCallbacks.Add("/config", OnWebRequestConfig);
+                    webCallbacks.Add("/status", OnWebRequestState);
+                    webCallbacks.Add("/version", OnWebRequestVersion);
                     SactaProxyWebApp?.Start(cfg.General.WebPort, cfg.General.WebActivityMinTimeout, webCallbacks);
                     Cfg = cfg;
+#if DEBUG
+                    DepManager.Where(d => d.Key == "TWR").First().Value.MapOfSectors = new SectMap()
+                    {
+                        {"0001", 1 },
+                        {"0002", 1 },
+                        {"0003", 2 },
+                        {"0004", 2 },
+                    };
+                    DepManager.Where(d => d.Key == "APP").First().Value.MapOfSectors = new SectMap()
+                    {
+                        {"0011", 11 },
+                        {"0012", 11 },
+                        {"0013", 12 },
+                        {"0014", 12 },
+                    };
+                    DependencyControl.CopyMap(DepManager.Where(d => d.Key == "TWR").First().Value.MapOfSectors, MainManager.MapOfSectors);
+                    DependencyControl.CopyMap(DepManager.Where(d => d.Key == "APP").First().Value.MapOfSectors, MainManager.MapOfSectors);
+#endif
                     PS.Set(ProcessStates.Running);
                 });
             }));
@@ -139,7 +169,7 @@ namespace sacta_proxy
         }
 
         #region Callbacks Web
-        protected void OnState(HttpListenerContext context, StringBuilder sb)
+        protected void OnWebRequestState(HttpListenerContext context, StringBuilder sb)
         {
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
@@ -153,7 +183,7 @@ namespace sacta_proxy
                 sb.Append(JsonHelper.ToString(new { res = context.Request.HttpMethod + ": Metodo No Permitido" }, false));
             }
         }
-        protected void OnConfig(HttpListenerContext context, StringBuilder sb)
+        protected void OnWebRequestConfig(HttpListenerContext context, StringBuilder sb)
         {
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
@@ -183,6 +213,20 @@ namespace sacta_proxy
                         sb.Append(JsonHelper.ToString(new { res = "Error actualizando la configuracion" }, false));
                     }
                 }
+            }
+            else
+            {
+                context.Response.StatusCode = 404;
+                sb.Append(JsonHelper.ToString(new { res = context.Request.HttpMethod + ": Metodo No Permitido" }, false));
+            }
+        }
+        protected void OnWebRequestVersion(HttpListenerContext context, StringBuilder sb)
+        {
+            context.Response.ContentType = "application/json";
+            if (context.Request.HttpMethod == "GET")
+            {
+                context.Response.StatusCode = 200;
+                sb.Append(JsonHelper.ToString((new GenericHelper.VersionDetails("versiones.json")).Version, false));
             }
             else
             {
@@ -303,8 +347,8 @@ namespace sacta_proxy
                     scv_em = DepManager.Select(dep => new { id=dep.Key, std=dep.Value.Manager.Status}).ToList(),
                     sectorizations = new
                     {
-                        global = MainManager.MapOfSectors,
-                        deps = DepManager.Select(dep => new { id = dep.Key, sect = dep.Value.MapOfSectors }).ToList()
+                        global = MainManager.Sectorization,
+                        deps = DepManager.Select(dep => new { id = dep.Key, sect = dep.Value.Sectorization }).ToList()
                     }
                 };
             }

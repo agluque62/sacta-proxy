@@ -193,6 +193,7 @@ function shuffle(array) {
 /** Rutas de Aplicacion */
 var routeDefault = "/";
 var routeConfig = "/config";
+var routeAbout = "/about";
 
 /** Peticiones REST */
 var rest_url_alive = "/alive";
