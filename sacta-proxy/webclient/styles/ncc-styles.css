@@ -291,13 +291,6 @@ section#_ppal
         margin-left: 2%;
     }
 
-    #_contenido p
-    {/*
-        text-align: center;
-        margin-top: 1em;
-         */
-    }
-
     #_contenido img.noinfo    
 	{
         /*-webkit-filter: blur(2px);
@@ -440,10 +433,7 @@ body .modal
     border-bottom: 1px solid black;
 }
 
-    #fhis h1
-    {
-    }
-
+ 
     #fhis .row
     {
         margin: 3px;
@@ -686,9 +676,6 @@ body .modal
     margin-bottom: 5px;
 	border:0;
 }
-#cfgIncidencias table tr {
-	
-}
 
     #cfgIncidencias table tr td
     {
@@ -730,11 +717,6 @@ body .modal
         padding-top: 1px;
         padding-bottom: 1px;
 }
-
-.cfgServidor .table tr td .form-control
-{
-}
-
 .cfgServidor .table tr td:nth-child(2)
 {
     text-align: right;
@@ -951,9 +933,6 @@ body .modal
         }
 
 /* Nuevas Pantallas M+N*/
-.mnman
-{
-}
     .mnman table
     {
         margin: 0;
@@ -1029,18 +1008,6 @@ body .modal
         {
             margin-top: 3em;
         }
-
-    .sacta .sacta-cab
-    {
-        /*background-color: #C1022C;
-        color: white;*/
-    }
-
-    .sacta .sacta-cab2
-    {
-        /*background-color: blue;
-        color: white;*/
-    }
 
     .sacta input.ng-invalid {
     background-color: pink;
@@ -1136,7 +1103,6 @@ figcaption
     text-decoration: none;
     height: 25px;
     width: 180px;
-    float: right;
     margin-right: 3px;
 }
 

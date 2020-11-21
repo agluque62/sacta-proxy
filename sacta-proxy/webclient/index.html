@@ -9,6 +9,7 @@
     <title>Sacta Proxy</title>
     <!-- Estilos  -->
     <link rel="stylesheet" href="./styles/bootstrap/bootstrap.min.css" />
+    <!-- <link rel="stylesheet" href="./styles/bootstrap-4.0.0/bootstrap.min.css" /> -->
     <link rel="stylesheet" href="./styles/ncc-styles.css" />
     <link rel="stylesheet" type="text/css" href="./styles/alertify/alertify.min.css" />
     <link rel="stylesheet" type="text/css" href="./styles/alertify/themes/bootstrap.css" />
@@ -24,6 +25,7 @@
                 <div class="col-md-2 fecha">
                     <span>{{ctrl.date}}</span>
                     <span>{{ctrl.hora}}</span>
+                    <div>User: <span>{{ctrl.user}}</span></div>
                 </div>
             </div>
         </header>
@@ -57,32 +59,6 @@
                             </ul>
                         </div>
                     </div>
-                    <!--<h3 translate>Opciones</h3>-->
-                    <!--<h3><span class="label label-default" translate>Opciones</span></h3>-->
-                    <!--<div class="panel panel-default">
-            <div class="panel-body">Opciones</div>
-        </div>
-        <ul class="nav nav-pills nav-stacked">
-            <li data-ng-class="{'active': ctrl.pagina==0}">
-                <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
-            </li>
-            <li data-ng-class="{'active': ctrl.pagina==1}">
-                <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
-            </li>
-            <li><br /></li>
-            <li data-ng-class="{'active': ctrl.pagina==2}">
-                <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
-            </li>
-            <li><br /></li>
-            <li><br /></li>
-            <li>
-                <form method="POST" action="/logout">
-                    <div>
-                        <input type="submit" class="btn btn-default" style="width: 100%;" value="Logout" />
-                    </div>
-                </form>
-            </li>
-        </ul>-->
                 </nav>
             </div>
             <div class="col-md-10" style="padding:0;">
@@ -100,6 +76,7 @@
 
     <!-- inject-vendor:js -->
     <script src="./scripts/jquery/jquery-2.1.3.min.js"></script>
+    <!-- <script src="./scripts/jquery/jquery-3.5.1.min.js"></script> -->
     <script src="./scripts/angular/angular.min.js"></script>
     <script src="./scripts/angular/angular-route.js"></script>
     <!-- Para las Traducciones -->
@@ -110,12 +87,16 @@
     <script src="./scripts/bootsstrap/bootstrap.min.js"></script>
     <script src="./scripts/bootsstrap/ui-bootstrap-tpls-1.2.4.min.js"></script>
     <script src="./scripts/smart-table.js"></script>
-    <!--    <script src="./scripts/ng-table.min.js"></script>-->
+  
+    <!-- <script src="./scripts/popper.min.js"></script>
+    <script src="./scripts/bootstrap-4.0.0/bootstrap.min.js"></script> -->
+
+   <!--    <script src="./scripts/ng-table.min.js"></script>-->
     <script type="text/javascript" src="./scripts/moment.min.js"></script>
     <script type="text/javascript" src="./scripts/daterangepicker.js"></script>
     <script type="text/javascript" src="./scripts/alertify.min.js"></script>
     <script type="text/javascript" src="./scripts/sprintf/sprintf.min.js"></script>
-    <script type="text/javascript" src="./scripts/linq_3.2.1/linq.min.js"></script>
+    <script type="text/javascript" src="./scripts/linq_3.2.1/linq.js"></script>
     <!--     <script type="text/javascript" src="./scripts/jquery-te-1.4.0.min.js"></script>
      -->
     <!--<script type="text/javascript" src="./scripts/cryptojs/core-min.js"></script>
