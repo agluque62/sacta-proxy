@@ -41,9 +41,9 @@ namespace sacta_proxy.Managers
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener.Base.MulticastLoopback = false;
                 Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.McastGroup),
-                    IPAddress.Parse(Cfg.Comm.SendTo.Lan1.McastIf));
+                    IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip));
                 Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.McastGroup),
-                    IPAddress.Parse(Cfg.Comm.SendTo.Lan2.McastIf));
+                    IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip));
                 /** 20180731. Para poder pasar por una red de ROUTERS */
                 Listener.Base.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 16);
                 Listener.NewDataEvent += OnDataReceived;
@@ -300,7 +300,7 @@ namespace sacta_proxy.Managers
                 if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
                 {
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN1 ...");
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip), Cfg.Comm.SendTo.Port), message);
+                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.McastGroup), Cfg.Comm.SendTo.Port), message);
                 }
                 else
                 {
@@ -309,7 +309,7 @@ namespace sacta_proxy.Managers
                 if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
                 {
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN2 ...");
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.Ip), Cfg.Comm.SendTo.Port), message);
+                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.McastGroup), Cfg.Comm.SendTo.Port), message);
                 }
                 else
                 {
