@@ -20,7 +20,7 @@
                 <div id="cfggen" data-ng-show="ctrl.pagina==0" class="form-group">
                     <!--<h1><strong translate>Parametros Generales</strong></h1>-->
                     <div class="row form-group">
-                        <div class="col-md-4"></div>
+                        <div class="col-md-1"></div>
                         <div class="col-md-3">
                             <label for="wp">Puerto de Servicio WEB</label>
                             <input id="wp" name="wp" type="number" min="1024" max="49000" class="form-control" ng-model="ctrl.config.General.WebPort" required />
@@ -29,32 +29,32 @@
                                 <span ng-show="cfgform.wp.$error.min || cfgform.wp.$error.max">Este campo debe estar en rango 1024, 49000</span>
                             </span>
                         </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-4"></div>
                         <div class="col-md-3">
-                            <label for="ws">Duracion Sesion WEB (m)</label>
-                            <input id="ws" name="ws" type="number" min="15" max="60" class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" required />
-                            <span style="color:red" ng-show="cfgform.ws.$dirty && cfgform.ws.$invalid">
-                                <span ng-show="cfgform.ws.$error.required">Este campo debe rellenarse</span>
-                                <span ng-show="cfgform.ws.$error.min || cfgform.ws.$error.max">Este campo debe estar en rango 15, 60</span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-3">
-                            <label for="opt">Logica de Activacion SACTA</label>
-                            <div id="opt">
-                                <label class="radio-inline">
-                                    <input type="radio" ng-model="ctrl.config.General.ActivateSactaLogic" value="AND" />And
-                                </label>
-                                <label class="radio-inline">
-                                    <input type="radio" ng-model="ctrl.config.General.ActivateSactaLogic" value="OR" />Or
-                                </label>
+                                <label for="ws">Duracion Sesion WEB (m)</label>
+                                <input id="ws" name="ws" type="number" min="15" max="60" class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" required />
+                                <span style="color:red" ng-show="cfgform.ws.$dirty && cfgform.ws.$invalid">
+                                    <span ng-show="cfgform.ws.$error.required">Este campo debe rellenarse</span>
+                                    <span ng-show="cfgform.ws.$error.min || cfgform.ws.$error.max">Este campo debe estar en rango 15, 60</span>
+                                </span>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="opt">Logica de Activacion SACTA</label>
+                                <select id="opt" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic" >
+                                     <option  value="AND">AND</option>
+                                    <option  value="OR">OR</option>
+                                </select>
+    
+                                <!-- <div id="opt">
+                                    <label class="radio-inline">
+                                        <input type="radio" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic" value="AND" />And
+                                    </label>
+                                    <label class="radio-inline">
+                                        <input type="radio" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic" value="OR" />Or
+                                    </label>
+                                </div> -->
+
                             </div>
                         </div>
-                    </div>
                 </div>
 
                 <div id="cfgScv" data-ng-show="ctrl.pagina==1 || ctrl.pagina==2" class="form-group">
