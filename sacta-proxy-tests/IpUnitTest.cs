@@ -20,6 +20,16 @@ namespace sacta_proxy_tests
             var res = IpHelper.IsInSubnet(mask1, add);
         }
         [TestMethod]
+        public void IpMaskingTest()
+        {
+            var ip1 = "10.75.12.121";
+            var ip2 = "10.75.130.121";
+            var mask1 = "10.75.128.0/20";
+            var mask2 = "10.75.254.0/23";
+            var res1 = IpHelper.IsInSubnet(mask1, ip1);
+            var res2 = IpHelper.IsInSubnet(mask1, ip2);
+        }
+        [TestMethod]
         public void TestingMcastSendingAndReceive()
         {
             var Listener = new UdpSocket("192.168.90.50", 9000);
