@@ -10,6 +10,7 @@ angular.module("sacta_proxy")
         ctrl.title = "";
 
         ctrl.user = "agl1";
+        ctrl.version="x.x.x";
         ctrl.date = (new Date()).toLocaleDateString();
         ctrl.hora = (new Date()).toLocaleTimeString();
         $location.path("/");
@@ -36,6 +37,8 @@ angular.module("sacta_proxy")
         function get_status() {
             $serv.status((status) => {
                 $lserv.GlobalStd(status);
+                ctrl.user = status.user;
+                ctrl.version=status.version;
             });
         }
         function get_inci() {
@@ -80,7 +83,7 @@ angular.module("sacta_proxy")
             ctrl.timer++;
 
             if ((ctrl.timer % 5) == 0) {
-                alive();
+                // alive();
                 get_status();
             }
 
