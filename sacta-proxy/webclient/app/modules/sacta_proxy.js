@@ -236,6 +236,7 @@ var levels = { Master: "Master", Slave: "Slave", Error: "Error" };
 var routeForUnauthorizedAccess = '/noaut';
 
 /** Validadores. */
+var regx_all = /^.*$/;
 var regx_ipval = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
 var regx_trpval = /^[1-2]+,(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\/[0-9]{2,5}$/;
 var regx_atsrango = /^[0-9]{6}-[0-9]{6}$/;
@@ -251,10 +252,31 @@ var regx_list_int = /^\d+(?:[ \t]*,[ \t]*\d+)*$/;
 var regx_mkip = /((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\/((\b([1-9]|[12][0-9]|3[0-2])\b))$/; // 
 
 /** Validacion por directivas Angular y expresiones regulares */
-function regx_get(id) {
+function smapTest(value) {
+    if (typeof value == "string") {
+        var ret = true;
+        var entries = value.split(',');
+        entries.forEach((entry) => {
+            if (entry.includes(":")) {
+                var pair = entry.split(":");
+                if (pair.length == 2) {
+                    if (pair[0].match(regx_int) && pair[1].match(regx_int))
+                        return;
+                }
+            } 
+            ret = false;
+        });
+        return ret;
+    }
+    return false;
+}
+function regx_get(id, value) {
     if (id == "ip") return regx_ipval;
     if (id == "lnum") return regx_list_int;
     if (id == "mkip") return regx_mkip;
+    if (id == "smap") {
+        return smapTest(value) == true ? regx_all : undefined;
+    }
 
     return undefined;
 }
@@ -264,7 +286,7 @@ sacta_proxy.directive('nuValidate', function () {
         link: function (scope, element, attr, mCtrl) {
             function Validation(value) {
                 var valid = false;
-                var regex = regx_get(attr.nuValidate);
+                var regex = regx_get(attr.nuValidate, value);
                 if (regex != undefined && typeof value == "string") {
                     valid = value == "" ? true : value.match(regex) != null;
                 }

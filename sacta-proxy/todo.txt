@@ -1,7 +1,13 @@
 ﻿/** */
 
 [] Gestion de Historicos.
-[] Persistencia Ultimas Sectorizaciones
-[] Conexion con Base de Datos
+  [] Generacion de un LOG...
+  [] Visualizacion del LOG...
+[] Persistencia Ultimas Sectorizaciones.
+[] Conexion con Base de Datos.
 	[] Test de Configuracion de Sectores con datos de Base de Datos.
-
+	[] Inclusion de Historicos.
+[x] Configuración y gestión mapeado Sectores y Puestos entre dependencias y scv.
+   [x] En fichero de configuracion.
+   [x] En carga de configuracion.
+   [x] En pantalla de configuracion.
