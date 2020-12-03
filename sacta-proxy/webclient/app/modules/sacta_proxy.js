@@ -3,6 +3,7 @@ var Simulate = location.port == 1444;
 var pollingTime = 5000;
 var maxPreconf = Simulate == true ? 16 : 8;
 var userLang = navigator.language;
+var DialogTitle = "Nucleo Sacta Proxy";
 
 /** */
 var sacta_proxy = angular.module('sacta_proxy', ['ngRoute', 'ui.bootstrap', 'pascalprecht.translate']);
@@ -177,7 +178,6 @@ sacta_proxy.directive('ignoreDirty', [function () {
 }]);
 
 
-
 //**  Rutinas genéricas */
 function StringCut(str, maxlen) {
     var retorno = str.length > maxlen ? str.substring(0, maxlen) + "..." : str;
@@ -201,6 +201,23 @@ function shuffle(array) {
     }
 
     return array;
+}
+
+/** Alertify Confirm Sync */
+function SyncAlertifyConfirm(msg) {
+    return new Promise((resolve) => {
+        alertify.confirm(DialogTitle, msg,
+            function () {
+                resolve(true);
+            }
+            , function () {
+                resolve(false);
+            });
+    });
+}
+async function NuConfirm(msg) {
+    var res = await SyncAlertifyConfirm(msg);
+    return res;
 }
 
 /** Rutas de Aplicacion */
@@ -230,7 +247,6 @@ var roles = {
 var srvtypes = { None: "None", Mixed: "Mixed", Phone: "Phone", Radio: "Radio" };
 var states = { Running: "Running", Stopped: "Stopped", Disabled: "Disabled" };
 var levels = { Master: "Master", Slave: "Slave", Error: "Error" };
-
 
 /** */
 var routeForUnauthorizedAccess = '/noaut';

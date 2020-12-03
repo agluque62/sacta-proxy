@@ -375,18 +375,15 @@ namespace sacta_proxy.WebServer
         #region Testing
         private void logrequest(HttpListenerContext context)
         {
-#if DEBUG
-            Logger.Info<Logger>($"HTTP Request: {context.Request.HttpMethod} {context.Request.Url.OriginalString}");
-            //Logger.Info<Logger>($"Raw URL: {context.Request.RawUrl}");
+            Logger.Debug<Logger>($"HTTP Request: {context.Request.HttpMethod} {context.Request.Url.OriginalString}");
             if (context.Request.QueryString.Count > 0)
             {
                 var array = (from key in context.Request.QueryString.AllKeys
                              from value in context.Request.QueryString.GetValues(key)
                              select string.Format("{0}={1}", key, value)).ToArray();
 
-                Logger.Info<Logger>($"Query: {String.Join("##", array)}");
+                Logger.Debug<Logger>($"Query: {String.Join("##", array)}");
             }
-#endif
         }
         #endregion
 

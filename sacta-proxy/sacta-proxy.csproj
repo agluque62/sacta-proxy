@@ -73,6 +73,7 @@
     <Compile Include="model\Configuration.cs" />
     <Compile Include="model\ProcessStatusControl.cs" />
     <Compile Include="model\SectorizationModel.cs" />
+    <Compile Include="model\SystemUsers.cs" />
     <Compile Include="sacta-proxy-installer.cs">
       <SubType>Component</SubType>
     </Compile>
