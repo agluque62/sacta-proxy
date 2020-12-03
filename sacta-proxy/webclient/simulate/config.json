@@ -4,7 +4,9 @@
 		"General": {
 			"WebPort": 8091,
 			"WebActivityMinTimeout": 30,
-			"ActivateSactaLogic": "AND"
+			"ActivateSactaLogic": "AND",
+			"HistoryMaxDays": 7,
+			"HistoryMaxItems": 1000
 		},
 		"Psi": {
 			"Id": "IdDep",

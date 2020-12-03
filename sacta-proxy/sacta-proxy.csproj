@@ -71,6 +71,7 @@
     <Compile Include="Managers\SactaMessages.cs" />
     <Compile Include="Managers\ScvManager.cs" />
     <Compile Include="model\Configuration.cs" />
+    <Compile Include="model\History.cs" />
     <Compile Include="model\ProcessStatusControl.cs" />
     <Compile Include="model\SectorizationModel.cs" />
     <Compile Include="model\SystemUsers.cs" />

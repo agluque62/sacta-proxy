@@ -16,7 +16,6 @@
         </section>
         <section class="contenido" id="contenido">
             <form name="cfgform" novalidate>
-
                 <div id="cfggen" data-ng-show="ctrl.pagina==0" class="form-group">
                     <!--<h1><strong translate>Parametros Generales</strong></h1>-->
                     <div class="row form-group">
@@ -30,21 +29,47 @@
                             </span>
                         </div>
                         <div class="col-md-3">
-                                <label for="ws">Duracion Sesion WEB (m)</label>
-                                <input id="ws" name="ws" type="number" min="15" max="60" class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" required />
-                                <span style="color:red" ng-show="cfgform.ws.$dirty && cfgform.ws.$invalid">
-                                    <span ng-show="cfgform.ws.$error.required">Este campo debe rellenarse</span>
-                                    <span ng-show="cfgform.ws.$error.min || cfgform.ws.$error.max">Este campo debe estar en rango 15, 60</span>
-                                </span>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="opt">Logica de Activacion SACTA</label>
-                                <select id="opt" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic" >
-                                     <option  value="AND">AND</option>
-                                    <option  value="OR">OR</option>
-                                </select>
-                            </div>
+                            <label for="ws">Duracion Sesion WEB (m)</label>
+                            <input id="ws" name="ws" type="number" min="15" max="60" class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" required />
+                            <span style="color:red" ng-show="cfgform.ws.$dirty && cfgform.ws.$invalid">
+                                <span ng-show="cfgform.ws.$error.required">Este campo debe rellenarse</span>
+                                <span ng-show="cfgform.ws.$error.min || cfgform.ws.$error.max">Este campo debe estar en rango 15, 60</span>
+                            </span>
                         </div>
+                        <div class="col-md-3">
+                            <label for="opt">Logica de Activacion SACTA</label>
+                            <select id="opt" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic">
+                                <option value="AND">AND</option>
+                                <option value="OR">OR</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">
+                            <label for="hdays">Profundidad Historico (Dias)</label>
+                            <input id="hdays" name="hdays" type="number" min="7" max="30" class="form-control" ng-model="ctrl.config.General.HistoryMaxDays" required />
+                            <span style="color:red" ng-show="cfgform.hdays.$dirty && cfgform.hdays.$invalid">
+                                <span ng-show="cfgform.hdays.$error.required">Este campo debe rellenarse</span>
+                                <span ng-show="cfgform.hdays.$error.min || cfgform.hdays.$error.max">Este campo debe estar en rango 7, 30</span>
+                            </span>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="hlen">Profundidad Historico (Registros)</label>
+                            <input id="hlen" name="hlen" type="number" min="500" max="3000" class="form-control" ng-model="ctrl.config.General.HistoryMaxItems" required />
+                            <span style="color:red" ng-show="cfgform.hlen.$dirty && cfgform.hlen.$invalid">
+                                <span ng-show="cfgform.hlen.$error.required">Este campo debe rellenarse</span>
+                                <span ng-show="cfgform.hlen.$error.min || cfgform.hlen.$error.max">Este campo debe estar en rango 500, 3000</span>
+                            </span>
+                        </div>
+                        <!--<div class="col-md-3">
+                            <label for="opt">Logica de Activacion SACTA</label>
+                            <select id="opt" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic">
+                                <option value="AND">AND</option>
+                                <option value="OR">OR</option>
+                            </select>
+                        </div>-->
+                    </div>
                 </div>
 
                 <div id="cfgScv" data-ng-show="ctrl.pagina==1 || ctrl.pagina==2" class="form-group">

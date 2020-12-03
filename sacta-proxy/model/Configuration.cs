@@ -22,11 +22,15 @@ namespace sacta_proxy.model
             public int WebPort { get; set; }
             public int WebActivityMinTimeout { get; set; }
             public string ActivateSactaLogic { get; set; }
+            public int HistoryMaxDays { get; set; }
+            public int HistoryMaxItems { get; set; }
             public GeneralConfig()
             {
                 WebPort = 8091;
                 ActivateSactaLogic = "AND";
                 WebActivityMinTimeout = 30;
+                HistoryMaxDays = 7;
+                HistoryMaxItems = 1000;
             }
         }
         public class LanItem
