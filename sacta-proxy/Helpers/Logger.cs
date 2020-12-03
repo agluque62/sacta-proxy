@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using NLog;
 
-namespace sacta_proxy.Helpers
+namespace sacta_proxy.helpers
 {
     public class Logger
     {
