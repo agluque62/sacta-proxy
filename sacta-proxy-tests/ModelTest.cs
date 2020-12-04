@@ -33,11 +33,10 @@ namespace sacta_proxy_tests
             SectorizationPersistence.Set("map2", map2);
             SectorizationPersistence.Set("map3", map2);
 
-            SectorizationPersistence.Get("map3", (map) =>
+            SectorizationPersistence.Get("map3", (date, map) =>
             {
 
             });
-
             SectorizationPersistence.Sanitize(new List<string>() { "map1", "map3" });
         }
 
