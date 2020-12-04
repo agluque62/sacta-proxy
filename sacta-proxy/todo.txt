@@ -1,4 +1,5 @@
 ﻿/** */
+[] Desacoplar History con EventQueue
 [] Conexion con Base de Datos.
 	[] Usuarios.
 	[] Test de Configuracion de Sectores con datos de Base de Datos.
@@ -14,6 +15,7 @@
 	[x] Aviso de Cambio con Valores no validos.
 	[x] Ejecución de la orden de cambio de configuracion.
 [x] Persistencia Ultimas Sectorizaciones.
-[] Gestion de Historicos.
-	[] Generacion de un LOG...
+[x] Poner la fecha ultima sectorizacion en dependencias y llevarla al estado.
+[x] Gestion de Historicos.
+	[x] Generacion de un LOG...
 	[] Visualizacion del LOG...

@@ -21,10 +21,13 @@ namespace sacta_proxy
 
     public class DependencyControl
     {
+        public string Id { get; set; }
+        public bool IsMain { get; set; }
         public Configuration.DependecyConfig Cfg { get; set; }
         public BaseManager Manager { get; set; }
         public bool Activity { get; set; }
-        public Dictionary<string,int> MapOfSectors 
+        public DateTime LastChange { get; set; }
+        public SectMap MapOfSectors 
         {
             get
             {
@@ -34,6 +37,7 @@ namespace sacta_proxy
             {
                 sectorization = value;
                 SectorizationPersistence.Set(Cfg.Id, sectorization);
+                LastChange = DateTime.Now;
             }
         }
         public DependencyControl(string id)
@@ -41,8 +45,10 @@ namespace sacta_proxy
             Cfg = null;
             Manager = null;
             Activity = false;
-            SectorizationPersistence.Get(id, (data) =>
+            Id = id;
+            SectorizationPersistence.Get(id, (date, data) =>
             {
+                LastChange = date;
                 sectorization = data;
             });
         }
@@ -62,6 +68,7 @@ namespace sacta_proxy
             }
             SectorizationPersistence.Set(Cfg.Id, sectorization);
         }
+
         private SectMap sectorization = new SectMap();
     }
     public partial class SactaProxy : ServiceBase
@@ -113,15 +120,19 @@ namespace sacta_proxy
             cfgManager.Get((cfg =>
             {
                 PS.History = new History(cfg.General.HistoryMaxDays, cfg.General.HistoryMaxItems);
-                ManagersDescription.Clear();
+                Managers.Clear();
                 cfg.Psi.Sectorization.Positions.Clear();
                 cfg.Psi.Sectorization.Sectors.Clear();
 
                 var manager = new PsiManager();
                 manager.EventActivity += OnPsiEventActivity;
                 manager.EventSectRequest += OnPsiEventSectorizationAsk;
-                ManagersDescription.Add(new DependencyControlEntry() { Id = cfg.Psi.Id, Dep = new DependencyControl(cfg.Psi.Id) { Cfg = cfg.Psi, Manager = manager }, IsMain = true });
-
+                Managers.Add(new DependencyControl(cfg.Psi.Id)
+                {
+                    IsMain = true,
+                    Cfg = cfg.Psi,
+                    Manager = manager
+                }); 
                 cfg.Dependencies.ForEach(dep =>
                 {
                     var dependency = new ScvManager();
@@ -149,7 +160,12 @@ namespace sacta_proxy
                     cfg.Psi.Sectorization.Virtuals.AddRange(virtuals);
                     cfg.Psi.Sectorization.Sectors.AddRange(reals);
 
-                    ManagersDescription.Add(new DependencyControlEntry() { Id = dep.Id, Dep = new DependencyControl(dep.Id) { Cfg = dep, Manager = dependency }, IsMain = false });
+                    Managers.Add(new DependencyControl(dep.Id)
+                    {
+                        IsMain = false,
+                        Cfg = dep,
+                        Manager = dependency
+                    });
                 });
                 /** */
                 var ids = cfg.Dependencies.Select(d => d.Id).ToList();
@@ -164,9 +180,9 @@ namespace sacta_proxy
                 TestDuplicated(duplicatedPos, duplicatedSec, () =>
                 {
                     // Solo arranca el programa cuando no hay duplicados.
-                    ManagersDescription.ForEach(dependency =>
+                    Managers.ForEach(dependency =>
                     {
-                        dependency.Dep.Manager.Start(dependency.Dep.Cfg);
+                        dependency.Manager.Start(dependency.Cfg);
                     });
                     webCallbacks.Add("/config", OnWebRequestConfig);
                     webCallbacks.Add("/status", OnWebRequestState);
@@ -205,21 +221,21 @@ namespace sacta_proxy
             SactaProxyWebApp?.Stop();
             webCallbacks.Clear();
 
-            ManagersDescription.ForEach(depEntry =>
+            Managers.ForEach(depEntry =>
             {
                 if (depEntry.IsMain)
                 {
-                    (depEntry.Dep.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
-                    (depEntry.Dep.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
+                    (depEntry.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
+                    (depEntry.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
                 }
                 else
                 {
-                    (depEntry.Dep.Manager as ScvManager).EventActivity -= OnScvEventActivity;
-                    (depEntry.Dep.Manager as ScvManager).EventSectorization -= OnScvEventSectorization;
+                    (depEntry.Manager as ScvManager).EventActivity -= OnScvEventActivity;
+                    (depEntry.Manager as ScvManager).EventSectorization -= OnScvEventSectorization;
                 }
-                depEntry.Dep.Manager.Stop();
+                depEntry.Manager.Stop();
             });
-            ManagersDescription.Clear();
+            Managers.Clear();
 
             PS.Set(ProcessStates.Stopped);
             PS.History.Add(HistoryItems.ServiceEnded);
@@ -456,7 +472,7 @@ namespace sacta_proxy
                 {
                     service = PS.Status,
                     web = SactaProxyWebApp?.Status,
-                    ems = ManagersDescription.Select(d => new { id = d.Id, status = d.Dep.Manager.Status, sect=d.Dep.Sectorization }).ToList()
+                    ems = Managers.Select(d => new { id = d.Id, status = d.Manager.Status, sect=new { d.LastChange, d.Sectorization } }).ToList()
                 };
             }
         }
@@ -478,29 +494,16 @@ namespace sacta_proxy
         private readonly ConfigurationManager cfgManager = new ConfigurationManager();
         private Configuration Cfg { get; set; }
         private readonly ProcessStatusControl PS = new ProcessStatusControl();
-        class DependencyControlEntry
-        {
-            public string Id { get; set; }
-            public DependencyControl Dep { get; set; }
-            public bool IsMain { get; set; }
-        }
-        private readonly List<DependencyControlEntry> ManagersDescription = new List<DependencyControlEntry>();
-        private DependencyControl MainManager
-        {
-            get
-            {
-                var dep = ManagersDescription.Where(d => d.IsMain).FirstOrDefault();
-                return dep?.Dep;
-            }
-        }
-        private List<DependencyControl> DepManagers
-        {
-            get
-            {
-                var deps = ManagersDescription.Where(d => d.IsMain == false).Select(d => d.Dep).ToList();
-                return deps;
-            }
-        }
+        //class DependencyControlEntry
+        //{
+        //    public string Id { get; set; }
+        //    public DependencyControl Dep { get; set; }
+        //    public bool IsMain { get; set; }
+        //}
+        //private readonly List<DependencyControlEntry> ManagersDescription = new List<DependencyControlEntry>();
+        private List<DependencyControl> Managers = new List<DependencyControl>();
+        private DependencyControl MainManager => Managers.Where(d => d.IsMain).FirstOrDefault();
+        private List<DependencyControl> DepManagers => Managers.Where(d => d.IsMain == false).ToList();
         #endregion
     }
 
