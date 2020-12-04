@@ -187,6 +187,7 @@ namespace sacta_proxy
                     webCallbacks.Add("/config", OnWebRequestConfig);
                     webCallbacks.Add("/status", OnWebRequestState);
                     webCallbacks.Add("/version", OnWebRequestVersion);
+                    webCallbacks.Add("/history", OnWebRequestHistory);
 #if DEBUG
                     webCallbacks.Add("/testing/*", OnWebRequestTesting);
 #endif
@@ -305,6 +306,20 @@ namespace sacta_proxy
             {
                 context.Response.StatusCode = 200;
                 sb.Append(JsonHelper.ToString((new GenericHelper.VersionManagement("versiones.json")).Version, false));
+            }
+            else
+            {
+                context.Response.StatusCode = 404;
+                sb.Append(JsonHelper.ToString(new { res = context.Request.HttpMethod + ": Metodo No Permitido" }, false));
+            }
+        }
+        protected void OnWebRequestHistory(HttpListenerContext context, StringBuilder sb)
+        {
+            context.Response.ContentType = "application/json";
+            if (context.Request.HttpMethod == "GET")
+            {
+                context.Response.StatusCode = 200;
+                sb.Append(JsonHelper.ToString(PS.History.Get));
             }
             else
             {
