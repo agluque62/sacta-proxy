@@ -20,13 +20,13 @@
 						"str": "State: Running, LastMessage: "
 					},
 					"act": {
-						"global": false,
+						"global": true,
 						"lan1": {
 							"ActivityOnLan1": false,
 							"LastActivityOnLan1": "0001-01-01T00:00:00"
 						},
 						"lan2": {
-							"ActivityOnLan2": false,
+							"ActivityOnLan2": true,
 							"LastActivityOnLan2": "0001-01-01T00:00:00"
 						}
 					},
@@ -79,8 +79,8 @@
 				"id": "TWR",
 				"status": {
 					"global_state": {
-						"std": 1,
-						"str": "State: Running, LastMessage: "
+						"std": 0,
+						"str": "Error de direcciones..."
 					},
 					"aut_state": 0,
 					"act": {
@@ -127,8 +127,8 @@
 				"id": "APP",
 				"status": {
 					"global_state": {
-						"std": 1,
-						"str": "State: Running, LastMessage: "
+						"std": 2,
+						"str": "Fatal error"
 					},
 					"aut_state": 0,
 					"act": {
