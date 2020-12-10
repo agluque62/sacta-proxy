@@ -54,5 +54,10 @@ namespace sacta_proxy_tests
 
             Task.Delay(1000).Wait();
         }
+        [TestMethod]
+        public void TestingAddIp()
+        {
+            IpHelper.EthIfDelIpv4("10.12.60.35", "10.12.62.35");
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace sacta_proxy.Managers
     public abstract class BaseManager
     {
 
-        public abstract void Start(Configuration.DependecyConfig cfg);
+        public abstract void Start(int ProtocolVersion, Configuration.DependecyConfig cfg);
         public abstract void Stop();
         public abstract bool EnableTx { get; set; }
         public abstract object Status { get; }
@@ -44,6 +44,7 @@ namespace sacta_proxy.Managers
         #region Datos 
         protected object Locker { get; set; }
         protected string Id { get; set; }
+        protected int Version { get; set; }
         protected Configuration.DependecyConfig Cfg { get; set; }
         protected Timer TickTimer { get; set; }
         protected DateTime LastActivityOnLan1 { get; set; }

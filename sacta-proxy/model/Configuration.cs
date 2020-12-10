@@ -33,40 +33,50 @@ namespace sacta_proxy.model
                 HistoryMaxItems = 1000;
             }
         }
-        public class LanItem
+        public class ItfItem
         {
             public string Ip { get; set; }
+            public string IpTo { get; set; }
             public string FromMask { get; set; }
             public string McastGroup { get; set; }
-            public string McastIf { get; set; }
-            public LanItem()
+            //public string McastIf { get; set; }
+            public ItfItem()
             {
                 Ip = "127.0.0.1";
+                IpTo = "127.0.0.1";
                 FromMask = "127.0.0.1/24";
                 McastGroup = "225.12.101.1";
-                McastIf = "127.0.0.1";
+                //McastIf = "127.0.0.1";
             }
         }
         public class CommItem
         {
             public int Port { get; set; }
-            public LanItem Lan1 { get; set; }
-            public LanItem Lan2 { get; set; }
+            public ItfItem Lan1 { get; set; }
+            public ItfItem Lan2 { get; set; }
             public CommItem()
             {
                 Port = 9000;
-                Lan1 = new LanItem();
-                Lan2 = new LanItem();
+                Lan1 = new ItfItem();
+                Lan2 = new ItfItem();
             }
         }
         public class CommConfig
         {
-            public CommItem Listen { get; set; }
-            public CommItem SendTo { get; set; }
+            public int ListenPort { get; set; }
+            public int SendingPort { get; set; }
+            //public CommItem Listen { get; set; }
+            //public CommItem SendTo { get; set; }
+            public ItfItem If1 { get; set; }
+            public ItfItem If2 { get; set; }
             public CommConfig()
             {
-                Listen = new CommItem();
-                SendTo = new CommItem();
+                //Listen = new CommItem();
+                //SendTo = new CommItem();
+                If1 = new ItfItem();
+                If2 = new ItfItem();
+                ListenPort = 15100;
+                SendingPort = 19204;
             }
         }
         public class SactaProtocolSacta
@@ -152,13 +162,17 @@ namespace sacta_proxy.model
         /// <summary>
         /// Datos de Configuracion,
         /// </summary>
+        public int ProtocolVersion { get; set; }
+        public int InCluster { get; set; }
         public GeneralConfig General { get; set; }
         public DependecyConfig Psi { get; set; }
         public List<DependecyConfig> Dependencies { get; set; }
         public Configuration(bool bGenerate = false)
         {
+            ProtocolVersion = 1;
+            InCluster = 0;
             General = new GeneralConfig();
-            Psi = new DependecyConfig(bGenerate);
+            Psi = new DependecyConfig(bGenerate) { Id = "SCV" };
             Dependencies = new List<DependecyConfig>();
             if (bGenerate)
             {

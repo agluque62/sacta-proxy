@@ -1,6 +1,8 @@
 ﻿{
 	"res": "ok",
 	"cfg": {
+		"ProtocolVersion": 0,
+		"InCluster": 0,
 		"General": {
 			"WebPort": 8091,
 			"WebActivityMinTimeout": 30,
@@ -9,37 +11,21 @@
 			"HistoryMaxItems": 1000
 		},
 		"Psi": {
-			"Id": "IdDep",
+			"Id": "Scv",
 			"Comm": {
-				"Listen": {
-					"Port": 15001,
-					"Lan1": {
-						"Ip": "0.0.0.0",
-						"FromMask": "0.0.0.0/0",
-						"McastGroup": "225.12.101.1",
-						"McastIf": "192.168.90.50"
-					},
-					"Lan2": {
-						"Ip": "0.0.0.0",
-						"FromMask": "0.0.0.0/0",
-						"McastGroup": "225.212.101.1",
-						"McastIf": "127.0.0.1"
-					}
+				"ListenPort": 19205,
+				"SendingPort": 15101,
+				"If1": {
+					"Ip": "10.12.60.35",
+					"IpTo": "127.0.0.1",
+					"FromMask": "127.0.0.1/24",
+					"McastGroup": "225.12.101.1"
 				},
-				"SendTo": {
-					"Port": 19205,
-					"Lan1": {
-						"Ip": "192.168.90.50",
-						"FromMask": "0.0.0.0/0",
-						"McastGroup": "0.0.0.0",
-						"McastIf": "0.0.0.0"
-					},
-					"Lan2": {
-						"Ip": "127.0.0.1",
-						"FromMask": "0.0.0.0/0",
-						"McastGroup": "0.0.0.0",
-						"McastIf": "0.0.0.0"
-					}
+				"If2": {
+					"Ip": "127.0.0.1",
+					"IpTo": "127.0.0.1",
+					"FromMask": "127.0.0.1/24",
+					"McastGroup": "225.212.101.1"
 				}
 			},
 			"SactaProtocol": {
@@ -79,44 +65,30 @@
 				}
 			},
 			"Sectorization": {
-				"Sectors": [0],
-				"Positions": [0],
-				"Virtuals": []
+				"Sectors": [],
+				"Positions": [],
+				"Virtuals": [],
+				"SectorsMap": "",
+				"PositionsMap": ""
 			}
 		},
 		"Dependencies": [
 			{
 				"Id": "TWR",
 				"Comm": {
-					"Listen": {
-						"Port": 19204,
-						"Lan1": {
-							"Ip": "192.168.90.50",
-							"FromMask": "192.168.90.0/24",
-							"McastGroup": "0.0.0.0",
-							"McastIf": "0.0.0.0"
-						},
-						"Lan2": {
-							"Ip": "0.0.0.0",
-							"FromMask": "127.0.0.1/24",
-							"McastGroup": "0.0.0.0",
-							"McastIf": "0.0.0.0"
-						}
+					"ListenPort": 15100,
+					"SendingPort": 19204,
+					"If1": {
+						"Ip": "10.20.94.1",
+						"IpTo": "10.90.70.1",
+						"FromMask": "127.0.0.1/24",
+						"McastGroup": "225.12.101.1"
 					},
-					"SendTo": {
-						"Port": 15100,
-						"Lan1": {
-							"Ip": "0.0.0.0",
-							"FromMask": "0.0.0.0/0",
-							"McastGroup": "225.12.101.1",
-							"McastIf": "127.0.0.1"
-						},
-						"Lan2": {
-							"Ip": "0.0.0.0",
-							"FromMask": "0.0.0.0/0",
-							"McastGroup": "225.212.101.1",
-							"McastIf": "127.0.0.1"
-						}
+					"If2": {
+						"Ip": "10.20.94.2",
+						"IpTo": "10.91.70.1",
+						"FromMask": "127.0.0.1/24",
+						"McastGroup": "225.212.101.1"
 					}
 				},
 				"SactaProtocol": {
@@ -156,45 +128,33 @@
 					}
 				},
 				"Sectorization": {
-					"Sectors": [ 1, 2, 3, 4 ],
-					"Positions": [ 1, 2, 3 ],
-					"Virtuals": [ 5, 6 ],
-					"SectorsMap": "1:1,2:2,3:3",
-					"PositionsMap": "1:10"
+					"Sectors": [
+						1
+					],
+					"Positions": [
+						1
+					],
+					"Virtuals": [],
+					"SectorsMap": "",
+					"PositionsMap": ""
 				}
 			},
 			{
 				"Id": "APP",
 				"Comm": {
-					"Listen": {
-						"Port": 19204,
-						"Lan1": {
-							"Ip": "127.0.0.1",
-							"FromMask": "127.0.0.1/24",
-							"McastGroup": "0.0.0.0",
-							"McastIf": "0.0.0.0"
-						},
-						"Lan2": {
-							"Ip": "0.0.0.0",
-							"FromMask": "127.0.0.1/24",
-							"McastGroup": "0.0.0.0",
-							"McastIf": "0.0.0.0"
-						}
+					"ListenPort": 15100,
+					"SendingPort": 19204,
+					"If1": {
+						"Ip": "10.21.94.1",
+						"IpTo": "10.90.80.1",
+						"FromMask": "127.0.0.1/24",
+						"McastGroup": "225.12.101.1"
 					},
-					"SendTo": {
-						"Port": 15100,
-						"Lan1": {
-							"Ip": "0.0.0.0",
-							"FromMask": "0.0.0.0/0",
-							"McastGroup": "225.12.101.1",
-							"McastIf": "127.0.0.1"
-						},
-						"Lan2": {
-							"Ip": "0.0.0.0",
-							"FromMask": "0.0.0.0/0",
-							"McastGroup": "225.212.101.1",
-							"McastIf": "127.0.0.1"
-						}
+					"If2": {
+						"Ip": "10.21.94.2",
+						"IpTo": "10.91.80.1",
+						"FromMask": "127.0.0.1/24",
+						"McastGroup": "225.212.101.1"
 					}
 				},
 				"SactaProtocol": {
@@ -234,11 +194,15 @@
 					}
 				},
 				"Sectorization": {
-					"Sectors": [ 1, 2, 3, 4 ],
-					"Positions": [ 1, 2, 3 ],
-					"Virtuals": [ 5, 6 ],
-					"SectorsMap": "1:10,2:11,3:12,4:13",
-					"PositionsMap": "2:12,3:13"
+					"Sectors": [
+						10
+					],
+					"Positions": [
+						10
+					],
+					"Virtuals": [],
+					"SectorsMap": "",
+					"PositionsMap": ""
 				}
 			}
 		]
