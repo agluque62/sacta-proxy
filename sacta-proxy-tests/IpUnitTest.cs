@@ -22,12 +22,14 @@ namespace sacta_proxy_tests
         [TestMethod]
         public void IpMaskingTest()
         {
-            var ip1 = "10.75.12.121";
-            var ip2 = "10.75.130.121";
-            var mask1 = "10.75.128.0/20";
-            var mask2 = "10.75.254.0/23";
+            var ip1 = "10.20.90.1";
+            var ip2 = "10.20.91.1";
+            var mask1 = "10.20.90.0/25";
+            var mask2 = "10.20.91.0/25";
             var res1 = IpHelper.IsInSubnet(mask1, ip1);
             var res2 = IpHelper.IsInSubnet(mask1, ip2);
+            var res3 = IpHelper.IsInSubnet(mask2, ip1);
+            var res4 = IpHelper.IsInSubnet(mask2, ip2);
         }
         [TestMethod]
         public void TestingMcastSendingAndReceive()
