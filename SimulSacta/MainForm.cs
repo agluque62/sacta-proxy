@@ -20,7 +20,7 @@ namespace SimulSACTA
         /// </summary>
         static Logger _Logger = LogManager.GetCurrentClassLogger();
         static MainForm _This;
-        Sacta _Sacta;
+        SimulSacta _Sacta;
         /// <summary>
         /// 
         /// </summary>
@@ -30,8 +30,10 @@ namespace SimulSACTA
             LoadPresect();
 
             _This = this;
-
-            _Sacta = new Sacta();
+            var stts = Properties.Settings.Default;
+            lan1Info.Text = $"{stts.SactaIpA}:{stts.ListenPortA} <= {stts.SactaMcastA}, {stts.SactaIpA}:{stts.ListenPortA} => {stts.ScvIpA}:{stts.ScvPortA}";
+            lan2Info.Text = $"{stts.SactaIpB}:{stts.ListenPortB} <= {stts.SactaMcastB}, {stts.SactaIpB}:{stts.ListenPortB} => {stts.ScvIpB}:{stts.ScvPortB}";
+            _Sacta = new SimulSacta();
 
             //Settings stts = Settings.Default;
             //_Sacta.SectorUcs = stts.LastSectorization.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -84,8 +86,8 @@ namespace SimulSACTA
                 return;
             }
 
-            Settings.Default.LastSectorization = _SectorsTB.Text;
-            Settings.Default.Save();
+            //Settings.Default.LastSectorization = _SectorsTB.Text;
+            //Settings.Default.Save();
 
             _Sacta.RunSectorization(sectorUcs);
             _Sacta.SectorUcs = sectorUcs;
