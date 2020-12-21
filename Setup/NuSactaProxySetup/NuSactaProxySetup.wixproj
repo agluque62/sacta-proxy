@@ -17,8 +17,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <WixVariables>SourcePath=$(SolutionDir)sacta-proxy\webclient</WixVariables>
-    <DefineConstants>SourcePath=$(SolutionDir)sacta-proxy\webclient</DefineConstants>
+    <WixVariables>SourcePath=$(SolutionDir)sacta-proxy\webclient\</WixVariables>
+    <DefineConstants>SourcePath=$(SolutionDir)sacta-proxy\webclient\</DefineConstants>
     <Cultures>es-ES</Cultures>
   </PropertyGroup>
   <ItemGroup>
