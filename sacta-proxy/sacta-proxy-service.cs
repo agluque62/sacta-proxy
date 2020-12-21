@@ -121,8 +121,8 @@ namespace sacta_proxy
             {
                 PS.History = new History(cfg.General.HistoryMaxDays, cfg.General.HistoryMaxItems);
                 Managers.Clear();
-                cfg.Psi.Sectorization.Positions.Clear();
-                cfg.Psi.Sectorization.Sectors.Clear();
+                cfg.Psi.Sectorization.Positions = "";
+                cfg.Psi.Sectorization.Sectors = "";
 
                 var manager = new PsiManager(cfg.ProtocolVersion, cfg.Psi);
                 manager.EventActivity += OnPsiEventActivity;
@@ -146,19 +146,23 @@ namespace sacta_proxy
                     var positionsMap = dep.Sectorization.PositionsMap.Split(',')
                         .Where(i => Configuration.MapOfSectorsEntryValid(i))
                         .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
-                    var virtuals = dep.Sectorization.Virtuals
-                        .Select(v => sectorsMap.Keys.Contains(v) ? sectorsMap[v] : v)
-                        .ToList();
-                    var reals = dep.Sectorization.Sectors
-                        .Select(r => sectorsMap.Keys.Contains(r) ? sectorsMap[r] : r)
-                        .ToList();
-                    var positions = dep.Sectorization.Positions
-                        .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p] : p)
-                        .ToList();
-                    
-                    cfg.Psi.Sectorization.Positions.AddRange(positions);
-                    cfg.Psi.Sectorization.Virtuals.AddRange(virtuals);
-                    cfg.Psi.Sectorization.Sectors.AddRange(reals);
+                    var virtuals = Configuration.ListString2String(
+                            dep.Sectorization.VirtualsList()
+                                .Select(v => sectorsMap.Keys.Contains(v) ? sectorsMap[v].ToString() : v.ToString())
+                                .ToList());
+                    var reals = dep.Sectorization.SectorsList()
+                        .Select(r => sectorsMap.Keys.Contains(r) ? sectorsMap[r].ToString() : r.ToString())
+                        .ToList().Aggregate((i, j) => i + "," + j.ToString());
+                    var positions = dep.Sectorization.PositionsList()
+                        .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p].ToString() : p.ToString())
+                        .ToList().Aggregate((i, j) => i + "," + j.ToString());
+
+                    //cfg.Psi.Sectorization.Positions.AddRange(positions);
+                    cfg.Psi.Sectorization.Positions = Configuration.AgreggateString(cfg.Psi.Sectorization.Positions,positions);
+                    //cfg.Psi.Sectorization.Virtuals.AddRange(virtuals);
+                    cfg.Psi.Sectorization.Virtuals = Configuration.AgreggateString(cfg.Psi.Sectorization.Virtuals, virtuals);
+                    //cfg.Psi.Sectorization.Sectors.AddRange(reals);
+                    cfg.Psi.Sectorization.Sectors = Configuration.AgreggateString(cfg.Psi.Sectorization.Sectors, reals);
 
                     Managers.Add(new DependencyControl(dep.Id)
                     {
@@ -173,9 +177,9 @@ namespace sacta_proxy
                 SectorizationPersistence.Sanitize(ids);
 
                 /** Chequear que no haya sectores o posiciones repetidas */
-                var duplicatedSec = cfg.Psi.Sectorization.Sectors.GroupBy(s => s)
+                var duplicatedSec = cfg.Psi.Sectorization.SectorsList().GroupBy(s => s)
                     .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
-                var duplicatedPos = cfg.Psi.Sectorization.Positions.GroupBy(s => s)
+                var duplicatedPos = cfg.Psi.Sectorization.PositionsList().GroupBy(s => s)
                     .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
                 TestDuplicated(duplicatedPos, duplicatedSec, () =>
                 {

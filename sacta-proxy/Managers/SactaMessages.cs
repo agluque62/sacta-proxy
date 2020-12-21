@@ -211,7 +211,7 @@ namespace sacta_proxy.Managers
 			{
 				DomainOrg = (byte)cfg.SactaProtocol.Sacta.Domain,
 				CenterOrg = (byte)cfg.SactaProtocol.Sacta.Center,
-				UserOrg =  type== MsgType.Init || type== MsgType.Presence ? (ushort)cfg.SactaProtocol.Sacta.Spvs[0] : (ushort)cfg.SactaProtocol.Sacta.Psis[0],
+				UserOrg =  type== MsgType.Init || type== MsgType.Presence ? (ushort)cfg.SactaProtocol.Sacta.SpvsList()[0] : (ushort)cfg.SactaProtocol.Sacta.PsisList()[0],
 				DomainDst = (byte)cfg.SactaProtocol.Scv.Domain,
 				CenterDst = (byte)cfg.SactaProtocol.Scv.Center,
 				UserDst = (ushort)cfg.SactaProtocol.Scv.Scv
