@@ -14,6 +14,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Setup", "Setup", "{5D4923F4-C2F9-468B-8CFB-6DDF25440112}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "NuSactaProxySetup", "Setup\NuSactaProxySetup\NuSactaProxySetup.wixproj", "{8B77D474-38AD-4A47-8E6B-74F18CF7F750}"
+	ProjectSection(ProjectDependencies) = postProject
+		{850B95CF-B8D0-4565-A6EA-C37D869A5266} = {850B95CF-B8D0-4565-A6EA-C37D869A5266}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

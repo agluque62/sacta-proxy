@@ -124,7 +124,7 @@ namespace sacta_proxy
                 cfg.Psi.Sectorization.Positions.Clear();
                 cfg.Psi.Sectorization.Sectors.Clear();
 
-                var manager = new PsiManager();
+                var manager = new PsiManager(cfg.ProtocolVersion, cfg.Psi);
                 manager.EventActivity += OnPsiEventActivity;
                 manager.EventSectRequest += OnPsiEventSectorizationAsk;
                 Managers.Add(new DependencyControl(cfg.Psi.Id)
@@ -135,7 +135,7 @@ namespace sacta_proxy
                 }); 
                 cfg.Dependencies.ForEach(dep =>
                 {
-                    var dependency = new ScvManager();
+                    var dependency = new ScvManager(cfg.ProtocolVersion, dep);
                     dependency.EventActivity += OnScvEventActivity;
                     dependency.EventSectorization += OnScvEventSectorization;
 
@@ -180,20 +180,11 @@ namespace sacta_proxy
                 TestDuplicated(duplicatedPos, duplicatedSec, () =>
                 {
                     Logger.Info<SactaProxy>($"Arrancando Servicio. ProtocolVersion => {cfg.ProtocolVersion}, InCluster => {cfg.InCluster}");
-                    // Solo arranca el programa cuando no hay duplicados.
+                    // Solo arrancan los gestores cuando no hay duplicados.
                     Managers.ForEach(dependency =>
                     {
-                        dependency.Manager.Start(cfg.ProtocolVersion, dependency.Cfg);
+                        dependency.Manager.Start();
                     });
-                    webCallbacks.Add("/config", OnWebRequestConfig);
-                    webCallbacks.Add("/status", OnWebRequestState);
-                    webCallbacks.Add("/version", OnWebRequestVersion);
-                    webCallbacks.Add("/history", OnWebRequestHistory);
-#if DEBUG
-                    webCallbacks.Add("/testing/*", OnWebRequestTesting);
-#endif
-                    SactaProxyWebApp?.Start(cfg.General.WebPort, cfg.General.WebActivityMinTimeout, webCallbacks);
-                    Cfg = cfg;
 #if DEBUG1
                     DepManager.Where(d => d.Key == "TWR").First().Value.MapOfSectors = new SectMap()
                     {
@@ -216,6 +207,15 @@ namespace sacta_proxy
                     PS.History.Add(HistoryItems.ServiceStarted);
                     Logger.Info<SactaProxy>("Servicio Arrancado");
                 });
+                webCallbacks.Add("/config", OnWebRequestConfig);
+                webCallbacks.Add("/status", OnWebRequestState);
+                webCallbacks.Add("/version", OnWebRequestVersion);
+                webCallbacks.Add("/history", OnWebRequestHistory);
+#if DEBUG
+                    webCallbacks.Add("/testing/*", OnWebRequestTesting);
+#endif
+                SactaProxyWebApp?.Start(cfg.General.WebPort, cfg.General.WebActivityMinTimeout, webCallbacks);
+                Cfg = cfg;
             }));
         }
         protected void StopService() 

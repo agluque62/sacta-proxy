@@ -21,14 +21,17 @@ namespace sacta_proxy.Managers
         #endregion Events
 
         #region Publics
-        public override void Start(int ProtocolVersion, Configuration.DependecyConfig cfg)
+        public PsiManager(int ProtocolVersion, Configuration.DependecyConfig cfg)
+        {
+            Cfg = cfg;
+            Version = ProtocolVersion;
+        }
+        public override void Start()
         {
             Logger.Info<PsiManager>($"Starting PsiManager...");
             try
             {
                 Locker = new object();
-                Cfg = cfg;
-                Version = ProtocolVersion;
                 TxEnabled = false;
                 ScvActivity = false;
                 Sequence = 0;
