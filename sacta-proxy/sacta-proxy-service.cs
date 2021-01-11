@@ -326,7 +326,7 @@ namespace sacta_proxy
             if (context.Request.HttpMethod == "GET")
             {
                 context.Response.StatusCode = 200;
-                sb.Append(JsonHelper.ToString(PS.History.Get));
+                sb.Append(JsonHelper.ToString(new { data = PS.History.Get }));
             }
             else
             {

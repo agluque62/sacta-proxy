@@ -4,10 +4,10 @@
         <section id="_tabs">
             <ul class="nav nav-tabs">
                 <li ng-class="{'active': ctrl.pagina==0}">
-                    <a href="" ng-click="ctrl.pagina=0" translate>Estado Global</a>
+                    <a href="" ng-click="ctrl.SelectPage(0)" translate>Estado Global</a>
                 </li>
                 <li ng-class="{'active': ctrl.pagina==1}">
-                    <a href="" data-ng-click="ctrl.pagina=1" translate>Historico</a>
+                    <a href="" ng-click="ctrl.SelectPage(1)" translate>Historico</a>
                 </li>
             </ul>
         </section>
@@ -36,7 +36,7 @@
                     <div class="col-md-5">
                         <label for="sdep">Dependencias</label>
                         <select id="sdep" class="form-control" ng-model="ctrl.seldepindex" ng-change="ctrl.changedep()"
-                            ignore-dirty>
+                                ignore-dirty>
                             <option ng-repeat="dep in ctrl.deps()" value="{{$index}}">{{dep.id}}</option>
                         </select>
                     </div>
@@ -63,9 +63,11 @@
                                 <td>{{ctrl.isactive(ctrl.seldep().status.act.global).txt}}</td>
                                 <td colspan="2">
                                     <button style="width: 100%;" class="btn btn-default" data-toggle="collapse"
-                                        data-target="#lan1-data">En Lan1</button>
+                                            data-target="#lan1-data">
+                                        En Lan1
+                                    </button>
                                     <div style="width: 100%;" id="lan1-data" class="collapse collapsable-group"
-                                        ng-class="ctrl.isactive(ctrl.seldep().status.act.lan1.ActivityOnLan1).css">
+                                         ng-class="ctrl.isactive(ctrl.seldep().status.act.lan1.ActivityOnLan1).css">
                                         <div class="row">
                                             <div class="col-md-4"><label>Recepcion</label> </div>
                                             <div class="col-md-8">{{ctrl.isactive(ctrl.seldep().status.act.lan1.ActivityOnLan1).txt}}</div>
@@ -82,9 +84,11 @@
                                 </td>
                                 <td colspan="2">
                                     <button style="width: 100%;" class="btn btn-default" data-toggle="collapse"
-                                        data-target="#lan2-data">En Lan2</button>
+                                            data-target="#lan2-data">
+                                        En Lan2
+                                    </button>
                                     <div style="width: 100%;" id="lan2-data" class="collapse collapsable-group"
-                                        ng-class="ctrl.isactive(ctrl.seldep().status.act.lan2.ActivityOnLan2).css">
+                                         ng-class="ctrl.isactive(ctrl.seldep().status.act.lan2.ActivityOnLan2).css">
                                         <div class="row">
                                             <div class="col-md-4"><label>Recepcion</label></div>
                                             <div class="col-md-8">{{ctrl.isactive(ctrl.seldep().status.act.lan2.ActivityOnLan2).txt}}</div>
@@ -104,24 +108,31 @@
                             <tr class="bg-warning text-warning">
                                 <td colspan="6">
                                     <button style="width: 100%;" class="btn btn-default" data-toggle="collapse"
-                                        data-target="#sect-data">Actividad SACTA</button>
+                                            data-target="#sect-data">
+                                        Actividad SACTA
+                                    </button>
                                     <div style="width: 100%;" id="sect-data" class="collapse collapsable-group in">
                                         <div class=row>
-                                            <div class="col-md-4"><label>Ultima Presencia Enviada</label>
+                                            <div class="col-md-4">
+                                                <label>Ultima Presencia Enviada</label>
                                             </div>
-                                            <div class="col-md-8">{{ctrl.datestr(ctrl.seldep().status.sacta_protocol.LastPresenceSended).str}}
+                                            <div class="col-md-8">
+                                                {{ctrl.datestr(ctrl.seldep().status.sacta_protocol.LastPresenceSended).str}}
                                             </div>
                                         </div>
                                         <div class=row>
-                                            <div class="col-md-4"><label>Ultima Sectorizacion Recibida</label>
+                                            <div class="col-md-4">
+                                                <label>Ultima Sectorizacion Recibida</label>
                                             </div>
-                                            <div class="col-md-8">{{ctrl.datestr(ctrl.seldep().sect.LastChange).str}}
+                                            <div class="col-md-8">
+                                                {{ctrl.datestr(ctrl.seldep().sect.LastChange).str}}
                                             </div>
                                         </div>
                                         <div class=row>
                                             <div class="col-md-4">
                                             </div>
-                                            <div class="col-md-8">{{ctrl.sect(ctrl.seldep().sect.Sectorization).str}}
+                                            <div class="col-md-8">
+                                                {{ctrl.sect(ctrl.seldep().sect.Sectorization).str}}
                                             </div>
                                         </div>
                                     </div>
@@ -131,12 +142,26 @@
                     </div>
                 </div>
             </div>
+            <div id="His" ng-show="ctrl.pagina==1">
+                <div class="row">
+                    <div class="col-md-12 historic">
+                        <table id="history" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Incidencia</th>
+                                    <th>Usuario</th>
+                                    <th>Dependencia</th>
+                                    <th>Estado</th>
+                                    <th>Mapa</th>
+                                    <th>Causa</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="row"></div>
+            </div>
+        </section>
     </div>
-
-    <div id="His" ng-show="ctrl.pagina==1">
-        <h1><strong translate>Historico</strong></h1>
-    </div>
-
-    </section>
-</div>
 </div>
