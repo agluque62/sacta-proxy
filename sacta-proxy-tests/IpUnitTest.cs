@@ -61,5 +61,20 @@ namespace sacta_proxy_tests
         {
             IpHelper.EthIfDelIpv4("10.12.60.35", "10.12.62.35");
         }
+        [TestMethod]
+        public void TestingForVirtualIp()
+        {
+            var EmptyIp = "";
+            var BadIp = "10b.no es una ip";
+            var LoopbackIp = "127.0.0.1";
+            var LocalIp = "10.12.60.34";
+            var ExternIp = "10.168.168.1";
+
+            Assert.IsFalse(IpHelper.IsLocalIpV4Address(EmptyIp));
+            Assert.IsFalse(IpHelper.IsLocalIpV4Address(BadIp));
+            Assert.IsTrue(IpHelper.IsLocalIpV4Address(LoopbackIp));
+            Assert.IsTrue(IpHelper.IsLocalIpV4Address(LocalIp));
+            Assert.IsFalse(IpHelper.IsLocalIpV4Address(ExternIp));
+        }
     }
 }
