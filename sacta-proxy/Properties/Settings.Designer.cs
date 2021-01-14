@@ -40,5 +40,14 @@ namespace sacta_proxy.Properties {
                 return ((bool)(this["InCluster"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int DbConnTimeout {
+            get {
+                return ((int)(this["DbConnTimeout"]));
+            }
+        }
     }
 }
