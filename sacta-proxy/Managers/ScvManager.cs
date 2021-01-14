@@ -24,11 +24,12 @@ namespace sacta_proxy.Managers
         #endregion Events
 
         #region Public
-        public ScvManager(int Protocolversion, Configuration.DependecyConfig cfg)
+        public ScvManager(int Protocolversion, Configuration.DependecyConfig cfg, Func<History> hist)
         {
             Id = cfg.Id;
             Cfg = cfg;
             Version = Protocolversion;
+            History = hist;
         }
         public override void Start()
         {
@@ -99,7 +100,7 @@ namespace sacta_proxy.Managers
             {
                 Logger.Exception<ScvManager>(x, $"On {Cfg.Id}");
                 Dispose();
-                PS.SignalFatal<ScvManager>($"Exception on Starting {x}");
+                PS.SignalFatal<ScvManager>($"Exception on Starting {x}", History());
             }
         }
         public override void Stop()
@@ -529,6 +530,7 @@ namespace sacta_proxy.Managers
         Dictionary<ushort, PsiOrScvInfo> SactaSPVUsers { get; set; }
         SactaState GlobalState { get; set; }
         DateTime WhenSectorAsked { get; set; }
+        Func<History> History { get; set; }
 
         #endregion Datos
 
