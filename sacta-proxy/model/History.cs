@@ -14,6 +14,7 @@ namespace sacta_proxy.model
         ServiceStarted = 1,                     // USER = "", DEP = "", STATE = "", MAP="", CAUSE=""
         ServiceEnded = 2,                       // USER = "", DEP = "", STATE = "", MAP="", CAUSE=""
         ServiceFatalError = 3,                  // USER = "", DEP = "", STATE = "", MAP="", CAUSE="cause"
+        ServiceInMode = 4,                      // USER = "", DEP = "", STATE = "Simple/Master/Standby", MAP="", CAUSE="cause"
 
         UserLogin = 10,                         // USER = "user", DEP = "", STATE = "", MAP="", CAUSE=""
         UserErrorAccess = 11,                   // USER = "user", DEP = "", STATE = "", MAP="", CAUSE="error"
