@@ -43,9 +43,21 @@
 		[] Conexion de la base de datos.
 [x] Controlar activación / desactivación en los modos PPAL/RSVA...
 [] Instalador del servicio.
-	[] Incluir las opciones InCluster e HistServer...
+	[] Incluir Opciones de Instalacion
+		[] Modo CD30/Ulises.
+		[] Modo Simple/CLUSTER.
+		[] IP para la conexión a Base de datos (en caso de CLUSTER debe ser virtual)
+		[] Temporizacion para el acceso de la base de datos.
 	[] Incluir las DLL de los paquetes...
+		[x] MySql
 [] Conexion con Base de Datos.
-	[x] Usuarios.
-	[] Test de Configuracion de Sectores con datos de Base de Datos.
+	[] Usuarios.
+		[] Para CD30.
+		[x] Para ULISES.
 	[] Inclusion de Historicos.
+		[] Para CD30.
+		[x] Para ULISES.
+	[] Test de Configuracion de Sectores con datos de Base de Datos.
+		[] Para CD30.
+		[] Para ULISES.
+	[] Supervisión de Presencia de la conexión a la base de datos.

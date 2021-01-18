@@ -158,27 +158,31 @@ namespace sacta_proxy.model
         void WriteToDb(HistoryItem item)
         {
             var settings = Properties.Settings.Default;
-            if (settings.ScvType==0)
+            if (settings.DbConn == 1)
             {
-                // TODO. Acceso a la Base de Datos de CD30.
-            }
-            else
-            {
-                using (var connection = new MySqlConnection($"Server={settings.ScvServerIp};User ID=root;Password=cd40;Database=new_cd40;;Connect Timeout={settings.DbConnTimeout}"))
+                if (settings.ScvType == 0)
                 {
-                    connection.Open();
-
-                    string sqlInsert = string.Format("INSERT INTO historicoincidencias (IdSistema, Scv, IdIncidencia, IdHw, TipoHw, FechaHora, Usuario, Descripcion) " +
-                                                     "VALUES (\"{0}\",{1},{2},\"{3}\",{4},\"{5}\",\"{6}\",\"{7}\")",
-                                                     "departamento", 0, 50, "ProxySacta", 4,
-                                                     String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.Date),
-                                                     item.User,
-                                                     item.ToString());
-                    using (var command = new MySqlCommand(sqlInsert, connection))
+                    // TODO. Acceso a la Base de Datos de CD30.
+                }
+                else
+                {
+                    using (var connection = new MySqlConnection($"Server={settings.ScvServerIp};User ID=root;Password=cd40;Database=new_cd40;;Connect Timeout={settings.DbConnTimeout}"))
                     {
-                        command.ExecuteNonQuery();
+                        connection.Open();
+
+                        string sqlInsert = string.Format("INSERT INTO historicoincidencias (IdSistema, Scv, IdIncidencia, IdHw, TipoHw, FechaHora, Usuario, Descripcion) " +
+                                                         "VALUES (\"{0}\",{1},{2},\"{3}\",{4},\"{5}\",\"{6}\",\"{7}\")",
+                                                         "departamento", 0, 50, "ProxySacta", 4,
+                                                         String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.Date),
+                                                         item.User,
+                                                         item.ToString());
+                        using (var command = new MySqlCommand(sqlInsert, connection))
+                        {
+                            command.ExecuteNonQuery();
+                        }
                     }
                 }
+
             }
         }
 
