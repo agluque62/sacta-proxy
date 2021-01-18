@@ -85,8 +85,620 @@
             <Component Id="cmp8A864E85441672E90C2C8BDADC39E1BC" Directory="dir07A78784C197C7FF694D15D7F2C44106" Guid="*">
                 <File Id="filF115D11B6365B5B770ECEB57DC70BDA7" KeyPath="yes" Source="$(var.SourcePath)\languages\fr_FR.json" />
             </Component>
-            <Component Id="cmp4CBB3A7695906C55E3DB9934A8EAEC5F" Directory="dir5A42F052FBD25B029CA374E04892090A" Guid="*">
-                <File Id="fil2DCFDE9F90D8ADBE87873344EC90BD75" KeyPath="yes" Source="$(var.SourcePath)\scripts\alertify.min.js" />
+            <Component Id="cmp0B43829A4406C5203BA80959E01CB386" Directory="dirEE45A05CC6A05B7AB8CBCF683333D77B" Guid="*">
+                <File Id="filA4EE6CB089EFC48F9CF4C6EAB89704EF" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\alertify.css" />
+            </Component>
+            <Component Id="cmp70765F7DFF12E713CC838EFFA0258D7F" Directory="dirEE45A05CC6A05B7AB8CBCF683333D77B" Guid="*">
+                <File Id="filCE20D0D381E521ACFAE8C1209ED68A11" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\alertify.min.css" />
+            </Component>
+            <Component Id="cmp328A1FC14B594B4027B409140707F009" Directory="dirEE45A05CC6A05B7AB8CBCF683333D77B" Guid="*">
+                <File Id="fil5949DED65484AF6CB1D9C78192E7FBEB" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\alertify.min.js" />
+            </Component>
+            <Component Id="cmp9951E6C06B0F051F69FAE1813562FC2B" Directory="dirEE45A05CC6A05B7AB8CBCF683333D77B" Guid="*">
+                <File Id="fil2736E172B7182C0FB346415EE771FD13" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\alertify.rtl.css" />
+            </Component>
+            <Component Id="cmp9FD209BB5B57BE5746D06D501C6FCE34" Directory="dirEE45A05CC6A05B7AB8CBCF683333D77B" Guid="*">
+                <File Id="fil10BDF75807C3027C5EBBF78314C4BC3E" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\alertify.rtl.min.css" />
+            </Component>
+            <Component Id="cmpFAF60A15AEDC40B7060D96D53FFD25DE" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="fil2B96DC2713252323EF11C1BF44E9E8D2" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\bootstrap.css" />
+            </Component>
+            <Component Id="cmpED00331BA7DA4A69EEA69E3320797B95" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="filFBCA25B385E634BB6AD2C48CD3DEC478" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\bootstrap.min.css" />
+            </Component>
+            <Component Id="cmp86B45BAFD7C14FD7B995D629F0C1D99E" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="fil4E6A4D5060BE4D0E103F202802DF1983" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\bootstrap.rtl.css" />
+            </Component>
+            <Component Id="cmpBBF7752E16747C2829DF254ADF1564CF" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="filF378D5B96011DFCFC373797A686FFCF0" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\bootstrap.rtl.min.css" />
+            </Component>
+            <Component Id="cmp074C295FDA68B777A987DEF416A8710A" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="fil152CFDB9FE063E85A45B605DA6307AA0" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\default.css" />
+            </Component>
+            <Component Id="cmpF2D04F7AE2E7167BF44E87BBE0BF23F3" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="filB0B66504643C623A3A05695C7D13F2DB" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\default.min.css" />
+            </Component>
+            <Component Id="cmp90732511880E0E97CE9D8CB32FC97117" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="filABCA81F7880F4CFFDB35B0F4FDA86BD1" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\default.rtl.css" />
+            </Component>
+            <Component Id="cmp508A3D9FB6FABD80BE69AF198D70D87E" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="fil5CCB286E2317434F7935BF919618D581" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\default.rtl.min.css" />
+            </Component>
+            <Component Id="cmp1842BD5518FCB746B53AB75960C0BD49" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="fil52FB36B5CF1CA3D9CF16DE2621CA5CA8" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\semantic.css" />
+            </Component>
+            <Component Id="cmp5B3B6F226AD0DE0F36741267FF28463E" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="filC215A0E1B7E342CAF2C21AAFF015FA85" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\semantic.min.css" />
+            </Component>
+            <Component Id="cmpC3F7ECD52C934F3FC06489848CF73504" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="filCD18DCF719440D5710B02E6986C43E8A" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\semantic.rtl.css" />
+            </Component>
+            <Component Id="cmp9BECABF5B198F92671B66793CFB697E8" Directory="dir430F6706EFC206CF1A4279672D33A4EA" Guid="*">
+                <File Id="filB7E4F0AB7529C0C98A16B7A3378A7D29" KeyPath="yes" Source="$(var.SourcePath)\modules\alertify\themes\semantic.rtl.min.css" />
+            </Component>
+            <Component Id="cmpAA14B6EB062923850866F4B89E41EDA6" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil1A10A3CE8B310286F4D166A1A620F258" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular-cookies.min.js" />
+            </Component>
+            <Component Id="cmp8102848687D9B741BC54DD3CCCC34C92" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil99435903E7EBD4D42034CB40B2AEB694" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular-locale_es.js" />
+            </Component>
+            <Component Id="cmpF19301E30ED495EBD766C435F3B819A8" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="filBFAADE3A3AF3EB50188FDF030285182B" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular-mocks.js" />
+            </Component>
+            <Component Id="cmp928849F77E358A8888112DB1ED1C69FA" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil080B683EB886D4A21FBFE19D735564EC" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular-route.js" />
+            </Component>
+            <Component Id="cmpAF1D70A9CCEBEA6ADECD3CDAFEEC9358" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil80DD008E11ABC96DB66B3A87343C644E" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular-sanitize.js" />
+            </Component>
+            <Component Id="cmp0A8B91000FB9777A27123F75B3A3A09B" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil2AF40D011F0E3538366C0242358E4061" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular-translate-loader-static-files.min.js" />
+            </Component>
+            <Component Id="cmp7B1DBB26D47DB1EA9870CA354EBACD18" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil37D1DBF51895FCF674B5CA601DA81FAE" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular-translate.min.js" />
+            </Component>
+            <Component Id="cmpB97ED5093A885871082497F7B5870A3C" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="filC6E792A69369347BFE70A2267A10773C" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular.js" />
+            </Component>
+            <Component Id="cmp80761A006F51255CD6926BE910048F27" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil96F2C243677CC70371FFF060646A5AA1" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular.min.js" />
+            </Component>
+            <Component Id="cmp7B59E7CD26A5723B10819C2A632CFDCD" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="fil0DE3A74BF128F447E1E3A7ECEDBBC095" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\angular.min.js.map" />
+            </Component>
+            <Component Id="cmpD0BAABCB3B9D676D5F15DAA2A54263DF" Directory="dir8922CCB50C98B054F51B800AD9D9C1D1" Guid="*">
+                <File Id="filA3F86A0430651B39A5EF1B284CB3004F" KeyPath="yes" Source="$(var.SourcePath)\modules\angular\smart-table.min.js.map" />
+            </Component>
+            <Component Id="cmp1EAE6913CB2F329CD9F9545AEA0D77D8" Directory="dir30C36BFE81483D4605F25C0DCFB0B6DF" Guid="*">
+                <File Id="fil786F302F95C147505F1A592884412F9C" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\ui-bootstrap-tpls-0.13.4.min.js" />
+            </Component>
+            <Component Id="cmp0E5CAA40D03AFFB7934C31E10529AB66" Directory="dir30C36BFE81483D4605F25C0DCFB0B6DF" Guid="*">
+                <File Id="filE918186C0648968260B36973BCAF8041" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\ui-bootstrap-tpls-1.2.4.min.js" />
+            </Component>
+            <Component Id="cmpEDB83373F3F3006E7E0E427199FD6D4D" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="fil00B1AEDA4250CDC83BABBCFCCE36723A" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap-theme.css" />
+            </Component>
+            <Component Id="cmp12A11C761929E27362E045E32421F9A7" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="fil87C40A85D56D8464EEB907AFC75F5524" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap-theme.css.map" />
+            </Component>
+            <Component Id="cmp3711CC4CFDA6B15E0CCB697AD799EAC6" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="filC87ACE9DC792EBE2E53652509D649036" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap-theme.min.css" />
+            </Component>
+            <Component Id="cmpE419E58F21175DD4B7CB6A7AD9CDF62D" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="fil27F3BA5440FA3944A9F6FF28C017A9AF" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap-theme.min.css.map" />
+            </Component>
+            <Component Id="cmp1761116A84D4F0E5105E3DB2B1334973" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="filDC545D1022A6577D09ADF48BD393BB84" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap.css" />
+            </Component>
+            <Component Id="cmp29E8F5128CF526B4BC40D6B14B9328A9" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="fil470D764DCDAD51DE61C747E1299F6441" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap.css.map" />
+            </Component>
+            <Component Id="cmp49A37907ADAE62957DA2680A0FE342E1" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="fil35A7980994D9C22D41B4167DF5CA4C12" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap.min.css" />
+            </Component>
+            <Component Id="cmp19D966995E1BBB723185D9F9F8E80263" Directory="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Guid="*">
+                <File Id="fil89E4336D8E8F07830281203EFECE06E9" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\css\bootstrap.min.css.map" />
+            </Component>
+            <Component Id="cmpCE14A98FD99B409AC931C46C38FEF434" Directory="dir7D2E6CFA558645BC992773D4FD4DEA51" Guid="*">
+                <File Id="fil0F2B47AFD0472CDDC892877C0B96120C" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\fonts\glyphicons-halflings-regular.eot" />
+            </Component>
+            <Component Id="cmp0C06B6FBCE385ACB2BB914120B4AA5FD" Directory="dir7D2E6CFA558645BC992773D4FD4DEA51" Guid="*">
+                <File Id="filD8CE55CFEB9E853FB6651842CE3A9126" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\fonts\glyphicons-halflings-regular.svg" />
+            </Component>
+            <Component Id="cmp58A3462D0D5FAB5E62508626E79539C9" Directory="dir7D2E6CFA558645BC992773D4FD4DEA51" Guid="*">
+                <File Id="filA912FB5196237A0C5C354A66DCAA115D" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\fonts\glyphicons-halflings-regular.ttf" />
+            </Component>
+            <Component Id="cmp84F3282340D904F57A409641A10F4BCD" Directory="dir7D2E6CFA558645BC992773D4FD4DEA51" Guid="*">
+                <File Id="fil15854BE202A7B09250DB06ABC48DBF3F" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\fonts\glyphicons-halflings-regular.woff" />
+            </Component>
+            <Component Id="cmpEC5657D4B9BABC65A703D48A89F5BF67" Directory="dir7D2E6CFA558645BC992773D4FD4DEA51" Guid="*">
+                <File Id="fil9B5A5D4B5FEDF3CEFC7566A850644F9D" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\fonts\glyphicons-halflings-regular.woff2" />
+            </Component>
+            <Component Id="cmpE9651E84A74827ED2FEC732889846856" Directory="dir39E1481293B536908FD3DC2D4EF93E3D" Guid="*">
+                <File Id="fil1CCB63EA258CD9A454A0E21F0533A6EA" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\js\bootstrap.js" />
+            </Component>
+            <Component Id="cmpFB89C9FD7E415848C8A9A4891FA871B6" Directory="dir39E1481293B536908FD3DC2D4EF93E3D" Guid="*">
+                <File Id="fil1AB566F724D78F5EF169718A18AAE014" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\js\bootstrap.min.js" />
+            </Component>
+            <Component Id="cmpA0F24ABDA164B6FA47A7AD1C5F8F81FB" Directory="dir39E1481293B536908FD3DC2D4EF93E3D" Guid="*">
+                <File Id="filA2114931578BB266BC9846929547FD20" KeyPath="yes" Source="$(var.SourcePath)\modules\bootstrap-3.4.1\js\npm.js" />
+            </Component>
+            <Component Id="cmpBB26AFC56949114857C8BDC7323A0470" Directory="dirE0E84506161349BA7FA400DEF7935928" Guid="*">
+                <File Id="fil5FBDD3E2CF6CFD9DF8BD988F2C5BF933" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\datatables.css" />
+            </Component>
+            <Component Id="cmp78B4571ADD998162685181DAC6D311B5" Directory="dirE0E84506161349BA7FA400DEF7935928" Guid="*">
+                <File Id="filC121467CE37C288D24A8B36A4AA3E209" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\datatables.js" />
+            </Component>
+            <Component Id="cmp4FB6B3158D31D6769F9B0A7767E9DC34" Directory="dirE0E84506161349BA7FA400DEF7935928" Guid="*">
+                <File Id="fil10D1B7FC749E3CD2C01AFE04862D5D86" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\datatables.min.css" />
+            </Component>
+            <Component Id="cmp87B44159F1557BCB7EFEE0EDB1136F9C" Directory="dirE0E84506161349BA7FA400DEF7935928" Guid="*">
+                <File Id="fil7FB71A2F10BA2AE42D6C796047842B9D" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\datatables.min.js" />
+            </Component>
+            <Component Id="cmp821A29C166C4A5C836C380E41DE4C667" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil626F91E460AB42D88ADEF333782B345F" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.bootstrap.css" />
+            </Component>
+            <Component Id="cmp699994300B04B0EFD5AA71375E0AA40F" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil5BCB1F219902E16292E32A5F4070FC1C" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.bootstrap.min.css" />
+            </Component>
+            <Component Id="cmp7321B6CA916966F36FA2CFE69EE47F78" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil24EB00F85D400F0A8055FDA0B4FAEA08" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.bootstrap4.css" />
+            </Component>
+            <Component Id="cmp56BF4A0FDA74ADA0BD0C08E803E5747E" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil7577E15EB468C12F2CFD22693B358A5B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.bootstrap4.min.css" />
+            </Component>
+            <Component Id="cmpFF70161B4081510AC310B635EB556686" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="filA7AEA75E34BD3F9D38E17DBAD3E0D003" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.dataTables.css" />
+            </Component>
+            <Component Id="cmp7E73A2521A2DCBB77D5A2745BAFEC19B" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil36BF4199058895737C9839AB782CB087" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.dataTables.min.css" />
+            </Component>
+            <Component Id="cmp56AA1BDE86FBEEE0E44612C8CA2F6094" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="filFD4FBF8EBC60A900DD0F84B98A9ED4FA" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.foundation.css" />
+            </Component>
+            <Component Id="cmpA8FD8C38F5BA49F9FDFE3F90541E415D" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil6A3A04B128C399662227E0C57413346D" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.foundation.min.css" />
+            </Component>
+            <Component Id="cmp478F1E0A237DEECFD865F101EE4033D6" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil3ACFD1E5D710E2DD04A55E6E203AFBED" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.jqueryui.css" />
+            </Component>
+            <Component Id="cmp4782DF137F5B429249B51BC2B661DAC5" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="filD8E38FD1384BCFB8E4338FE3C4E492D4" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.jqueryui.min.css" />
+            </Component>
+            <Component Id="cmp23AE6F0B8415D85C1D07147797D2C97F" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="filE0A5AC79496F56099E638803E1F9E5C2" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.semanticui.css" />
+            </Component>
+            <Component Id="cmpA707084243345BC091C234E1624F00DE" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil87D9AC7643723BC5F5A4BE6591D33DF3" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\buttons.semanticui.min.css" />
+            </Component>
+            <Component Id="cmp628D3D28D2C33FB87C7EEFA0336F3B40" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil4BAB1A58EFAF4CAF61A53BFCECF7582B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\common.scss" />
+            </Component>
+            <Component Id="cmp8D786380E826FA275F31900B8B994484" Directory="dirC053232B93004A9B53C24F0CBB78FBED" Guid="*">
+                <File Id="fil8F709E83BEB9560012D2269046C2D85D" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\css\mixins.scss" />
+            </Component>
+            <Component Id="cmp442F4047386E13DC7D5BBF79F748A0F8" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="filD7A206A93B3E8B37094DC205D53C4832" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.bootstrap.js" />
+            </Component>
+            <Component Id="cmp8873C7879DC6A0A6B9E3824353881E27" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="filC592BD125D8CD986626FE2F800D2E2F4" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.bootstrap.min.js" />
+            </Component>
+            <Component Id="cmpAC791F47ACBDBA8F190608F7CEC5B2BC" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil8275017B24B3A2BF03BEB479429AF85D" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.bootstrap4.js" />
+            </Component>
+            <Component Id="cmpF1CBA3FC18A8436562A0AA40B4AF6854" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil2C5D2DED6B87418CBB3900F75BB96E03" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.bootstrap4.min.js" />
+            </Component>
+            <Component Id="cmp583ACA0CBF778315B1D5CD6C5C6A6E0D" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil3BA33D291C50601F1873D19CD10253AA" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.colVis.js" />
+            </Component>
+            <Component Id="cmp815E081CA12F20954CE790E5688C342B" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="filF47317193F7F0B81AB34FAFAAB8CA1DB" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.colVis.min.js" />
+            </Component>
+            <Component Id="cmp5F5A0268497DD777F116DC4B5FCE40F6" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil5CEDCE19F5751440ADA4967A07F1BDE2" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.flash.js" />
+            </Component>
+            <Component Id="cmp0A01190340004E713E24A95FD2642600" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil577FE19D886E7F2619DAE00363820D66" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.flash.min.js" />
+            </Component>
+            <Component Id="cmp0C97688F3AB2E257AF0EC56C228E4717" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil67AB27A9D74626C38C0088C1A32E6607" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.foundation.js" />
+            </Component>
+            <Component Id="cmp443508D50E9E8496CDB546D2E99BD0C3" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="filEE3783CDBD33427A48DEF540EE336146" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.foundation.min.js" />
+            </Component>
+            <Component Id="cmp9C9686A53B7C28579461E49DA4431650" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="filD25B198797E9CC7348E7A4F8230C2C09" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.html5.js" />
+            </Component>
+            <Component Id="cmpCF9645BF52A0AB22614D78B58DDDEA29" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil6F76F2AB5C3FDDF100D6496F8149E020" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.html5.min.js" />
+            </Component>
+            <Component Id="cmp938867C5957C832AA0CFDCE6BAE84920" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil0837BB6C71C5FB85DD01AE904C08A124" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.jqueryui.js" />
+            </Component>
+            <Component Id="cmpD4F1F6A8979C434F535548C9B3EAA1C6" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="filD748E961420FFDBF8DA5B93917465C54" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.jqueryui.min.js" />
+            </Component>
+            <Component Id="cmp7E47CDCCD94DF66EC1D269C817EFD060" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="filFDBC18DDD27388C6FD8A3DABF8174AF5" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.print.js" />
+            </Component>
+            <Component Id="cmp5C82BDD638AB03C2E1D894DFBCF8257C" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil2A02825134BC79B6B2459300895E6E7B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.print.min.js" />
+            </Component>
+            <Component Id="cmp8185A6B960BDFE1D59BB9673DBFE7335" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil70E8EF1339387E89627FEB84F77BAF8B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.semanticui.js" />
+            </Component>
+            <Component Id="cmp87A497EC121497A8C27264E6DCEC597F" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil5749B98259C69FDF792E7527157C16E3" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\buttons.semanticui.min.js" />
+            </Component>
+            <Component Id="cmpEA6550FCB24B08AC7E33B1C9734DDA13" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil904647D839EFAEEA35340DB36EA3BA85" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\dataTables.buttons.js" />
+            </Component>
+            <Component Id="cmp09C307EAC6BA363CDA1A77265EAC6AF2" Directory="dirA434A17CDE2DC7BDB08B4BA87FC70594" Guid="*">
+                <File Id="fil026C418453246CEB12A1B23DE367EED3" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\js\dataTables.buttons.min.js" />
+            </Component>
+            <Component Id="cmp942672518B10ED348867D0FA7923C295" Directory="dir430389C13D2A205D7D88E38514615B0A" Guid="*">
+                <File Id="filAF480DB68F4999C8B07C6761AF942D8B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\Buttons-1.6.5\swf\flashExport.swf" />
+            </Component>
+            <Component Id="cmp0495ED242019E18EDB93A0CD68F53D74" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil42107FF6C85DF729B0C75AB607FD52BC" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.bootstrap.css" />
+            </Component>
+            <Component Id="cmpB1C2A81332B8F3351B5BCCA6B1C6BA78" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil53747E249B2FE08071AA3134D53D6633" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.bootstrap.min.css" />
+            </Component>
+            <Component Id="cmp846182D1D8E78262BB4BCE1D4A0DCD52" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil0A0CABFE2661BD0FB6396D7C3FA86246" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.bootstrap4.css" />
+            </Component>
+            <Component Id="cmpA2F03242B0157EF72D08E6E9B06804EC" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil56DBA84E468DDEEC109818B73EC46113" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.bootstrap4.min.css" />
+            </Component>
+            <Component Id="cmpD807FEE7387ADDACB08DB042FC8EFA3C" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="filB0181FB15AE5B782309EBA531526E661" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.foundation.css" />
+            </Component>
+            <Component Id="cmp2B5E80063333F7E31DE56C79B58DED32" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil1065D7035021404CF94715BC5981FC75" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.foundation.min.css" />
+            </Component>
+            <Component Id="cmp3C6CBC7E6F6644A0C7361474D8A74AFD" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil284EDE3CBC8500193C91D83AA10D1F4A" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.jqueryui.css" />
+            </Component>
+            <Component Id="cmp916407A32DCA9828E02824961077EF65" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="filADD6453D67AA3DD3B70102578ACACAF0" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.jqueryui.min.css" />
+            </Component>
+            <Component Id="cmpA817A8D34DDD19FEA4E90D4D979E790B" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil1B1D0F2D24F058A8ED12EE7A0891A0E9" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.semanticui.css" />
+            </Component>
+            <Component Id="cmpAA5171F15CE06B65884A15647C6A549D" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil366BF9B69A34613C8F3243CCC66DB946" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\dataTables.semanticui.min.css" />
+            </Component>
+            <Component Id="cmp3CD0C0C048020D0EE87612F7D6BE9B5E" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil1AD608A65AEBF1182A90F52CAFEEBABC" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\jquery.dataTables.css" />
+            </Component>
+            <Component Id="cmpA209171BFA362C385625515B0A9A8DBE" Directory="dirF55C8E0F83CCD39C19603DC4221A5D1E" Guid="*">
+                <File Id="fil95270151E47D34131F96A206ED938DEA" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\css\jquery.dataTables.min.css" />
+            </Component>
+            <Component Id="cmpB16B9E2D8B14E93FE61D4962A2277BD8" Directory="dirF00562A9A685FEF384040CFDCFAE526A" Guid="*">
+                <File Id="fil714F34B6F405DBCAF97945DC8DA96F78" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\images\sort_asc.png" />
+            </Component>
+            <Component Id="cmp0BD10A44FA3BE23E280977B359F8D5CA" Directory="dirF00562A9A685FEF384040CFDCFAE526A" Guid="*">
+                <File Id="fil951BBCFD5247E7A6C4BC036DE8F84684" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\images\sort_asc_disabled.png" />
+            </Component>
+            <Component Id="cmp798E45CF9624638235A48EAD84EFB25C" Directory="dirF00562A9A685FEF384040CFDCFAE526A" Guid="*">
+                <File Id="fil17C60E803C10E7D755BFE77EB89D53E9" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\images\sort_both.png" />
+            </Component>
+            <Component Id="cmpD122D0BF94315BB78E98C46084F25769" Directory="dirF00562A9A685FEF384040CFDCFAE526A" Guid="*">
+                <File Id="filFC5087C187804D69A2A007492F78560F" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\images\sort_desc.png" />
+            </Component>
+            <Component Id="cmp1CA6F7C8CE8B5B05B2C5FC97CE5C4094" Directory="dirF00562A9A685FEF384040CFDCFAE526A" Guid="*">
+                <File Id="fil1039CF626AF20206857C76E4F6350D57" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\images\sort_desc_disabled.png" />
+            </Component>
+            <Component Id="cmpFC34B5411317E7607576C7C99118797B" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="filAD4FE6C855691F8A3174209845BE7141" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.bootstrap.js" />
+            </Component>
+            <Component Id="cmp7458DE3F93F846CBDC44CED22D747DC7" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil86E3A2B2DDC76AC10781728F6D485AE8" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.bootstrap.min.js" />
+            </Component>
+            <Component Id="cmp2E65665BBFD863DB838B1B3EF1FEF9A9" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil0E840E61881A3BF9F6C95DD5817506D5" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.bootstrap4.js" />
+            </Component>
+            <Component Id="cmp8436D56C4060A248C9EA48971FB49D74" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil6CAB3563A75FB9E47064B58B6D63E899" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.bootstrap4.min.js" />
+            </Component>
+            <Component Id="cmp77DFCB1BFA851F74E249DA610C519F7E" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil09CFDF29B08BF3062F3AE36B163818BC" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.foundation.js" />
+            </Component>
+            <Component Id="cmp1E8C1913B2879D0E185D3253424F1C24" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="filA800C9E609685898C6E2140269F2A68A" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.foundation.min.js" />
+            </Component>
+            <Component Id="cmpDBE8151412A6A0AE55D0C433110176C8" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="filBC932B621493192823BDA5D1A8240415" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.jqueryui.js" />
+            </Component>
+            <Component Id="cmpC757CE52AB6B52C8FA23A21563DFF66F" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil66B79848DACDBC526DA9EA57C02470C2" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.jqueryui.min.js" />
+            </Component>
+            <Component Id="cmp595905AD32DF57016A2FB0E093587F5C" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil5F724639BE0BFA33BF26AC4DC5FD9C2E" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.semanticui.js" />
+            </Component>
+            <Component Id="cmpC38DE9144FC0FF0000AC283F3743C6A8" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil386215207A0CE5C799FFE10C5EB810A7" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\dataTables.semanticui.min.js" />
+            </Component>
+            <Component Id="cmp4BC0AD1DCCF81F4031EB8DDB12508267" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="fil09257ECD7BC7D2A330B8ABCE39A007D7" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\jquery.dataTables.js" />
+            </Component>
+            <Component Id="cmp3C7D02D326B3B8571C4050CF726F0E35" Directory="dir114E43082181C4F5716146DDF93C9518" Guid="*">
+                <File Id="filF762A8E0917D58B28D99670C813E73EE" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\DataTables-1.10.23\js\jquery.dataTables.min.js" />
+            </Component>
+            <Component Id="cmp0171C90EE37C707376BFE203665AB626" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil8C0CD4FF715E21DEB60795F263571ED0" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.bootstrap.css" />
+            </Component>
+            <Component Id="cmp9A982E834C70A8D27AF29E67708572A6" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil3C1EEADAAD341E8CC152B2B79A4A329F" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.bootstrap.min.css" />
+            </Component>
+            <Component Id="cmp250656436CCAA7D259193F9E5B728DEA" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil7E5036650E8DDEC0B0FA117510648F7B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.bootstrap4.css" />
+            </Component>
+            <Component Id="cmpD7C1A6FB8D638552703A077F1A1AFF2E" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="filC189F7820A83DFCA40D7F55A378A08EB" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.bootstrap4.min.css" />
+            </Component>
+            <Component Id="cmpA5B0A789FC0EECCC9D0D74AB614A214B" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil7C73D65F6E585E408C04FC2B20ADAFF6" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.dataTables.css" />
+            </Component>
+            <Component Id="cmp19A3D07EBD83FE8488779FEDC4BF4A1C" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil40415E2189D7F28F4CE158D9184BBADD" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.dataTables.min.css" />
+            </Component>
+            <Component Id="cmpF2688DC2FD373C7AED3BBCA89C162F63" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil63935B4D3E09CE042D3BB07C1843B4E5" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.foundation.css" />
+            </Component>
+            <Component Id="cmp2549C95A156DFB2DE78AB8FB4DFD8BF8" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="filB1C83E2F770F2425BEE428CAFA4510A1" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.foundation.min.css" />
+            </Component>
+            <Component Id="cmpF435F6F5B549D886FBD0A86E693C76D4" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil84966764378DEF26E1D838BCA1ED0B9E" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.jqueryui.css" />
+            </Component>
+            <Component Id="cmpC458A14257BF7E7950A93E7A748B97C5" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil3028AACD441CCBD8EDE0B9A91A26B656" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.jqueryui.min.css" />
+            </Component>
+            <Component Id="cmpF4B82A02B70D579098CDDF2E97ADA51C" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="fil3AB21972AFEE3268426226F121CD0A62" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.semanticui.css" />
+            </Component>
+            <Component Id="cmpB68D2E54CD53F9350982846EA973205A" Directory="dirE899C012B3A41B3D382E7C771A93E37E" Guid="*">
+                <File Id="filF4AF7CACCAE7439B9F586A15A2C5585B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\css\searchBuilder.semanticui.min.css" />
+            </Component>
+            <Component Id="cmp5442BE4058D5ECA707E9EAA7BC767A7B" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil2BA545427B2987C4DF58F87AE7CAD0FD" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\dataTables.searchBuilder.js" />
+            </Component>
+            <Component Id="cmp6FFD1FCA19EBACB76DFA31BDF95CBC07" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="filFCD2011C32EA439A8A26D4B2B93F9C09" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\dataTables.searchBuilder.min.js" />
+            </Component>
+            <Component Id="cmp11B11A605A10186FF6EF56867A9AEAEE" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="filD25C1311EB7CF31F94FB3A54C82DB107" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.bootstrap.js" />
+            </Component>
+            <Component Id="cmpE31DF086F6DD392C470CE883F758BBAD" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil1D385AF1D0AA39A3A7E7304F7584140B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.bootstrap.min.js" />
+            </Component>
+            <Component Id="cmp46AAEEB2440855BEE5953EFDD3447522" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="filF5DF9474F00BE251C19CBA03CF22D2C0" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.bootstrap4.js" />
+            </Component>
+            <Component Id="cmp448E8633CDD00239EBCE5126691EAA7D" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil5F59661554462B3C6E4A794F2D4577DC" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.bootstrap4.min.js" />
+            </Component>
+            <Component Id="cmpCF0F6619DAE932DCE3D31DD2570FD3DF" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil68A5FD81E281FDDFCBC73B082C9CF292" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.dataTables.js" />
+            </Component>
+            <Component Id="cmpF8190BE73BF434515DC552FF48054798" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil44E8FFEA6D0F6CDD623E8C6F191B2A1E" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.dataTables.min.js" />
+            </Component>
+            <Component Id="cmp3D6BC14E5872080C9B369FC5940092A9" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="filC6D065AF0C407FCC3BF1882E35508CD5" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.foundation.js" />
+            </Component>
+            <Component Id="cmp65CDF7BD2D3EEFB22786386372072C47" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil6FD3EF4CCB061861A28325912D27EEBB" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.foundation.min.js" />
+            </Component>
+            <Component Id="cmp19ED9BF92F5FDB6D857D3347DF84414F" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil33BA28B3504662E969C383F87DADF1C3" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.jqueryui.js" />
+            </Component>
+            <Component Id="cmp175F8ABD22A1F7CDCF598F3F9098CF5B" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="filF4911E7FF3F740F5E775D0A79E455031" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.jqueryui.min.js" />
+            </Component>
+            <Component Id="cmp381E34478FE43F813E32FBB7C5F59E1D" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="filAE310CE72316F460AC930C1EFEEEF070" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.semanicui.js" />
+            </Component>
+            <Component Id="cmp981306303D1E17746F968C0232FA4B30" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil63181CA53C54F63893C8E3E4F3D8A262" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.semanticui.js" />
+            </Component>
+            <Component Id="cmpEDEB8E926ACB2D74D54D55C3344C429A" Directory="dir400439526DD3C52A76908B0B59CC7CC4" Guid="*">
+                <File Id="fil1C74376B909574267B9D6C2BB8E0C14D" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchBuilder-1.0.1\js\searchBuilder.semanticui.min.js" />
+            </Component>
+            <Component Id="cmpB4D4BD7FC83D1C789C721C8CD9EA5622" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="fil3F760CE303143199A9C9781BDDF82F14" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.bootstrap.css" />
+            </Component>
+            <Component Id="cmpC138E2C5412E090DA91550DF31F3D0E7" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="filCDE064C9A89D1E49AD0ACFC6B7D0A890" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.bootstrap.min.css" />
+            </Component>
+            <Component Id="cmp5F130244AD021B2F85E39BD54EF73A3C" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="filE86C8FFFFFF809E185FEABA148C1CC59" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.bootstrap4.css" />
+            </Component>
+            <Component Id="cmp15A1A84DE59EC4D3698FF6959F3ADA7F" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="fil6C42D2C44650B590CBD23BC74C7B3171" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.bootstrap4.min.css" />
+            </Component>
+            <Component Id="cmp9379E4432DCCBBC27A820DFAA575A229" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="fil4523BB0EE6F87C4B8694107F56E8931C" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.dataTables.css" />
+            </Component>
+            <Component Id="cmp1A4A41033B39FBE8E5D71EF7EADE448F" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="fil55EB2B51BC856F651A11B795DBD58CE5" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.dataTables.min.css" />
+            </Component>
+            <Component Id="cmp36D509B048A29FB3EB5EF76CEFD83446" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="filA9DE64085581147EC0A7C06E29B960E8" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.foundation.css" />
+            </Component>
+            <Component Id="cmp012B91D49995EF1AC46CCBBF48149B5C" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="filBD872BDE2D416ECA67C08CDD475EB007" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.foundation.min.css" />
+            </Component>
+            <Component Id="cmp02C5116F4B512CADD2B80BDC7B131384" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="fil3762DF59C23815DB4D602C67E8B402C5" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.jqueryui.css" />
+            </Component>
+            <Component Id="cmp91569F235BD76B691FD83B854B1AE7A0" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="fil5568FD8890D1AA79F98A4D5B43A202F8" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.jqueryui.min.css" />
+            </Component>
+            <Component Id="cmp4570C3875C179719A1B0BD79307E7625" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="filB65ABAF74E0565269B391105D24ACF0B" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.semanticui.css" />
+            </Component>
+            <Component Id="cmp0F3867787E9E3A1DC9375BF891ED5FE4" Directory="dirB751F690F66FDC67FB7DA124B91AD9DD" Guid="*">
+                <File Id="filFAF122AF8348945904AFCD18FD82339D" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\css\searchPanes.semanticui.min.css" />
+            </Component>
+            <Component Id="cmp423DE4F865E5128F35EC6EF27003FF6A" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="filE7000B0C9718FA362D3164C5EAC37DD5" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\dataTables.searchPanes.js" />
+            </Component>
+            <Component Id="cmpE86819AC1D09B57596344542F0BC0363" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil493795EA22C04F3C8AE2AF3DDFE6ABBC" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\dataTables.searchPanes.min.js" />
+            </Component>
+            <Component Id="cmp3A61F1245AE5BD534BCEB3EDBE8B7BB1" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil1A1F43FA851C5BA511D364796443F6F0" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.bootstrap.js" />
+            </Component>
+            <Component Id="cmp699871B91B5966C9942D4989FC31319C" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil8A35144ECC5C7DF7BD6D3E025E43AC76" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.bootstrap.min.js" />
+            </Component>
+            <Component Id="cmp122F6E3906E483389C189F4C5E8EF5D1" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil9FB8833C56E0C97E64264702E0E5D32A" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.bootstrap4.js" />
+            </Component>
+            <Component Id="cmpC36BB128C8C6FACBEF8C71071820A90F" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil74B30207B330F1CE67DF41EE0EE02F06" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.bootstrap4.min.js" />
+            </Component>
+            <Component Id="cmp7CD20B452F5E43222274EE1D64952560" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil983FE78021CDE7B168E856EB6FD4F5EE" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.dataTables.js" />
+            </Component>
+            <Component Id="cmpDB96E5C593B7D0051E2A64542BD3E9BB" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="filD9C83218B332B44A37CF31FCA09A2867" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.dataTables.min.js" />
+            </Component>
+            <Component Id="cmpA4C76AC0F4084D0E1C566FB71B661C21" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil33972D1CEEA3280795A7CA101B490997" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.foundation.js" />
+            </Component>
+            <Component Id="cmp7742F17FEB1710F9468EA5B4F6FB1B22" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="filCCF0922C0B569D30FB20E5B47F6BB5AE" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.foundation.min.js" />
+            </Component>
+            <Component Id="cmp50D3E8F7255A21138D07E3AF4DE2C2AE" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil681715E06DEB42A6195AAC6117BEE65A" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.jqueryui.js" />
+            </Component>
+            <Component Id="cmpAFB7B129A836E24124284E4E1DFE263C" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil6CAEB7687B665C8534FE136E65C33752" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.jqueryui.min.js" />
+            </Component>
+            <Component Id="cmpBCC71E9C46FF0E6D95F4D19F5DCE2F22" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="filACA6FBB61E0BB0EDAEA6355943623236" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.semanicui.js" />
+            </Component>
+            <Component Id="cmpC13FE0B8461EA9837E248F7972866784" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil7A1B180F836E40CE93DF6489E3EE2207" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.semanticui.js" />
+            </Component>
+            <Component Id="cmp2671D5100E7CB9115F446B4862CED8C4" Directory="dirC98F28A9448E1F688CDB59B0138E09BA" Guid="*">
+                <File Id="fil3EBCC64E2CAF0D39A07111DE79A1A565" KeyPath="yes" Source="$(var.SourcePath)\modules\DataTables\SearchPanes-1.2.2\js\searchPanes.semanticui.min.js" />
+            </Component>
+            <Component Id="cmpEF9102A9249323478B5CF7CA8EE6273C" Directory="dir5E40BCB96F4626297F64AF1752A89C1F" Guid="*">
+                <File Id="fil4EB1E4B3F463A3A7BF9ED0E136366FB3" KeyPath="yes" Source="$(var.SourcePath)\modules\jquery\jquery-2.1.3.min.js" />
+            </Component>
+            <Component Id="cmpFE5032BE5FFBF86BDAE8D7C70D4CB441" Directory="dir5E40BCB96F4626297F64AF1752A89C1F" Guid="*">
+                <File Id="filD8752634D62DD037BCCD05AC6DC6FB42" KeyPath="yes" Source="$(var.SourcePath)\modules\jquery\jquery-3.5.1.min.js" />
+            </Component>
+            <Component Id="cmpDD8996D4A20B518715C819626BC0C2A1" Directory="dir5E40BCB96F4626297F64AF1752A89C1F" Guid="*">
+                <File Id="fil3F6F860D368F12EAC0A19396C8C81DF6" KeyPath="yes" Source="$(var.SourcePath)\modules\jquery\jquery-3.5.1.min.map" />
+            </Component>
+            <Component Id="cmp3C7A7E4F2B4FD10DEF18D558CC12A650" Directory="dir5E40BCB96F4626297F64AF1752A89C1F" Guid="*">
+                <File Id="filE73EE80F3EE59D1DCA7165CF61834579" KeyPath="yes" Source="$(var.SourcePath)\modules\jquery\jquery-ui.min.js" />
+            </Component>
+            <Component Id="cmpFBCFC782E3EAC7F59417B07885BB1460" Directory="dir0FCC6B476E431C599A5F09561E1D6CF0" Guid="*">
+                <File Id="fil9A4DEDE19101F0580F834D825964B57A" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\.gitignore" />
+            </Component>
+            <Component Id="cmp673ABFD7B92C8BEC86EEAC7D29E1A13F" Directory="dir0FCC6B476E431C599A5F09561E1D6CF0" Guid="*">
+                <File Id="filF51BCCB1199EE54B8C86E2DBDEA0F6E5" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\LICENSE" />
+            </Component>
+            <Component Id="cmp5EEC3356B4DAF6FA028969E487C868DE" Directory="dir0FCC6B476E431C599A5F09561E1D6CF0" Guid="*">
+                <File Id="fil2BB77327CA8620DCBA7E28466180450E" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\linq.d.ts" />
+            </Component>
+            <Component Id="cmpF967E91734F2FDB8A689C16234A90ADB" Directory="dir0FCC6B476E431C599A5F09561E1D6CF0" Guid="*">
+                <File Id="fil29586168D6EC32E66B48100C19FBCBFC" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\linq.js" />
+            </Component>
+            <Component Id="cmp002A13EF9A284363820B31F3A7E550F8" Directory="dir0FCC6B476E431C599A5F09561E1D6CF0" Guid="*">
+                <File Id="filC9815C90C452BDE9293017D49512DEE0" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\package.json" />
+            </Component>
+            <Component Id="cmp6AF1AD8E903928B614E4A29324C9F73E" Directory="dir0FCC6B476E431C599A5F09561E1D6CF0" Guid="*">
+                <File Id="fil6619D53628F7E9FC03E7F0C2114A351B" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\README.md" />
+            </Component>
+            <Component Id="cmp7F147C31D87B29F157C81719FCE9D4FD" Directory="dir52B203BC3F20331F04F187DC91D21F1D" Guid="*">
+                <File Id="fil6F10F9E509E86EEA09E2CEA368B6F4B3" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\extensions\linq.qunit.js" />
+            </Component>
+            <Component Id="cmp94DEBDCF717FCBD12C5578B53FFF1DF1" Directory="dir3B04EBA76778C6DFC90F4B6BB07C6CD0" Guid="*">
+                <File Id="filE0E85697FDF0EBE41E27FE9CB7E26856" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\sample\tutorial.js" />
+            </Component>
+            <Component Id="cmp8E7B11305CD770E86F099FF4A9139866" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filE5A55585918CB0BCF4986341EE313B6F" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\action.js" />
+            </Component>
+            <Component Id="cmpB82C7C1318E1407889569054E469DC67" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filF46806CAB3C72E923E29D86C42B62B5B" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\aggregate.js" />
+            </Component>
+            <Component Id="cmpF7ED13645E95C629FE5CDF89BEEDCC1A" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil7684AED0604019F0711C6FEB2F6A8FAF" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\arrayEnumerable.js" />
+            </Component>
+            <Component Id="cmpE761262CFD7CC479F539B8040453184A" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil1DBFF4977525B85CBD25B07E3E10E626" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\convert.js" />
+            </Component>
+            <Component Id="cmpD9BB6E6D0C42FE3B6A1238BA364DDEAE" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filBC74B99FDF28EF31208FF34EA1446E34" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\dictionary.js" />
+            </Component>
+            <Component Id="cmp3B4591BFE3D83D56D322E09B333A3367" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil301BDD5AAE4D406E6A21212945536BFF" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\enumerable.js" />
+            </Component>
+            <Component Id="cmp22C05950ED7C8CD53BC42CA5CD046DF2" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filCB9627C924BD2B2E3237F373BB2D0056" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\errorHandling.js" />
+            </Component>
+            <Component Id="cmp77178B0C1589A7B1E1B186AD6ECD9F0F" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filE61E894147B0D358267248E2D3136B48" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\functional.js" />
+            </Component>
+            <Component Id="cmp1299E914F55BBCA431937DC6A2D3C4CF" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil75BB0D8C7E7CCE682D064A3A75F810D6" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\grouping.js" />
+            </Component>
+            <Component Id="cmpC0A97BC65A9C8FB7CB28D10A6CAF5616" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil7971A45EBABFE9C4B4B717217641ADB3" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\iterator.js" />
+            </Component>
+            <Component Id="cmp77699BBF5FE6E19C072851AB09F3C8EA" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil9373A130CB3C67D1CD236145BC7503A0" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\join.js" />
+            </Component>
+            <Component Id="cmp203A4B937C8B489F0256A2677BCA369F" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil3347601186989136D3BA92AD2362FD2D" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\linq.qunit-test.js" />
+            </Component>
+            <Component Id="cmp5F687271B5CCC9A3DA4653EC68501AA6" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil69488EEBE80A816B21F69AAB03A9F0E0" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\ordering.js" />
+            </Component>
+            <Component Id="cmpB819E70948C26A6CF0705C99920FC3FD" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil40FDA67272E32747D3B833C4C3A8E876" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\paging.js" />
+            </Component>
+            <Component Id="cmp401EFB0F3009DF3FADE97D7D4C901BF6" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filA16252C4D331033903A0AE25EBD00C9E" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\projection.js" />
+            </Component>
+            <Component Id="cmp1D1123F2B99B7D90D6968C85CE0300D2" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filF26762E7621572961FDD86B78B2A132C" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\qunit.js" />
+            </Component>
+            <Component Id="cmp614926AC5C99F6FB9C667D33DBDC0D24" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="fil53AB1A9ADC54D0BA5783B276CEBFAD1D" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\set.js" />
+            </Component>
+            <Component Id="cmp15C2A344C7B7664F6E677597C8F30003" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filBD1F816DFBF1AAF83452CAE27D233283" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\testrunner.js" />
+            </Component>
+            <Component Id="cmpFA3FA22097F1EBD1DA9C6C785AAD43F9" Directory="dirBA766E3EB62D29F408FDFC589B808B48" Guid="*">
+                <File Id="filFFD4F0C10FD77528F99C5217ED607E6F" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\test\whereSelectEnumerable.js" />
+            </Component>
+            <Component Id="cmpA9D3C62B9338CD8CC010B4E24E636114" Directory="dir1CA326BE9989CD95A31F5E0893FD0F19" Guid="*">
+                <File Id="fil2D0793B1062F21D029B54B2BC1322285" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\util\build\minify.js" />
+            </Component>
+            <Component Id="cmp6E23917E058E25C562294B2CA343E6ED" Directory="dirB9C68F520F6CC5729D3BD9604D5F877D" Guid="*">
+                <File Id="fil602B0AA68FFC60DC136481BFC7418BC8" KeyPath="yes" Source="$(var.SourcePath)\modules\linq_3.2.1\util\gpg_keys\mihaifm.asc" />
+            </Component>
+            <Component Id="cmp6BC1975B7DB17F3954E74D7458578638" Directory="dir2AB25FD3082AF798D537E95A56C70FAC" Guid="*">
+                <File Id="fil4A397B482933CB410C43696703B37ACD" KeyPath="yes" Source="$(var.SourcePath)\modules\sprintf\angular-sprintf.min.js" />
+            </Component>
+            <Component Id="cmp6023D5E87AD48380A19370C0EDCA4C4C" Directory="dir2AB25FD3082AF798D537E95A56C70FAC" Guid="*">
+                <File Id="fil1BA1429AA4B96BDA8A2A74D814EBED3E" KeyPath="yes" Source="$(var.SourcePath)\modules\sprintf\angular-sprintf.min.js.map" />
+            </Component>
+            <Component Id="cmpFE4842763D1AA313AFA32365AE207B5D" Directory="dir2AB25FD3082AF798D537E95A56C70FAC" Guid="*">
+                <File Id="filD4438FC500C95B3BF5453D06FD39F0E7" KeyPath="yes" Source="$(var.SourcePath)\modules\sprintf\sprintf.min.js" />
+            </Component>
+            <Component Id="cmp5150F6BD4D23A8472C288BD169E9A3B8" Directory="dir2AB25FD3082AF798D537E95A56C70FAC" Guid="*">
+                <File Id="fil90BD7232E2D8C271B665ED28ED9A89CA" KeyPath="yes" Source="$(var.SourcePath)\modules\sprintf\sprintf.min.js.map" />
             </Component>
             <Component Id="cmp1CDB33EE9E15B8B5E0A1CBD4105F9478" Directory="dir5A42F052FBD25B029CA374E04892090A" Guid="*">
                 <File Id="filC4F05E013659E72DB2045EFAB6E49095" KeyPath="yes" Source="$(var.SourcePath)\scripts\BootstrapMenu.min.js" />
@@ -121,186 +733,6 @@
             <Component Id="cmp41461272413E27B3AE162FEED2C359B9" Directory="dir5A42F052FBD25B029CA374E04892090A" Guid="*">
                 <File Id="fil3C4404BB04FE2D6F75595882A666F34A" KeyPath="yes" Source="$(var.SourcePath)\scripts\smart-table.js" />
             </Component>
-            <Component Id="cmp9BF1270A653E71B94BA9D8168B120F77" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="fil923FD75E48C9D0320462F7D5A938ECDD" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular-cookies.min.js" />
-            </Component>
-            <Component Id="cmp025E925C094A7EDF740EB9013A5138B7" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="fil239642A5D0F51762745C4E5B7B2AED67" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular-locale_es.js" />
-            </Component>
-            <Component Id="cmpB92722BC45A9493587393DA383974A16" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="fil9A14C86A52C269887F31D957B924A6C6" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular-mocks.js" />
-            </Component>
-            <Component Id="cmp9B852A662508E8D8ECB06A932E8AE72A" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="filBC8B545890A4634DC3ECD373C1ACB159" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular-route.js" />
-            </Component>
-            <Component Id="cmpE8211942AA8A58755730C17A85752E2B" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="filF5166BAB5348DC1100EB2401E589A2CF" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular-sanitize.js" />
-            </Component>
-            <Component Id="cmp19CFEBDA01C34B03A39EC75ADB62196F" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="fil58D3A00763F46ABFE647457B8F7B36CD" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular-translate-loader-static-files.min.js" />
-            </Component>
-            <Component Id="cmp133555587C99CD7EB71792A6AEC82FE8" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="filE454B0FF4D7F6C4BB5BD4620181D8134" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular-translate.min.js" />
-            </Component>
-            <Component Id="cmpC34EB6A75850651EC34885AA09D15A4D" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="filC7670561BC56A5B0C88B03F7B791A2AA" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular.js" />
-            </Component>
-            <Component Id="cmp8ECE3F17DBB575EB2A0940B95986EC45" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="filE18ECE0A267AEC7F02023E97347BA219" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular.min.js" />
-            </Component>
-            <Component Id="cmpCDC18618007EB70D522208AFC804AAF9" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="fil2DFEBAD22C8AA96A7301218D9BDF7A42" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\angular.min.js.map" />
-            </Component>
-            <Component Id="cmp2098F234E0E2C4AF8EE32748651439B3" Directory="dirA13C8244F4C5C09298B452D7B9E4055A" Guid="*">
-                <File Id="fil7A881FA34C680E8D1211320CDD0E13FA" KeyPath="yes" Source="$(var.SourcePath)\scripts\angular\smart-table.min.js.map" />
-            </Component>
-            <Component Id="cmp3E65938A42A68B7EB5205ECC00667B82" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="filCC65CCB8739C978E1F83B45F88B2DE08" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.bundle.js" />
-            </Component>
-            <Component Id="cmp4627A444920E6B1E949F62FCCDFE28C0" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="filD2E9EE9E304790A02166A88EF104585E" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.bundle.js.map" />
-            </Component>
-            <Component Id="cmpC1EBE590EFB1B4E878A786C1664E16C6" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="filDD5E5909DCA83860BD8654A98FE34674" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.bundle.min.js" />
-            </Component>
-            <Component Id="cmpA6740E312FCDA47C009F3EA452BFCB8B" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="fil7F049857574A62CA15683E95743FFA94" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.bundle.min.js.map" />
-            </Component>
-            <Component Id="cmp3C8D04A71A0F290E24003C30C49BD7C4" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="filB6E60B14E27AFFF752FB2E477CA29286" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.js" />
-            </Component>
-            <Component Id="cmp9BD8A04CD98BA7BC5F6352E3E1D9469B" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="fil5E230FB7400880202405A0669D1362F6" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.js.map" />
-            </Component>
-            <Component Id="cmp5E2F6841B2DE519F3440E3FCE2DDD151" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="filC0BEEFC22653CA853EA7FB42E0161E08" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.min.js" />
-            </Component>
-            <Component Id="cmpB3C4565BF970DEE49804E4C5CA16E36A" Directory="dirBF7425B836D1108CD473CA388783DF97" Guid="*">
-                <File Id="filD4C241D2F23155B583C47D676C191D15" KeyPath="yes" Source="$(var.SourcePath)\scripts\boostrap-4.0.0\bootstrap.min.js.map" />
-            </Component>
-            <Component Id="cmpF72E2809CE07AB6D8FD83B22215E377D" Directory="dir75D105469B100D9CAABAC938E9376049" Guid="*">
-                <File Id="fil637C67341BA06650AC35E204B2E000F3" KeyPath="yes" Source="$(var.SourcePath)\scripts\bootsstrap\bootstrap.js" />
-            </Component>
-            <Component Id="cmpF78DC6064F27C31D3388017E2CD1DB9D" Directory="dir75D105469B100D9CAABAC938E9376049" Guid="*">
-                <File Id="fil64970EE9C9300F78613A917DB9610734" KeyPath="yes" Source="$(var.SourcePath)\scripts\bootsstrap\bootstrap.min.js" />
-            </Component>
-            <Component Id="cmp22FFA7F82B81C7A8A5C537D4ED2C901A" Directory="dir75D105469B100D9CAABAC938E9376049" Guid="*">
-                <File Id="fil9D846447094FBA2700B53DEE967059AC" KeyPath="yes" Source="$(var.SourcePath)\scripts\bootsstrap\ui-bootstrap-tpls-0.13.4.min.js" />
-            </Component>
-            <Component Id="cmp955044A359994FA440FCD5115A50BF4B" Directory="dir75D105469B100D9CAABAC938E9376049" Guid="*">
-                <File Id="fil499FFBDD879791EF9DAF59F31FED6399" KeyPath="yes" Source="$(var.SourcePath)\scripts\bootsstrap\ui-bootstrap-tpls-1.2.4.min.js" />
-            </Component>
-            <Component Id="cmp5833E220B5172974C0CAA2867294FDDB" Directory="dir8BE880DFE8CBF5CC798DB2BFF3B1967F" Guid="*">
-                <File Id="fil3BA1F9DF44A610D0F57E3439DA90C602" KeyPath="yes" Source="$(var.SourcePath)\scripts\jquery\jquery-2.1.3.min.js" />
-            </Component>
-            <Component Id="cmp05C4E3838CD0159E4A012AB2C21EAE9E" Directory="dir8BE880DFE8CBF5CC798DB2BFF3B1967F" Guid="*">
-                <File Id="fil7363B861F672D2E2163B9C7CE65DA6F4" KeyPath="yes" Source="$(var.SourcePath)\scripts\jquery\jquery-3.5.1.min.js" />
-            </Component>
-            <Component Id="cmp22E440619DAEF55FBB7A295D99FEBE33" Directory="dir8BE880DFE8CBF5CC798DB2BFF3B1967F" Guid="*">
-                <File Id="filF833FE9A1DCD5F6FA14A87CBB6DFD23D" KeyPath="yes" Source="$(var.SourcePath)\scripts\jquery\jquery-3.5.1.min.map" />
-            </Component>
-            <Component Id="cmp78AB8386B6C4C6ADD5B56F49DAF7F169" Directory="dir8BE880DFE8CBF5CC798DB2BFF3B1967F" Guid="*">
-                <File Id="fil52C7ED32259F47FF1C66475220AF15A7" KeyPath="yes" Source="$(var.SourcePath)\scripts\jquery\jquery-ui.min.js" />
-            </Component>
-            <Component Id="cmp2FBB873D932D921F7E7856683D17CE19" Directory="dir7D59FD8820EE5C05AEEA2C71CF595FAB" Guid="*">
-                <File Id="fil4593A9678F56EAD330F984754C9D3491" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\.gitignore" />
-            </Component>
-            <Component Id="cmpC0304F6E07F0798B6A6902B5989D8A40" Directory="dir7D59FD8820EE5C05AEEA2C71CF595FAB" Guid="*">
-                <File Id="fil1C71BD0D6D7C126FE821656C7C4681B4" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\LICENSE" />
-            </Component>
-            <Component Id="cmpCFA198FB77A5C1CDCDE9EFA66B24F7C8" Directory="dir7D59FD8820EE5C05AEEA2C71CF595FAB" Guid="*">
-                <File Id="filFC7258691C25D27F1D87D2AEBC8C05C7" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\linq.d.ts" />
-            </Component>
-            <Component Id="cmp37746DD9FD0965EA4531549101CFA36E" Directory="dir7D59FD8820EE5C05AEEA2C71CF595FAB" Guid="*">
-                <File Id="fil8556648B1733362CE5C8E5B0463C725D" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\linq.js" />
-            </Component>
-            <Component Id="cmp0968E99B6A7867BBE2B1B2C36A2D462B" Directory="dir7D59FD8820EE5C05AEEA2C71CF595FAB" Guid="*">
-                <File Id="filAAF5738D4CAA5A8EA6507B0A666EF3E2" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\package.json" />
-            </Component>
-            <Component Id="cmp782DAAC845B88DEDE6E46559037123DA" Directory="dir7D59FD8820EE5C05AEEA2C71CF595FAB" Guid="*">
-                <File Id="filFA206BBDCD03BAD63E72F6813832274E" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\README.md" />
-            </Component>
-            <Component Id="cmp0040C5995D86E8E4E6CAB86E21BBE882" Directory="dir6837CEFDC2A179C207C22E1FF2FFB3DA" Guid="*">
-                <File Id="fil3771C271E5170F44CD1CBE51B3E56686" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\extensions\linq.qunit.js" />
-            </Component>
-            <Component Id="cmp18FB77DC4BB790599F6C4D55E7C4E5E8" Directory="dir27E5E1C21100707200120A9D1DE881F9" Guid="*">
-                <File Id="fil6EBA34494CBD9F018F7E07EBDD7EB98F" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\sample\tutorial.js" />
-            </Component>
-            <Component Id="cmp98F69F53FD1B9FC769C6731D61D663C9" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil1654E986208352DDA43EFF0A118EAF79" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\action.js" />
-            </Component>
-            <Component Id="cmp1ECDB34544AA966A9785CEDD11AD76E4" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filE262E7609593CA49B1D9D0948F3778F5" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\aggregate.js" />
-            </Component>
-            <Component Id="cmp5DC0F64D5C8045A4088C9C37706C7363" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil9748853450D1708FBC51C907231EA77D" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\arrayEnumerable.js" />
-            </Component>
-            <Component Id="cmpD333095D91A1D1B3ED0D8820900221B5" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil27C87075F6DD3E10532FF093E7C13775" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\convert.js" />
-            </Component>
-            <Component Id="cmp7060A15597A40EF4CA1C97389490608F" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil7076BAE4BC64D05CF1B9A3E71A6D4360" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\dictionary.js" />
-            </Component>
-            <Component Id="cmp26F3761ED623E2443C3B207088A43578" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil428997BF4E38312ADF0C83D4B68D3E20" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\enumerable.js" />
-            </Component>
-            <Component Id="cmp72707700EF96DB655A65D20B2BD6466A" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil2F5C4D89A38BD611CDE587DA28474D34" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\errorHandling.js" />
-            </Component>
-            <Component Id="cmp8D345EF6D79027E57F3584C1CF48DB2F" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil6C59F1AF9005E1241E33676A9F4447F9" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\functional.js" />
-            </Component>
-            <Component Id="cmp6F05F3BBF81B24D8BE1794E546E1FE77" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil300DD361E17E6E4261FA8B0CAC837417" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\grouping.js" />
-            </Component>
-            <Component Id="cmp93C18765E5BFAD80BBF27D7C640F6C95" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filCEFF19608CFE18523DFF99F85D5F9D2E" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\iterator.js" />
-            </Component>
-            <Component Id="cmp85E009AFFF3F5CF99E88B12B0DE8A9F7" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil662CD276AF2818295401EE592AC2085A" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\join.js" />
-            </Component>
-            <Component Id="cmpF0E70ABFF88AA85DCCD6513777C568C6" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filA7240575B5ADDA8A801785994A9C9E1A" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\linq.qunit-test.js" />
-            </Component>
-            <Component Id="cmp2D7AE3D8584D1AF913FD40513AF97125" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filA254ABC995BEE8BA3CF382C165E05D96" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\ordering.js" />
-            </Component>
-            <Component Id="cmp229C64870279C80690DA874D428BEE76" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="fil6D73612AC6CFC70BCDE3D07F30C6C819" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\paging.js" />
-            </Component>
-            <Component Id="cmp53D3C6FBCF6AE37CB5AD41233DF59F2C" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filE27CFAB764F225D2BC7794977990B2E1" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\projection.js" />
-            </Component>
-            <Component Id="cmp03236EE678ADD393EC0D0199284D4B40" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filD7B7924B8CB838DA6F0EDC270EF0EB0D" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\qunit.js" />
-            </Component>
-            <Component Id="cmpCF9BDB5E12379E5BBC24324EB029B221" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filE930FC467A81B12EB998B5012BA59B33" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\set.js" />
-            </Component>
-            <Component Id="cmp6F3976F93EC5BBAC8C0F9317737B6096" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filF5848D6588F6654C6AF0E45597E9D3B0" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\testrunner.js" />
-            </Component>
-            <Component Id="cmp470C5E1F652386E286F4AFFC73C8E471" Directory="dirD483CB950AB308289648C2A700FE6601" Guid="*">
-                <File Id="filAD61C47FFC8657EAB1479424E9C7F775" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\test\whereSelectEnumerable.js" />
-            </Component>
-            <Component Id="cmpA240A41C9489726EA3171E89D9E6163A" Directory="dirC87BBB18BD798B1F355CABFBE665B30C" Guid="*">
-                <File Id="fil6222907F365F95E8724AD183A80810B6" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\util\build\minify.js" />
-            </Component>
-            <Component Id="cmp4CD805BB42277D03601EF082B3FACDC2" Directory="dir98139308D624C86AE73B5B954E672AE7" Guid="*">
-                <File Id="filB8C98AAFFDAEE3EBC4039885B3FAF717" KeyPath="yes" Source="$(var.SourcePath)\scripts\linq_3.2.1\util\gpg_keys\mihaifm.asc" />
-            </Component>
-            <Component Id="cmp2F490E7143F6728ABC2035971E3266F1" Directory="dirBC63A6419FC9D64B269F809BEDDFBF95" Guid="*">
-                <File Id="fil4AE44EA89578DE5A5173EDBF087F652E" KeyPath="yes" Source="$(var.SourcePath)\scripts\sprintf\angular-sprintf.min.js" />
-            </Component>
-            <Component Id="cmp804C5D54F2B32641D166629EC10E4155" Directory="dirBC63A6419FC9D64B269F809BEDDFBF95" Guid="*">
-                <File Id="filB25E97C885661B49FFABB4F543E7937A" KeyPath="yes" Source="$(var.SourcePath)\scripts\sprintf\angular-sprintf.min.js.map" />
-            </Component>
-            <Component Id="cmp374006059C0C09078A070F1F4666AE9E" Directory="dirBC63A6419FC9D64B269F809BEDDFBF95" Guid="*">
-                <File Id="fil89F3679259A41828C91A5864044969A7" KeyPath="yes" Source="$(var.SourcePath)\scripts\sprintf\sprintf.min.js" />
-            </Component>
-            <Component Id="cmpC743207109766E84FBD6A4D81B54BBA0" Directory="dirBC63A6419FC9D64B269F809BEDDFBF95" Guid="*">
-                <File Id="filEC9297939E8FD02CD164F510F35D7C70" KeyPath="yes" Source="$(var.SourcePath)\scripts\sprintf\sprintf.min.js.map" />
-            </Component>
             <Component Id="cmp5D59CE3725A420D1CA9663999DC29456" Directory="dirFC60DC94AC4EB9D1FFA4E035DE77595B" Guid="*">
                 <File Id="filFC984F917E7F69BE5F5CF530B13E38EE" KeyPath="yes" Source="$(var.SourcePath)\simulate\alive.json" />
             </Component>
@@ -310,8 +742,14 @@
             <Component Id="cmp302DB41455E4600DE8BD5A38F3649B38" Directory="dirFC60DC94AC4EB9D1FFA4E035DE77595B" Guid="*">
                 <File Id="filD98E14CB7C45970E160FC18740C45A97" KeyPath="yes" Source="$(var.SourcePath)\simulate\config.json" />
             </Component>
+            <Component Id="cmp57CEE301EB6F0206EFACF456403500EA" Directory="dirFC60DC94AC4EB9D1FFA4E035DE77595B" Guid="*">
+                <File Id="fil6AC0FA707A2FA0210BC25CA20FC6FEAD" KeyPath="yes" Source="$(var.SourcePath)\simulate\history-empty.json" />
+            </Component>
             <Component Id="cmp6B054D722EF3E5DCAA009BAE181976B9" Directory="dirFC60DC94AC4EB9D1FFA4E035DE77595B" Guid="*">
                 <File Id="filD718E370DD7FE1F62681758B9BE11398" KeyPath="yes" Source="$(var.SourcePath)\simulate\history.json" />
+            </Component>
+            <Component Id="cmpED0F6C5B2642A42BA460628EFDE04941" Directory="dirFC60DC94AC4EB9D1FFA4E035DE77595B" Guid="*">
+                <File Id="fil9D8CB332545733AF1B1E855F934D763C" KeyPath="yes" Source="$(var.SourcePath)\simulate\history.json.001" />
             </Component>
             <Component Id="cmpA3328C5CD726C967B19BAE3E4D12BBF3" Directory="dirFC60DC94AC4EB9D1FFA4E035DE77595B" Guid="*">
                 <File Id="filEC419BA2E1B56E988F921C5E820ED6FF" KeyPath="yes" Source="$(var.SourcePath)\simulate\status.json" />
@@ -340,128 +778,31 @@
             <Component Id="cmp814B7590BAEBB1B3B8A2D821706C2033" Directory="dir4B633E089D9D38A139404021AE102ECC" Guid="*">
                 <File Id="fil9C635A6ABA1F8DAE44CE4EF5B7D2C6DB" KeyPath="yes" Source="$(var.SourcePath)\styles\ngDialog.css" />
             </Component>
-            <Component Id="cmpA5BC980400DCFBB4138F7F1405C7134F" Directory="dirCF0067B3114D4FC00EB6A00D82D90354" Guid="*">
-                <File Id="fil6767666CD4CEC94CF2E8213A86318866" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\alertify.css" />
-            </Component>
-            <Component Id="cmp7F9DA65BBA6B3C3DE562139E7B2DBA5E" Directory="dirCF0067B3114D4FC00EB6A00D82D90354" Guid="*">
-                <File Id="fil7B7B2DECD6C98E509D5985965D608EB3" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\alertify.min.css" />
-            </Component>
-            <Component Id="cmp47260647AEF896862D45D3556A9A1BC6" Directory="dirCF0067B3114D4FC00EB6A00D82D90354" Guid="*">
-                <File Id="filEBE8F814753C3411FC2BF3F691AFC329" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\alertify.rtl.css" />
-            </Component>
-            <Component Id="cmp6C75275C23F453FE939FAB7344152884" Directory="dirCF0067B3114D4FC00EB6A00D82D90354" Guid="*">
-                <File Id="fil7CEF3D270DC0DF4C481A9770AC8C6133" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\alertify.rtl.min.css" />
-            </Component>
-            <Component Id="cmpF176985A3067B83689EC5209B0D64E77" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil562B2111BFFB8F34529C8B7D6E85BBE7" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\bootstrap.css" />
-            </Component>
-            <Component Id="cmpF2E872131D953DF13437BBF90244822F" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil7815F117A7B2BDAA3ABF0000D45DE986" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\bootstrap.min.css" />
-            </Component>
-            <Component Id="cmp61F84A9757451F6B626120A18122C3F1" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil3D466CF490FD82B0EB814408E7B4231E" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\bootstrap.rtl.css" />
-            </Component>
-            <Component Id="cmpF569965F8DA481AA85DD7CA20F34A57F" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil6D558997C84CA3097DCCC4230230C5D0" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\bootstrap.rtl.min.css" />
-            </Component>
-            <Component Id="cmp04C9E54F100BED7CB10046914DEBF5EB" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil7F6EE09E656804356806A17A2B389FE9" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\default.css" />
-            </Component>
-            <Component Id="cmp5A6ACDD34C76C4A1F60DF11C81CD7B9A" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil18317E2B87FAC9F9E4A07DEEDC17E9DD" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\default.min.css" />
-            </Component>
-            <Component Id="cmpF30A5B7682EAA01D2FADFB04F5210AE1" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="filECC9C2E02825EA71B03E92A983604E8C" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\default.rtl.css" />
-            </Component>
-            <Component Id="cmp1C84098C8971DFBE5B822B9D019E4DBD" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil74D3034CDF32A72B4574FE6823FB31EF" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\default.rtl.min.css" />
-            </Component>
-            <Component Id="cmp598E894EBFB52F73F070236ACF7301C0" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil1CC31F85EAE1741F5C5405F1370F190F" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\semantic.css" />
-            </Component>
-            <Component Id="cmp0C3F3F9FE54ABFF327B224D61A0B86C8" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil88C12F41CAAB3F5F122580661B2A17BC" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\semantic.min.css" />
-            </Component>
-            <Component Id="cmp0E764A1FEF55114CC0C6AF28F8040731" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil7FEDF218C908A53666616A8C8EB59096" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\semantic.rtl.css" />
-            </Component>
-            <Component Id="cmp20BA30F0D4B7E2120B2AFA53838C3C9A" Directory="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Guid="*">
-                <File Id="fil7E31ADC1B9E0A3FD608EA14CD6AEBA13" KeyPath="yes" Source="$(var.SourcePath)\styles\alertify\themes\semantic.rtl.min.css" />
-            </Component>
-            <Component Id="cmp1ACC059FCF2485C9524D64B0F66B4770" Directory="dir517E258728A826105C180C58F629C9C4" Guid="*">
-                <File Id="fil8B9E6463BC61C75D2C6D2D58B3DF8C4C" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap\bootstrap-theme.css" />
-            </Component>
-            <Component Id="cmpA4778EB43B202D764525B226F0B00C3E" Directory="dir517E258728A826105C180C58F629C9C4" Guid="*">
-                <File Id="filB99C6FFD8D25CFDCB09D1088911E1B90" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap\bootstrap-theme.css.map" />
-            </Component>
-            <Component Id="cmpC5814821CBEC9101E3B155E4D7E79708" Directory="dir517E258728A826105C180C58F629C9C4" Guid="*">
-                <File Id="fil1DD844DB24536F02A7687AAAC130873B" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap\bootstrap-theme.min.css" />
-            </Component>
-            <Component Id="cmp5D23FA1F5953693790324FF5974B96C2" Directory="dir517E258728A826105C180C58F629C9C4" Guid="*">
-                <File Id="fil14DD542225EFB94276BE4A33FE69A0D1" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap\bootstrap.css" />
-            </Component>
-            <Component Id="cmp7BA5456A2845B5E4C13E012E22137D65" Directory="dir517E258728A826105C180C58F629C9C4" Guid="*">
-                <File Id="filDA4F11B396C81731F3CD4D3E74FAA557" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap\bootstrap.css.map" />
-            </Component>
-            <Component Id="cmpCF9046B3F1BF1210B7F9AF4365A9421F" Directory="dir517E258728A826105C180C58F629C9C4" Guid="*">
-                <File Id="fil78515CA9B22F882F043D75E90B85B4D8" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap\bootstrap.min.css" />
-            </Component>
-            <Component Id="cmp508494F31895DD6B06BD8F94AFD96C46" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="fil924AD825F56A9D36E17D37926CBBE253" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-grid.css" />
-            </Component>
-            <Component Id="cmp5065FA603F524299CB77444A59F4C49B" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="fil097E5D02E479D6F38A0BC24F157CF0BF" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-grid.css.map" />
-            </Component>
-            <Component Id="cmpABC6D44D70802010D92972D9A4F02C1A" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="fil486D19CD3B38BD406DB8003BA6F53BCC" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-grid.min.css" />
-            </Component>
-            <Component Id="cmp54301C89465325C5CFA7F66F7BA78433" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="fil36427C2E561FD013C16ED43B9B2E09FF" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-grid.min.css.map" />
-            </Component>
-            <Component Id="cmpE29F7AB83A34B1DC4C64EB184F81F7B0" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="filC444795E2A71BA72A2668B43F2016508" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-reboot.css" />
-            </Component>
-            <Component Id="cmp6DEEAC2DCAA682973C16D3301A826DC9" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="fil68106433F00A63225417D5324498F09E" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-reboot.css.map" />
-            </Component>
-            <Component Id="cmpA6494E9EEA60139B90435017D9D26B4E" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="filA2428CED2B8B939ECBA03DF9754C6083" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-reboot.min.css" />
-            </Component>
-            <Component Id="cmp55917FDC7703A4B983F1254D2555804A" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="filCA0555CF1C9B50F09F55E232AC6F3591" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap-reboot.min.css.map" />
-            </Component>
-            <Component Id="cmpED5F358731872C6F5EB10C8E3A4F60CD" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="filDF46B697D5328E651FBCCE784097FF2A" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap.css" />
-            </Component>
-            <Component Id="cmpC3BB4A2108989EDFD7A836D19D205B13" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="filD4E1615CCFF59DFED795EAAD00BD88BA" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap.css.map" />
-            </Component>
-            <Component Id="cmp4A21467BCE83CEE498FCA09BBAA2C876" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="fil7C15EB003E7E1729447FDD38E6B63682" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap.min.css" />
-            </Component>
-            <Component Id="cmp3ED186896F386423771CA50ACB72F3E5" Directory="dirD17B2A2D5B5B1129AC296BE29B41A399" Guid="*">
-                <File Id="fil24776A8014DF361929C2DC7DAAFC3647" KeyPath="yes" Source="$(var.SourcePath)\styles\bootstrap-4.0.0\bootstrap.min.css.map" />
-            </Component>
-            <Component Id="cmp1D02C289A6B5495F1E9493B1E7F24834" Directory="dir882B6DE7DF1CAC12C30A61B1E5D5520A" Guid="*">
-                <File Id="filAF1CFBB73850E88C995238A76BDB3354" KeyPath="yes" Source="$(var.SourcePath)\styles\fonts\glyphicons-halflings-regular.eot" />
-            </Component>
-            <Component Id="cmpD1D3E6A304DC8BBE3721CA1F37490065" Directory="dir882B6DE7DF1CAC12C30A61B1E5D5520A" Guid="*">
-                <File Id="fil86F9C33A4A1213F627759DC502B26674" KeyPath="yes" Source="$(var.SourcePath)\styles\fonts\glyphicons-halflings-regular.svg" />
-            </Component>
-            <Component Id="cmp33C2E66B06D493046433E5B6E8A3FAA3" Directory="dir882B6DE7DF1CAC12C30A61B1E5D5520A" Guid="*">
-                <File Id="fil39CA8F6D50F88F81626E981C60933C82" KeyPath="yes" Source="$(var.SourcePath)\styles\fonts\glyphicons-halflings-regular.ttf" />
-            </Component>
-            <Component Id="cmpD487BF96C3405A32B88BF5D4DA9340CC" Directory="dir882B6DE7DF1CAC12C30A61B1E5D5520A" Guid="*">
-                <File Id="fil3C8973C1CCB9F2BD2A34157C7431FC5F" KeyPath="yes" Source="$(var.SourcePath)\styles\fonts\glyphicons-halflings-regular.woff" />
-            </Component>
-            <Component Id="cmp4D4EB0C97A71DFF6EDC0725846A2A4D6" Directory="dir882B6DE7DF1CAC12C30A61B1E5D5520A" Guid="*">
-                <File Id="fil1DD3ACA40295EEA23439052E287CA7EF" KeyPath="yes" Source="$(var.SourcePath)\styles\fonts\glyphicons-halflings-regular.woff2" />
-            </Component>
         </ComponentGroup>
     </Fragment>
     <Fragment>
         <DirectoryRef Id="dirDC8CCE3DBAE3D7801E2B26634B3F3ABA">
             <Directory Id="dir07A78784C197C7FF694D15D7F2C44106" Name="languages" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir30C36BFE81483D4605F25C0DCFB0B6DF">
+            <Directory Id="dir0EE855F7F4AF9250A8BE30B87CEB2C1B" Name="css" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir3639D6082ADF859F076301218C22722C">
+            <Directory Id="dir0FCC6B476E431C599A5F09561E1D6CF0" Name="linq_3.2.1" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir9D5E347453F487A5F45C7FEE64BA5CD6">
+            <Directory Id="dir114E43082181C4F5716146DDF93C9518" Name="js" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir481975AD24F078E9A9AE227CFD8B7ECB">
+            <Directory Id="dir1CA326BE9989CD95A31F5E0893FD0F19" Name="build" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -475,8 +816,53 @@
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir7D59FD8820EE5C05AEEA2C71CF595FAB">
-            <Directory Id="dir27E5E1C21100707200120A9D1DE881F9" Name="sample" />
+        <DirectoryRef Id="dir3639D6082ADF859F076301218C22722C">
+            <Directory Id="dir2AB25FD3082AF798D537E95A56C70FAC" Name="sprintf" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir3639D6082ADF859F076301218C22722C">
+            <Directory Id="dir30C36BFE81483D4605F25C0DCFB0B6DF" Name="bootstrap-3.4.1" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirDC8CCE3DBAE3D7801E2B26634B3F3ABA">
+            <Directory Id="dir3639D6082ADF859F076301218C22722C" Name="modules" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir30C36BFE81483D4605F25C0DCFB0B6DF">
+            <Directory Id="dir39E1481293B536908FD3DC2D4EF93E3D" Name="js" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0FCC6B476E431C599A5F09561E1D6CF0">
+            <Directory Id="dir3B04EBA76778C6DFC90F4B6BB07C6CD0" Name="sample" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirE0E84506161349BA7FA400DEF7935928">
+            <Directory Id="dir3FFD3D310D6D92F570CDB5F12CECA3D6" Name="SearchBuilder-1.0.1" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir3FFD3D310D6D92F570CDB5F12CECA3D6">
+            <Directory Id="dir400439526DD3C52A76908B0B59CC7CC4" Name="js" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirE540AA690E4CBF1492179D26DA33496C">
+            <Directory Id="dir430389C13D2A205D7D88E38514615B0A" Name="swf" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirEE45A05CC6A05B7AB8CBCF683333D77B">
+            <Directory Id="dir430F6706EFC206CF1A4279672D33A4EA" Name="themes" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0FCC6B476E431C599A5F09561E1D6CF0">
+            <Directory Id="dir481975AD24F078E9A9AE227CFD8B7ECB" Name="util" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -485,8 +871,8 @@
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir4B633E089D9D38A139404021AE102ECC">
-            <Directory Id="dir517E258728A826105C180C58F629C9C4" Name="bootstrap" />
+        <DirectoryRef Id="dir0FCC6B476E431C599A5F09561E1D6CF0">
+            <Directory Id="dir52B203BC3F20331F04F187DC91D21F1D" Name="extensions" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -495,18 +881,8 @@
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dirCF0067B3114D4FC00EB6A00D82D90354">
-            <Directory Id="dir6163A1C8CE4F122D38CDDD4B73BC48F1" Name="themes" />
-        </DirectoryRef>
-    </Fragment>
-    <Fragment>
-        <DirectoryRef Id="dir7D59FD8820EE5C05AEEA2C71CF595FAB">
-            <Directory Id="dir6837CEFDC2A179C207C22E1FF2FFB3DA" Name="extensions" />
-        </DirectoryRef>
-    </Fragment>
-    <Fragment>
-        <DirectoryRef Id="dir5A42F052FBD25B029CA374E04892090A">
-            <Directory Id="dir75D105469B100D9CAABAC938E9376049" Name="bootsstrap" />
+        <DirectoryRef Id="dir3639D6082ADF859F076301218C22722C">
+            <Directory Id="dir5E40BCB96F4626297F64AF1752A89C1F" Name="jquery" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -515,8 +891,8 @@
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir5A42F052FBD25B029CA374E04892090A">
-            <Directory Id="dir7D59FD8820EE5C05AEEA2C71CF595FAB" Name="linq_3.2.1" />
+        <DirectoryRef Id="dir30C36BFE81483D4605F25C0DCFB0B6DF">
+            <Directory Id="dir7D2E6CFA558645BC992773D4FD4DEA51" Name="fonts" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -525,23 +901,23 @@
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir4B633E089D9D38A139404021AE102ECC">
-            <Directory Id="dir882B6DE7DF1CAC12C30A61B1E5D5520A" Name="fonts" />
+        <DirectoryRef Id="dirE0E84506161349BA7FA400DEF7935928">
+            <Directory Id="dir8893AA69C4EBE139BCE752805C9AA399" Name="SearchPanes-1.2.2" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir5A42F052FBD25B029CA374E04892090A">
-            <Directory Id="dir8BE880DFE8CBF5CC798DB2BFF3B1967F" Name="jquery" />
+        <DirectoryRef Id="dir3639D6082ADF859F076301218C22722C">
+            <Directory Id="dir8922CCB50C98B054F51B800AD9D9C1D1" Name="angular" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dirD53D23725E9BAF44CB5DFABE1B12CA61">
-            <Directory Id="dir98139308D624C86AE73B5B954E672AE7" Name="gpg_keys" />
+        <DirectoryRef Id="dirE0E84506161349BA7FA400DEF7935928">
+            <Directory Id="dir9D5E347453F487A5F45C7FEE64BA5CD6" Name="DataTables-1.10.23" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir5A42F052FBD25B029CA374E04892090A">
-            <Directory Id="dirA13C8244F4C5C09298B452D7B9E4055A" Name="angular" />
+        <DirectoryRef Id="dirE540AA690E4CBF1492179D26DA33496C">
+            <Directory Id="dirA434A17CDE2DC7BDB08B4BA87FC70594" Name="js" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -550,13 +926,23 @@
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir5A42F052FBD25B029CA374E04892090A">
-            <Directory Id="dirBC63A6419FC9D64B269F809BEDDFBF95" Name="sprintf" />
+        <DirectoryRef Id="dir8893AA69C4EBE139BCE752805C9AA399">
+            <Directory Id="dirB751F690F66FDC67FB7DA124B91AD9DD" Name="css" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir5A42F052FBD25B029CA374E04892090A">
-            <Directory Id="dirBF7425B836D1108CD473CA388783DF97" Name="boostrap-4.0.0" />
+        <DirectoryRef Id="dir481975AD24F078E9A9AE227CFD8B7ECB">
+            <Directory Id="dirB9C68F520F6CC5729D3BD9604D5F877D" Name="gpg_keys" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir0FCC6B476E431C599A5F09561E1D6CF0">
+            <Directory Id="dirBA766E3EB62D29F408FDFC589B808B48" Name="test" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dirE540AA690E4CBF1492179D26DA33496C">
+            <Directory Id="dirC053232B93004A9B53C24F0CBB78FBED" Name="css" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
@@ -570,28 +956,38 @@
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dirD53D23725E9BAF44CB5DFABE1B12CA61">
-            <Directory Id="dirC87BBB18BD798B1F355CABFBE665B30C" Name="build" />
+        <DirectoryRef Id="dir8893AA69C4EBE139BCE752805C9AA399">
+            <Directory Id="dirC98F28A9448E1F688CDB59B0138E09BA" Name="js" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir4B633E089D9D38A139404021AE102ECC">
-            <Directory Id="dirCF0067B3114D4FC00EB6A00D82D90354" Name="alertify" />
+        <DirectoryRef Id="dir3639D6082ADF859F076301218C22722C">
+            <Directory Id="dirE0E84506161349BA7FA400DEF7935928" Name="DataTables" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir4B633E089D9D38A139404021AE102ECC">
-            <Directory Id="dirD17B2A2D5B5B1129AC296BE29B41A399" Name="bootstrap-4.0.0" />
+        <DirectoryRef Id="dirE0E84506161349BA7FA400DEF7935928">
+            <Directory Id="dirE540AA690E4CBF1492179D26DA33496C" Name="Buttons-1.6.5" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir7D59FD8820EE5C05AEEA2C71CF595FAB">
-            <Directory Id="dirD483CB950AB308289648C2A700FE6601" Name="test" />
+        <DirectoryRef Id="dir3FFD3D310D6D92F570CDB5F12CECA3D6">
+            <Directory Id="dirE899C012B3A41B3D382E7C771A93E37E" Name="css" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
-        <DirectoryRef Id="dir7D59FD8820EE5C05AEEA2C71CF595FAB">
-            <Directory Id="dirD53D23725E9BAF44CB5DFABE1B12CA61" Name="util" />
+        <DirectoryRef Id="dir3639D6082ADF859F076301218C22722C">
+            <Directory Id="dirEE45A05CC6A05B7AB8CBCF683333D77B" Name="alertify" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir9D5E347453F487A5F45C7FEE64BA5CD6">
+            <Directory Id="dirF00562A9A685FEF384040CFDCFAE526A" Name="images" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <DirectoryRef Id="dir9D5E347453F487A5F45C7FEE64BA5CD6">
+            <Directory Id="dirF55C8E0F83CCD39C19603DC4221A5D1E" Name="css" />
         </DirectoryRef>
     </Fragment>
     <Fragment>
