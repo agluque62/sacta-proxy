@@ -42,13 +42,13 @@
 		[] Modo de Funcionamiento.
 		[] Conexion de la base de datos.
 [x] Controlar activación / desactivación en los modos PPAL/RSVA...
-[] Instalador del servicio.
-	[] Incluir Opciones de Instalacion
-		[] Modo CD30/Ulises.
-		[] Modo Simple/CLUSTER.
-		[] IP para la conexión a Base de datos (en caso de CLUSTER debe ser virtual)
-		[] Temporizacion para el acceso de la base de datos.
-	[] Incluir las DLL de los paquetes...
+[x] Instalador del servicio.
+	[x] Incluir Opciones de Instalacion
+		[x] Modo CD30/Ulises.
+		[x] Modo Simple/CLUSTER.
+		[x] IP para la conexión a Base de datos (en caso de CLUSTER debe ser virtual)
+		[x] Temporizacion para el acceso de la base de datos.
+	[x] Incluir las DLL de los paquetes...
 		[x] MySql
 [] Conexion con Base de Datos.
 	[] Usuarios.
