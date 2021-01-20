@@ -31,8 +31,12 @@ namespace sacta_proxy.helpers
         {
         }
         public UdpSocket(string ip, int port)
+            : this (new IPEndPoint(ip != null ? IPAddress.Parse(ip) : IPAddress.Any, port))
         {
-            _Udp = new UdpClient(new IPEndPoint(ip != null ? IPAddress.Parse(ip) : IPAddress.Any, port));
+        }
+        public UdpSocket(IPEndPoint ep)
+        {
+            _Udp = new UdpClient(ep);
 
             if (Environment.OSVersion.Platform != PlatformID.Unix)
             {
@@ -44,6 +48,7 @@ namespace sacta_proxy.helpers
             }
 
             _Datagrams = new Queue<DataGram>();
+
         }
         ~UdpSocket()
         {

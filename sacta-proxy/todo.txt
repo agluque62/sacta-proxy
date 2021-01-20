@@ -51,13 +51,13 @@
 	[x] Incluir las DLL de los paquetes...
 		[x] MySql
 [] Conexion con Base de Datos.
-	[] Usuarios.
-		[] Para CD30.
+	[x] Usuarios.
+		[x] Para CD30.
 		[x] Para ULISES.
-	[] Inclusion de Historicos.
-		[] Para CD30.
+	[x] Inclusion de Historicos.
+		[x] Para CD30.
 		[x] Para ULISES.
 	[] Test de Configuracion de Sectores con datos de Base de Datos.
 		[] Para CD30.
 		[] Para ULISES.
-	[] Supervisión de Presencia de la conexión a la base de datos.
+	[x] Supervisión de Presencia de la conexión a la base de datos.
