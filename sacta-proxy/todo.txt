@@ -64,10 +64,10 @@
 		[] Para ULISES.
 	[x] Supervisión de Presencia de la conexión a la base de datos.
 	[] Documentacion
-		[] Descripcion General
-		[] Guia de Instalación y Configuración.
-		[] Manual de Usuario.
+		[x] Descripcion General
+		[x] Guia de Instalación y Configuración.
+		[x] Manual de Usuario.
 		[] Protocolo de Pruebas.
-[] Relacionar el Tipo de SCV con la versión del protocolo.
+[x] Relacionar el Tipo de SCV con la versión del protocolo.
 
 
