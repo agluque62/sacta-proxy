@@ -64,5 +64,21 @@ namespace sacta_proxy_tests
             eq.Enqueue("4", () => { Debug.WriteLine("Evento 4"); });
             eq.ControlledStop();
         }
+        [TestMethod]
+        public void LastErrorsTests()
+        {
+            var PS = new ProcessStatusControl();
+
+            PS.SignalWarning<GenericUnitTest>("Warning #001", null);
+            PS.SignalFatal<GenericUnitTest>("Fatal #001", null);
+            PS.SignalWarning<GenericUnitTest>("Warning #002", null);
+            PS.SignalFatal<GenericUnitTest>("Fatal #002", null);
+            PS.SignalWarning<GenericUnitTest>("Warning #003", null);
+            PS.SignalFatal<GenericUnitTest>("Fatal #003", null);
+            PS.SignalWarning<GenericUnitTest>("Warning #004", null);
+            PS.SignalFatal<GenericUnitTest>("Fatal #004", null);
+            PS.SignalWarning<GenericUnitTest>("Warning #005", null);
+            PS.SignalFatal<GenericUnitTest>("Fatal #005", null);
+        }
     }
 }

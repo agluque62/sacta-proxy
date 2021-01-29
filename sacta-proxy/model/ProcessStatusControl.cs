@@ -12,27 +12,35 @@ namespace sacta_proxy.model
     public class ProcessStatusControl
     {
         ProcessStates State { get; set; }
-        private string LastError { get; set; }
+        private List<string> LastErrors { get; set; }
 
         public ProcessStatusControl()
         {
             State = ProcessStates.Stopped;
-            LastError = "";
+            LastErrors = new List<string>();
         }
         public void Set(ProcessStates state, string strError="")
         {
             State = state;
-            LastError = strError;
+            if (LastErrors.Count >= 8)
+                LastErrors.RemoveAt(0);
+            LastErrors.Add(strError);
         }
         public override string ToString()
         {
-            return $"{LastError}";
+            return $"{LastErrors.Aggregate((i, j) => i + " ##\n" + j)}";
         }
         public void SignalFatal<T>(string cause, History history)
         {
             Set(ProcessStates.Error, cause);
             history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
             Logger.Fatal<T>(cause);
+        }
+        public void SignalWarning<T>(string cause, History history)
+        {
+            Set(ProcessStates.Error, cause);
+            history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
+            Logger.Warn<T>(cause);
         }
         public object Status
         {
