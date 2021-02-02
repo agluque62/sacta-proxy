@@ -1,0 +1,13 @@
+﻿{
+  "IpInterna": "127.0.0.1",
+  "PuertoInterno": 2000,
+  "PuertoWeb": 8092,
+  "IpsCluster": [
+    {
+      "Id": "Lan1",
+      "IpF": "127.0.0.1",
+      "Msk": "255,255,255,0",
+      "IpV": "127.0.0.1"
+    }
+  ]
+}
