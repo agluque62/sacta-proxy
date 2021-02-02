@@ -2,305 +2,312 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using NLog;
 using MySql.Data.MySqlClient;
 using System.Timers;
 
 using ClusterLib.Properties;
 //using UtilitiesCD40;
 
+using helpers;
+
 namespace ClusterLib
 {
-   public enum MsgType { Activate = 1, Deactivate, GetState }
+    public enum MsgType { Activate = 1, Deactivate, GetState }
 
-   public enum NodeState { NoValid, Activating, Active, NoActive }
+    public enum NodeState { NoValid, Activating, Active, NoActive }
 
-   [Serializable]
-   public class NodeInfo
-   {
-       public string Name;
-       public string AdapterIp1;
-       public string AdapterIp2;
-       public string VirtualIp1;
-       public string VirtualIp2;
-       public string ReplicationServiceState;
+    [Serializable]
+    public class NodeInfo
+    {
+        public string Name;
+        public string AdapterIp1;
+        public string AdapterIp2;
+        public string VirtualIp1;
+        public string VirtualIp2;
+        public string ReplicationServiceState;
 
-       [NonSerialized]
-       private static object _Sync = new object();
+        [NonSerialized]
+        private static object _Sync = new object();
 
-       [NonSerialized]
-       private MySqlConnection MySqlConnectionToCd40;
+        [NonSerialized]
+        private MySqlConnection MySqlConnectionToCd40;
 
-       [NonSerialized]
-       public string LocalPrivateIp;
-       private string _LocalPrivateIp
-       {
-           get { return _LocalPrivateIp; }
-       }
-       [NonSerialized]
-       public string RemotePrivateIp;
-       private string _RemotePrivateIp
-       {
-           get { return _RemotePrivateIp; }
-       }
+        [NonSerialized]
+        public string LocalPrivateIp;
+        private string _LocalPrivateIp
+        {
+            get { return _LocalPrivateIp; }
+        }
+        [NonSerialized]
+        public string RemotePrivateIp;
+        private string _RemotePrivateIp
+        {
+            get { return _RemotePrivateIp; }
+        }
 
-       [NonSerialized]
-       private string _MaintenanceServerIpForTraps;
+        [NonSerialized]
+        private string _MaintenanceServerIpForTraps;
 
-       [NonSerialized]
-       private bool _NodoLocal;
+        [NonSerialized]
+        private bool _NodoLocal;
 
 
-       public NodeState State
-       {
-           get { return _State; }
-       }
+        public NodeState State
+        {
+            get { return _State; }
+        }
 
-       public DateTime StateBegin
-       {
-           get { return _StateBegin; }
-       }
+        public DateTime StateBegin
+        {
+            get { return _StateBegin; }
+        }
 
-       public string ChangeCause
-       {
-           get { return _ChangeCause; }
-       }
+        public string ChangeCause
+        {
+            get { return _ChangeCause; }
+        }
 
-       public int ValidAdapters
-       {
-           get { return _ValidAdapters; }
-           set
-           {
-               int changes = _FirstTime ? 0x03 : (value ^ _ValidAdapters);
+        public int ValidAdaptersMask
+        {
+            // todo
+            get { return _ValidAdapters; }
+            set
+            {
+                int changes = _FirstTime ? 0x03 : (value ^ _ValidAdapters);
 
-               if ((changes & 1) != 0)
-               {
-                   if ((value & 1) == 0)
-                   {
-                       _Logger.Warn(Resources.AdapterNotOperational, 1, AdapterIp1);
-                   }
-                   else
-                   {
-                       _Logger.Info(Resources.AdapterDetected, 1, AdapterIp1);
-                   }
-               }
-               if ((changes & 2) != 0)
-               {
-                   if ((value & 2) == 0)
-                   {
-                       _Logger.Warn(Resources.AdapterNotOperational, 2, AdapterIp2);
-                   }
-                   else
-                   {
-                       _Logger.Info(Resources.AdapterDetected, 2, AdapterIp2);
-                   }
-               }
-
-               _ValidAdapters = value;
-               _FirstTime = false;
-           }
-       }
-
-       public NodeInfo()
-       {
-           _NodoLocal = false;
-           ReplicationServiceState = "0";
-
-           /** AGL. 20170905. Para poder funcionar los contructores por defecto...
-           Settings st = Settings.Default;
-           string cadenaConexion;
-           if (st.CadenaConexion.Length > 0)
-           {
-               cadenaConexion = st.CadenaConexion;
-               MySqlConnectionToCd40 = new MySql.Data.MySqlClient.MySqlConnection(cadenaConexion);
-           }
-            * ***********/
-       }
-
-       public NodeInfo(ClusterSettings settings)
-       {
-           _NodoLocal = true;
-
-           Name = settings.NodeId;
-           AdapterIp1 = settings.AdapterIp1;
-           AdapterIp2 = settings.AdapterIp2;
-           VirtualIp1 = settings.ClusterIp1 + "/" + settings.ClusterMask1;
-           VirtualIp2 = settings.ClusterIp2 + "/" + settings.ClusterMask2;
-           RemotePrivateIp = settings.EpIp;
-           LocalPrivateIp = settings.Ip;
-           _MaintenanceServerIpForTraps = settings.MaintenanceServerForTraps;
-
-           ReplicationServiceState = "0";
-
-           Settings st = Settings.Default;
-           string cadenaConexion;
-           if (st.CadenaConexion.Length > 0)
-           {
-               cadenaConexion = st.CadenaConexion;
-               MySqlConnectionToCd40 = new MySql.Data.MySqlClient.MySqlConnection(cadenaConexion);
-           }
-       }
-
-       public void SetState(NodeState state, string changeCause)
-       {
-           if (state != _State)
-           {
-               if (changeCause != null)
-               {
-                   _Logger.Info(changeCause);
-               }
-
-               //UtilitiesCD40.GeneraIncidencias.StartSnmp(AdapterIp1, _MaintenanceServerIpForTraps);
-
-               _State = state;
-               _StateBegin = DateTime.Now;
-               _ChangeCause = changeCause;
-
-               /*
-                switch (_State)
+                if ((changes & 1) != 0)
                 {
-                    case NodeState.Active:
-                       if (_NodoLocal)
-                            CreateEvent(201);
-                        break;
-                    case NodeState.NoActive:
-                       if (_NodoLocal)
-                            CreateEvent(202);
-                        break;
-                    case NodeState.NoValid:
-                        CreateEvent(203);
-                        break;
-                    default:
-                        break;
+                    if ((value & 1) == 0)
+                    {
+                        Logger.Warn<ClusterState>(String.Format(Resources.AdapterNotOperational, 1, AdapterIp1));
+                    }
+                    else
+                    {
+                        Logger.Info<ClusterState>(String.Format(Resources.AdapterDetected, 1, AdapterIp1));
+                    }
                 }
-                */
-           }
-       }
+                if ((changes & 2) != 0)
+                {
+                    if ((value & 2) == 0)
+                    {
+                        Logger.Warn<ClusterState>(String.Format(Resources.AdapterNotOperational, 2, AdapterIp2));
+                    }
+                    else
+                    {
+                        Logger.Info<ClusterState>(String.Format(Resources.AdapterDetected, 2, AdapterIp2));
+                    }
+                }
 
-       private void CreateEvent(int idIncidencia)
-       {
-           string consulta;
-           string desc = "";
-           System.Data.DataSet ds = new System.Data.DataSet();
+                _ValidAdapters = value;
+                _FirstTime = false;
+            }
+        }
+
+        public NodeInfo()
+        {
+            _NodoLocal = false;
+            ReplicationServiceState = "0";
+
+            /** AGL. 20170905. Para poder funcionar los contructores por defecto...
+            Settings st = Settings.Default;
+            string cadenaConexion;
+            if (st.CadenaConexion.Length > 0)
+            {
+                cadenaConexion = st.CadenaConexion;
+                MySqlConnectionToCd40 = new MySql.Data.MySqlClient.MySqlConnection(cadenaConexion);
+            }
+             * ***********/
+        }
+
+        public NodeInfo(ClusterSettings settings)
+        {
+            _NodoLocal = true;
+
+            Name = settings.NodeId;
+
+            //AdapterIp1 = settings.AdapterIp1;
+            //AdapterIp2 = settings.AdapterIp2;
+            //VirtualIp1 = settings.ClusterIp1 + "/" + settings.ClusterMask1;
+            //VirtualIp2 = settings.ClusterIp2 + "/" + settings.ClusterMask2;
+            AdapterIp1 = settings.VirtualIps.ElementAt(0).AdapterIp;
+            AdapterIp2 = settings.VirtualIps.ElementAt(1).AdapterIp;
+            VirtualIp1 = settings.VirtualIps.ElementAt(0).ClusterIp + "/" + settings.VirtualIps.ElementAt(0).ClusterMsk;
+            VirtualIp2 = settings.VirtualIps.ElementAt(1).ClusterIp + "/" + settings.VirtualIps.ElementAt(1).ClusterMsk;
+            // La tercera no se mete por compatibilidad....
+
+            RemotePrivateIp = settings.EpIp;
+            LocalPrivateIp = settings.Ip;
+            _MaintenanceServerIpForTraps = settings.MaintenanceServerForTraps;
+
+            ReplicationServiceState = "0";
+
+            Settings st = Settings.Default;
+            string cadenaConexion;
+            if (st.CadenaConexion.Length > 0)
+            {
+                cadenaConexion = st.CadenaConexion;
+                MySqlConnectionToCd40 = new MySql.Data.MySqlClient.MySqlConnection(cadenaConexion);
+            }
+        }
+
+        public void SetState(NodeState state, string changeCause)
+        {
+            if (state != _State)
+            {
+                if (changeCause != null)
+                {
+                    Logger.Info<ClusterState>(changeCause);
+                }
+
+                //UtilitiesCD40.GeneraIncidencias.StartSnmp(AdapterIp1, _MaintenanceServerIpForTraps);
+
+                _State = state;
+                _StateBegin = DateTime.Now;
+                _ChangeCause = changeCause;
+
+                /*
+                 switch (_State)
+                 {
+                     case NodeState.Active:
+                        if (_NodoLocal)
+                             CreateEvent(201);
+                         break;
+                     case NodeState.NoActive:
+                        if (_NodoLocal)
+                             CreateEvent(202);
+                         break;
+                     case NodeState.NoValid:
+                         CreateEvent(203);
+                         break;
+                     default:
+                         break;
+                 }
+                 */
+            }
+        }
+
+        //private void CreateEvent(int idIncidencia)
+        //{
+        //    string consulta;
+        //    string desc = "";
+        //    System.Data.DataSet ds = new System.Data.DataSet();
 
 
-           lock (_Sync)
-           {
-               try
-               {
-                   if (MySqlConnectionToCd40.State != System.Data.ConnectionState.Open)
-                       MySqlConnectionToCd40.Open();
+        //    lock (_Sync)
+        //    {
+        //        try
+        //        {
+        //            if (MySqlConnectionToCd40.State != System.Data.ConnectionState.Open)
+        //                MySqlConnectionToCd40.Open();
 
-                   switch (Settings.Default.Idioma)
-                   {
-                       case "en":
-                           consulta = string.Format("SELECT descripcion FROM cd40.incidencias_ingles WHERE IdIncidencia={0}", idIncidencia);
-                           break;
-                       case "fr":
-                           consulta = string.Format("SELECT descripcion FROM cd40.incidencias_frances WHERE IdIncidencia={0}", idIncidencia);
-                           break;
-                       default:
-                           consulta = string.Format("SELECT descripcion FROM cd40.incidencias WHERE IdIncidencia={0}", idIncidencia);
-                           break;
-                   }
-                   MySqlDataAdapter myDataAdapter = new MySqlDataAdapter(consulta, MySqlConnectionToCd40);
-                   using (myDataAdapter)
-                   {
-                       myDataAdapter.Fill(ds, "TablaCliente");
-                       if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
-                       {
-                           desc = (string)ds.Tables[0].Rows[0]["descripcion"];
-                           desc = string.Format(desc, Name);
+        //            switch (Settings.Default.Idioma)
+        //            {
+        //                case "en":
+        //                    consulta = string.Format("SELECT descripcion FROM cd40.incidencias_ingles WHERE IdIncidencia={0}", idIncidencia);
+        //                    break;
+        //                case "fr":
+        //                    consulta = string.Format("SELECT descripcion FROM cd40.incidencias_frances WHERE IdIncidencia={0}", idIncidencia);
+        //                    break;
+        //                default:
+        //                    consulta = string.Format("SELECT descripcion FROM cd40.incidencias WHERE IdIncidencia={0}", idIncidencia);
+        //                    break;
+        //            }
+        //            MySqlDataAdapter myDataAdapter = new MySqlDataAdapter(consulta, MySqlConnectionToCd40);
+        //            using (myDataAdapter)
+        //            {
+        //                myDataAdapter.Fill(ds, "TablaCliente");
+        //                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+        //                {
+        //                    desc = (string)ds.Tables[0].Rows[0]["descripcion"];
+        //                    desc = string.Format(desc, Name);
 
-                           consulta = string.Format("INSERT INTO cd40.historicoincidencias VALUES ('{0}',0,'CLUSTER',4,{1},NOW(),NULL,'{2}',NULL)", Settings.Default.Sistema, idIncidencia, desc);
-                           MySqlCommand myCommand = new MySqlCommand(consulta, MySqlConnectionToCd40);
-                           myCommand.ExecuteNonQuery();
-                       }
-                   }
-               }
-               catch (MySqlException mEx)
-               {
-                   _Logger.Error(mEx, mEx.Message);
-               }
-               finally
-               {
-                   //UtilitiesCD40.GeneraIncidencias.SendTrap(AdapterIp1, idIncidencia.ToString(), desc);
+        //                    consulta = string.Format("INSERT INTO cd40.historicoincidencias VALUES ('{0}',0,'CLUSTER',4,{1},NOW(),NULL,'{2}',NULL)", Settings.Default.Sistema, idIncidencia, desc);
+        //                    MySqlCommand myCommand = new MySqlCommand(consulta, MySqlConnectionToCd40);
+        //                    myCommand.ExecuteNonQuery();
+        //                }
+        //            }
+        //        }
+        //        catch (MySqlException mEx)
+        //        {
+        //            Logger.Error(mEx, mEx.Message);
+        //        }
+        //        finally
+        //        {
+        //            //UtilitiesCD40.GeneraIncidencias.SendTrap(AdapterIp1, idIncidencia.ToString(), desc);
 
-                   MySqlConnectionToCd40.Close();
-               }
-           }
-       }
+        //            MySqlConnectionToCd40.Close();
+        //        }
+        //    }
+        //}
 
-       public override string ToString()
-       {
-           if (State == NodeState.NoValid)
-           {
-               return "   " + Resources.NodeNotOperational;
-           }
+        public override string ToString()
+        {
+            if (State == NodeState.NoValid)
+            {
+                return "   " + Resources.NodeNotOperational;
+            }
 
-           return string.Format("   {0,-18}: {1}\n   {2,-18}: {3}\n   {4,-18}: {5}\n   {6,-18}: {7}\n   {8,-18}: {9}\n   {10,-18}: {11}\n   {12,-18}: {13}",
-               Resources.Name, Name, Resources.State, State, Resources.StateBegin, StateBegin,
-               Resources.Adapter1, (ValidAdapters & 1) != 0 ? AdapterIp1 : Resources.NotOperational,
-               Resources.Adapter2, (ValidAdapters & 2) != 0 ? AdapterIp2 : Resources.NotOperational,
-               "Ip Virtual 1", VirtualIp1, "Ip Virtual 2", VirtualIp2);
-       }
+            return string.Format("   {0,-18}: {1}\n   {2,-18}: {3}\n   {4,-18}: {5}\n   {6,-18}: {7}\n   {8,-18}: {9}\n   {10,-18}: {11}\n   {12,-18}: {13}",
+                Resources.Name, Name, Resources.State, State, Resources.StateBegin, StateBegin,
+                Resources.Adapter1, (ValidAdaptersMask & 1) != 0 ? AdapterIp1 : Resources.NotOperational,
+                Resources.Adapter2, (ValidAdaptersMask & 2) != 0 ? AdapterIp2 : Resources.NotOperational,
+                "Ip Virtual 1", VirtualIp1, "Ip Virtual 2", VirtualIp2);
+        }
 
-       public void UpdateInfo(NodeInfo n)
-       {
-           this.Name = n.Name;
-           this.AdapterIp1 = n.AdapterIp1;
-           this.AdapterIp2 = n.AdapterIp2;
-           this.VirtualIp1 = n.VirtualIp1;
-           this.VirtualIp2 = n.VirtualIp2;
-           this.SetState(n.State, n.ChangeCause);
-           this.ValidAdapters = n.ValidAdapters;
-           this.ReplicationServiceState = n.ReplicationServiceState;
-       }
+        public void UpdateInfo(NodeInfo n)
+        {
+            this.Name = n.Name;
+            this.AdapterIp1 = n.AdapterIp1;
+            this.AdapterIp2 = n.AdapterIp2;
+            this.VirtualIp1 = n.VirtualIp1;
+            this.VirtualIp2 = n.VirtualIp2;
+            this.SetState(n.State, n.ChangeCause);
+            this.ValidAdaptersMask = n.ValidAdaptersMask;
+            this.ReplicationServiceState = n.ReplicationServiceState;
+        }
 
-       #region Private
+        #region Private
 
-       private static Logger _Logger = LogManager.GetCurrentClassLogger();
+        private NodeState _State = NodeState.NoValid;
+        private DateTime _StateBegin;
+        private string _ChangeCause;
+        private int _ValidAdapters = 0;
+        private bool _FirstTime = false;
 
-       private NodeState _State = NodeState.NoValid;
-       private DateTime _StateBegin;
-       private string _ChangeCause;
-       private int _ValidAdapters = 0;
-       private bool _FirstTime = false;
+        #endregion
+    }
 
-       #endregion
-   }
+    [Serializable]
+    public class MasterStatus
+    {
+        public string File;
+        public string Position;
+    }
 
-   [Serializable]
-   public class MasterStatus
-   {
-       public string File;
-       public string Position;
-   }
+    [Serializable]
+    public class SlaveStatus
+    {
+        public string Master_Log_File;
+        public string Read_Master_Log_Pos;
+        public string Last_Errno;
+        public string Last_IO_Errno;
+        public string Last_SQL_Errno;
+    }
 
-   [Serializable]
-   public class SlaveStatus
-   {
-       public string Master_Log_File;
-       public string Read_Master_Log_Pos;
-       public string Last_Errno;
-       public string Last_IO_Errno;
-       public string Last_SQL_Errno;
-   }
+    [Serializable]
+    public class DataReplicacionState
+    {
+        public MasterStatus Master;
+        public SlaveStatus Slave;
 
-   [Serializable]
-   public class DataReplicacionState
-   {
-       public MasterStatus Master;
-       public SlaveStatus Slave;
+        public DataReplicacionState()
+        {
+            Master = new MasterStatus();
+            Slave = new SlaveStatus();
+        }
+    }
 
-       public DataReplicacionState()
-       {
-           Master = new MasterStatus();
-           Slave = new SlaveStatus();
-       }
-   }
-
-   [Serializable]
+    [Serializable]
     public class ClusterState
     {
         public NodeInfo LocalNode;
@@ -318,13 +325,13 @@ namespace ClusterLib
             RemoteNode = new NodeInfo();
             DataReplication = new DataReplicacionState();
 
-           /** AGL. 20170905. Para poder funcionar los contructores por defecto...
-            _ReplicationServiceTimer = new Timer(_ReplicationServiceInterval);
-            _ReplicationServiceTimer.AutoReset = false;
-            _ReplicationServiceTimer.Elapsed += ReplicationServiceTask;
+            /** AGL. 20170905. Para poder funcionar los contructores por defecto...
+             _ReplicationServiceTimer = new Timer(_ReplicationServiceInterval);
+             _ReplicationServiceTimer.AutoReset = false;
+             _ReplicationServiceTimer.Elapsed += ReplicationServiceTask;
 
-            ReplicationServiceTask(null, null);
-            * */
+             ReplicationServiceTask(null, null);
+             * */
         }
 
         public ClusterState(ClusterSettings settings)
@@ -348,25 +355,39 @@ namespace ClusterLib
 
         void ReplicationServiceTask(object sender, ElapsedEventArgs e)
         {
-            // Cada servidor se va a encargar de recopilar la información del estado 
-            // del servicio de la replicación
-            string proceso = "replication_status.bat";
-            LocalNode.ReplicationServiceState = ExecCommand(PrepareCommand(proceso)).ToString();
-            Console.WriteLine("Replication status: " + LocalNode.ReplicationServiceState);
+            try
+            {
+                // Cada servidor se va a encargar de recopilar la información del estado 
+                // del servicio de la replicación
+                string proceso = "replication_status.bat";
+                LocalNode.ReplicationServiceState = ExecCommand(PrepareCommand(proceso)).ToString();
+                Console.WriteLine("Replication status: " + LocalNode.ReplicationServiceState);
 
-            // Cada servidor va a recopilar la información del 
-            // estado de los datos de la replicación propios
-            GetDataReplicationStatus();
-            GetInfo();
+                // Cada servidor va a recopilar la información del 
+                // estado de los datos de la replicación propios
+                GetDataReplicationStatus();
+                GetInfo();
+            }
+            catch (Exception x)
+            {
+                Logger.Exception<ClusterState>(x);
+            }
         }
 
         private void GetDataReplicationStatus()
         {
-            // Ejecuta el bat data_replication_status
-            // que va a generar los ficheros de texto
-            // estado_data_master.txt y estado_data_slave.txt.
-            string proceso = "data_replication_status.bat";
-            ExecCommand(PrepareCommand(proceso));
+            try
+            {
+                // Ejecuta el bat data_replication_status
+                // que va a generar los ficheros de texto
+                // estado_data_master.txt y estado_data_slave.txt.
+                string proceso = "data_replication_status.bat";
+                ExecCommand(PrepareCommand(proceso));
+            }
+            catch (Exception x)
+            {
+                Logger.Exception<ClusterState>(x);
+            }
         }
 
         private void GetInfo()
@@ -433,7 +454,7 @@ namespace ClusterLib
             // OJO CON LAS CLAVES!!!!!!!
             string argumentos = LocalNode.RemotePrivateIp;
 
-            System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo("%SystemRoot%\\Sysnative\\cmd.exe","/c" + proceso);
+            System.Diagnostics.ProcessStartInfo p = new System.Diagnostics.ProcessStartInfo("%SystemRoot%\\Sysnative\\cmd.exe", "/c" + proceso);
             p.FileName = proceso; p.Arguments = argumentos;
 
             p.CreateNoWindow = false;
@@ -441,7 +462,7 @@ namespace ClusterLib
             p.WorkingDirectory = System.IO.Directory.GetCurrentDirectory();
             p.RedirectStandardError = true;
             p.RedirectStandardOutput = true;
-            
+
             return p;
         }
 
