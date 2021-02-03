@@ -19,6 +19,9 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "NuSactaProxySetup", "Setup\
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Cluster+", "Cluster+", "{6A2CE122-A741-49D2-A761-04C0586FE59B}"
+	ProjectSection(SolutionItems) = preProject
+		todo.txt = todo.txt
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterSrv", "SoftCluster\ClusterSrv\ClusterSrv.csproj", "{00234A06-85A1-40B0-B6BB-1B664D7D8F1C}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -30,6 +33,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "SoftCluster\Utilities\Utilities.csproj", "{822F500D-ADB8-4BB1-8A1C-E9FEAFF369B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterLib2", "SoftCluster\ClusterLib2\ClusterLib2.csproj", "{E831E9A6-7AD8-4F9A-BEE4-979CDC2256F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterNodeSimul", "SoftCluster\ClusterNodeSimul\ClusterNodeSimul.csproj", "{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -145,6 +150,18 @@ Global
 		{E831E9A6-7AD8-4F9A-BEE4-979CDC2256F0}.Release|x64.Build.0 = Release|Any CPU
 		{E831E9A6-7AD8-4F9A-BEE4-979CDC2256F0}.Release|x86.ActiveCfg = Release|Any CPU
 		{E831E9A6-7AD8-4F9A-BEE4-979CDC2256F0}.Release|x86.Build.0 = Release|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Debug|x64.Build.0 = Debug|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Debug|x86.Build.0 = Debug|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Release|x64.ActiveCfg = Release|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Release|x64.Build.0 = Release|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Release|x86.ActiveCfg = Release|Any CPU
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +172,7 @@ Global
 		{F4A852F5-4DA4-4B99-A1D3-C881D12E8488} = {6A2CE122-A741-49D2-A761-04C0586FE59B}
 		{822F500D-ADB8-4BB1-8A1C-E9FEAFF369B0} = {6A2CE122-A741-49D2-A761-04C0586FE59B}
 		{E831E9A6-7AD8-4F9A-BEE4-979CDC2256F0} = {6A2CE122-A741-49D2-A761-04C0586FE59B}
+		{C7198928-9CC6-4EF1-8CF8-5313B8EC0BBB} = {6A2CE122-A741-49D2-A761-04C0586FE59B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {075A210B-E793-4BBF-98D6-CA5833081B30}

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using MySql.Data.MySqlClient;
 using System.Timers;
 
 using ClusterLib.Properties;
@@ -28,9 +27,6 @@ namespace ClusterLib
 
         [NonSerialized]
         private static object _Sync = new object();
-
-        [NonSerialized]
-        private MySqlConnection MySqlConnectionToCd40;
 
         [NonSerialized]
         public string LocalPrivateIp;
@@ -70,35 +66,35 @@ namespace ClusterLib
         public int ValidAdaptersMask
         {
             // todo
-            get { return _ValidAdapters; }
+            get { return _ValidAdaptersMask; }
             set
             {
-                int changes = _FirstTime ? 0x03 : (value ^ _ValidAdapters);
+                int changes = _FirstTime ? 0x03 : (value ^ _ValidAdaptersMask);
 
                 if ((changes & 1) != 0)
                 {
                     if ((value & 1) == 0)
                     {
-                        Logger.Warn<ClusterState>(String.Format(Resources.AdapterNotOperational, 1, AdapterIp1));
+                        Logger.Warn<ClusterState>($"Node {Name}: " + String.Format(Resources.AdapterNotOperational, 1, AdapterIp1));
                     }
                     else
                     {
-                        Logger.Info<ClusterState>(String.Format(Resources.AdapterDetected, 1, AdapterIp1));
+                        Logger.Info<ClusterState>($"Node {Name}: " + String.Format(Resources.AdapterDetected, 1, AdapterIp1));
                     }
                 }
                 if ((changes & 2) != 0)
                 {
                     if ((value & 2) == 0)
                     {
-                        Logger.Warn<ClusterState>(String.Format(Resources.AdapterNotOperational, 2, AdapterIp2));
+                        Logger.Warn<ClusterState>($"Node {Name}: " + String.Format(Resources.AdapterNotOperational, 2, AdapterIp2));
                     }
                     else
                     {
-                        Logger.Info<ClusterState>(String.Format(Resources.AdapterDetected, 2, AdapterIp2));
+                        Logger.Info<ClusterState>($"Node {Name}: " + String.Format(Resources.AdapterDetected, 2, AdapterIp2));
                     }
                 }
 
-                _ValidAdapters = value;
+                _ValidAdaptersMask = value;
                 _FirstTime = false;
             }
         }
@@ -141,23 +137,26 @@ namespace ClusterLib
 
             ReplicationServiceState = "0";
 
-            Settings st = Settings.Default;
-            string cadenaConexion;
-            if (st.CadenaConexion.Length > 0)
-            {
-                cadenaConexion = st.CadenaConexion;
-                MySqlConnectionToCd40 = new MySql.Data.MySqlClient.MySqlConnection(cadenaConexion);
-            }
+            // AGL, esto era para insertar historicos, lo cual ya no se hace...
+            //Settings st = Settings.Default;
+            //string cadenaConexion;
+            //if (st.CadenaConexion.Length > 0)
+            //{
+            //    cadenaConexion = st.CadenaConexion;
+            //    MySqlConnectionToCd40 = new MySql.Data.MySqlClient.MySqlConnection(cadenaConexion);
+            //}
         }
 
         public void SetState(NodeState state, string changeCause)
         {
             if (state != _State)
             {
-                if (changeCause != null)
-                {
-                    Logger.Info<ClusterState>(changeCause);
-                }
+                //if (changeCause != null)
+                //{
+                //    Logger.Info<ClusterState>($"Node {Name}: " + changeCause);
+                //}
+
+                Logger.Info<ClusterState>($"Node {Name}: Change State to {state}. Cause: {changeCause ?? ""}");
 
                 //UtilitiesCD40.GeneraIncidencias.StartSnmp(AdapterIp1, _MaintenanceServerIpForTraps);
 
@@ -261,8 +260,11 @@ namespace ClusterLib
             this.AdapterIp2 = n.AdapterIp2;
             this.VirtualIp1 = n.VirtualIp1;
             this.VirtualIp2 = n.VirtualIp2;
-            this.SetState(n.State, n.ChangeCause);
-            this.ValidAdaptersMask = n.ValidAdaptersMask;
+            //this.SetState(n.State, n.ChangeCause);
+            this._State = n._State;
+            this._StateBegin = n._StateBegin;
+            this._ChangeCause = n._ChangeCause;
+            this._ValidAdaptersMask = n._ValidAdaptersMask;
             this.ReplicationServiceState = n.ReplicationServiceState;
         }
 
@@ -271,7 +273,7 @@ namespace ClusterLib
         private NodeState _State = NodeState.NoValid;
         private DateTime _StateBegin;
         private string _ChangeCause;
-        private int _ValidAdapters = 0;
+        private int _ValidAdaptersMask = 0;
         private bool _FirstTime = false;
 
         #endregion
