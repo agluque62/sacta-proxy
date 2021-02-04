@@ -64,17 +64,8 @@
 	[x] Guia de Instalación y Configuración.
 	[x] Manual de Usuario.
 	[] Protocolo de Pruebas.
-[] Modificaciones en CLUSTER...
-	[x] Poner hasta 8 IP's virtuales.
-	[] Desarrollo de una nueva versión sin 'desactivar' la anterior.
-		[] Modelo PLUGIN con 'Reflection'
-			[x] Esquema general.
-			[] Dependencias 'externas' (JSON)
-		[] Servicio WEB
-			[x] Esquema General
-			[] REST
-			[] Páginas Web
-		[] Servicio CLUSTER
+[x] Recoger correctamente las excepciones del EventQueue (Como en CLUSTER)
+
 
 
 

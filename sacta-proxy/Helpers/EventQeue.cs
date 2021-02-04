@@ -10,6 +10,15 @@ namespace sacta_proxy.helpers
     public delegate void QEventHandler();
 	public class EventQueue
 	{
+		public event EventHandler<Exception> EventException;
+
+		public EventQueue(EventHandler<Exception> eventException = null)
+        {
+			if (eventException != null)
+            {
+				EventException += eventException;
+            }
+        }
 		/// <summary>
 		/// 
 		/// </summary>
@@ -91,7 +100,8 @@ namespace sacta_proxy.helpers
 					}
 					catch (Exception ex)
 					{
-						throw new Exception("ERROR running " + id + ": " + ex.Message);
+						EventException?.Invoke(this, new Exception("ERROR running " + id + ": " + ex.Message));
+						//throw new Exception("ERROR running " + id + ": " + ex.Message);
 					}
 				}
 			}
@@ -173,7 +183,8 @@ namespace sacta_proxy.helpers
 					}
 					catch (Exception ex)
 					{
-						throw new Exception("ERROR running " + ev.Id + ": " + ex.Message);
+						EventException?.Invoke(this, new Exception("ERROR running " + ev.Id + ": " + ex.Message));
+						//throw new Exception("ERROR running " + ev.Id + ": " + ex.Message);
 					}
 				}
 			}
