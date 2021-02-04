@@ -24,11 +24,11 @@ namespace sacta_proxy.model
             State = state;
             if (LastErrors.Count >= 8)
                 LastErrors.RemoveAt(0);
-            LastErrors.Add(strError);
+            LastErrors.Add($"({DateTime.Now.ToShortTimeString()}): {strError}");
         }
         public override string ToString()
         {
-            return $"{LastErrors.Aggregate((i, j) => i + " ##\n" + j)}";
+                return $"{String.Join(" ## ", LastErrors)}";
         }
         public void SignalFatal<T>(string cause, History history)
         {
@@ -38,8 +38,8 @@ namespace sacta_proxy.model
         }
         public void SignalWarning<T>(string cause, History history)
         {
-            Set(ProcessStates.Error, cause);
-            history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
+            Set(State, cause);
+            // history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
             Logger.Warn<T>(cause);
         }
         public object Status
