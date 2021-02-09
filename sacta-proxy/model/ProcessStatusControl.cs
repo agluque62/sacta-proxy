@@ -11,20 +11,25 @@ namespace sacta_proxy.model
     public enum ProcessStates { Stopped, Running, Error }
     public class ProcessStatusControl
     {
+        class ProcessMessage
+        {
+            public DateTime When { get; set; }
+            public string Msg { get; set; }
+        };
         ProcessStates State { get; set; }
-        private List<string> LastErrors { get; set; }
+        private List<ProcessMessage> LastErrors { get; set; }
 
         public ProcessStatusControl()
         {
             State = ProcessStates.Stopped;
-            LastErrors = new List<string>();
+            LastErrors = new List<ProcessMessage>();
         }
         public void Set(ProcessStates state, string strError="")
         {
             State = state;
             if (LastErrors.Count >= 8)
                 LastErrors.RemoveAt(0);
-            LastErrors.Add($"({DateTime.Now.ToShortTimeString()}): {strError}");
+            LastErrors.Add(new ProcessMessage() { When = DateTime.Now, Msg = strError });
         }
         public override string ToString()
         {
@@ -46,7 +51,7 @@ namespace sacta_proxy.model
         {
             get
             {
-                return new { std = State, str = ToString() };
+                return new { std = State, str = ToString(), lst=LastErrors.Where(i=>i.Msg!=string.Empty).ToList() };
             }
         }
         //public History History { get; set; }
