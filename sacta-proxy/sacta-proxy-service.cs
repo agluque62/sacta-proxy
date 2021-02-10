@@ -115,7 +115,6 @@ namespace sacta_proxy
             MainTask.Wait(TimeSpan.FromSeconds(5));
             History.Dispose();
         }
-
         protected void MainProcessing()
         {
             Logger.Info<SactaProxy>("Arrancando Servicio.");
@@ -250,9 +249,8 @@ namespace sacta_proxy
                 ids.Add(cfg.Psi.Id);
                 SectorizationPersistence.Sanitize(ids);
                 Cfg = cfg;
-
+                cfgManager.Write(Cfg);
                 Logger.Info<SactaProxy>("Servicio Configurado...");
-
             }));
             return true;
         }
@@ -282,7 +280,9 @@ namespace sacta_proxy
                 .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
             var duplicatedPos = Cfg.Psi.Sectorization.PositionsList().GroupBy(s => s)
                 .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
-            TestDuplicated(duplicatedPos, duplicatedSec, () =>
+            var duplicatedVir = Cfg.Psi.Sectorization.VirtualsList().GroupBy(s => s)
+                .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
+            TestDuplicated(duplicatedPos, duplicatedSec, duplicatedVir, () =>
             {
                 Logger.Info<SactaProxy>($"Arrancando Gestores. ProtocolVersion => {Cfg.ProtocolVersion}, InCluster => {Cfg.InCluster}");
                 // Solo arrancan los gestores cuando no hay duplicados.
@@ -562,13 +562,15 @@ namespace sacta_proxy
 
 #endregion EventManagers
 
-        void TestDuplicated(List<string> pos, List<string> sec, Action continues)
+        void TestDuplicated(List<string> pos, List<string> sec, List<string> vir, Action continues)
         {
             if (pos.Count() > 0)
-                PS.SignalFatal<SactaProxy>($"There are duplicate positions in configuration => {String.Join(",", pos)}", History);
+                PS.SignalFatal<SactaProxy>($"Existen Id de Posiciones duplicadas => {String.Join(",", pos)}", History);
             if (sec.Count() > 0)
-                PS.SignalFatal<SactaProxy>($"There are duplicate sectors in configuration => {String.Join(",", sec)}", History);
-            if (pos.Count() <= 0 && sec.Count() <= 0)
+                PS.SignalFatal<SactaProxy>($"Existen Id de Sectores Reales duplicados => {String.Join(",", sec)}", History);
+            if (vir.Count() > 0)
+                PS.SignalFatal<SactaProxy>($"Existen Id de Sectores Virtuales duplicados => {String.Join(",", vir)}", History);
+            if (pos.Count() <= 0 && sec.Count() <= 0 && vir.Count() <= 0)
                 continues();
         }
         Object Status 
@@ -593,6 +595,7 @@ namespace sacta_proxy
                 Task.Delay(TimeSpan.FromMilliseconds(1000)).Wait();
                 StartService();
 #else
+                PS.ClearMessages();
                 MainTaskConfigured = false;
 #endif
             });
