@@ -270,26 +270,26 @@
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-3">
                                                         <label for="sdom">Dominio</label>
-                                                        <input id="sdom" name="sdom" type="number" min="1" max="1" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Domain" required />
+                                                        <input id="sdom" name="sdom" type="number" min="1" max="2" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Domain" required />
                                                         <span style="color:red" ng-show="cfgform.sdom.$dirty && cfgform.sdom.$invalid">
                                                             <span ng-show="cfgform.sdom.$error.required">Este campo debe rellenarse</span>
-                                                            <span ng-show="cfgform.sdom.$error.min || cfgform.sdom.$error.max">Este campo debe estar en rango 1, 1</span>
+                                                            <span ng-show="cfgform.sdom.$error.min || cfgform.sdom.$error.max">Este campo debe estar en rango 1, 2</span>
                                                         </span>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="scen">Centro</label>
-                                                        <input id="scen" name="scen" type="number" min="100" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Center" required />
+                                                        <input id="scen" name="scen" type="number" min="1" max="255" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Center" required />
                                                         <span style="color:red" ng-show="cfgform.scen.$dirty && cfgform.scen.$invalid">
                                                             <span ng-show="cfgform.scen.$error.required">Este campo debe rellenarse</span>
-                                                            <span ng-show="cfgform.scen.$error.min || cfgform.scen.$error.max">Este campo debe estar en rango 100, 120</span>
+                                                            <span ng-show="cfgform.scen.$error.min || cfgform.scen.$error.max">Este campo debe estar en rango 1, 255</span>
                                                         </span>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="sgrp">Grupo</label>
-                                                        <input id="sgrp" name="sgrp" type="number" min="1" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.PsiGroup" required />
+                                                        <input id="sgrp" name="sgrp" type="number" min="1" max="255" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.PsiGroup" required />
                                                         <span style="color:red" ng-show="cfgform.sgrp.$dirty && cfgform.sgrp.$invalid">
                                                             <span ng-show="cfgform.sgrp.$error.required">Este campo debe rellenarse</span>
-                                                            <span ng-show="cfgform.sgrp.$error.min || cfgform.sgrp.$error.max">Este campo debe estar en rango 1, 120</span>
+                                                            <span ng-show="cfgform.sgrp.$error.min || cfgform.sgrp.$error.max">Este campo debe estar en rango 1, 255</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -320,26 +320,26 @@
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-3">
                                                         <label for="vdom">Dominio</label>
-                                                        <input id="vdom" name="vdom" type="number" min="1" max="1" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Domain" required />
+                                                        <input id="vdom" name="vdom" type="number" min="1" max="2" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Domain" required />
                                                         <span style="color:red" ng-show="cfgform.vdom.$dirty && cfgform.vdom.$invalid">
                                                             <span ng-show="cfgform.vdom.$error.required">Este campo debe rellenarse</span>
-                                                            <span ng-show="cfgform.vdom.$error.min || cfgform.vdom.$error.max">Este campo debe estar en rango 1, 1</span>
+                                                            <span ng-show="cfgform.vdom.$error.min || cfgform.vdom.$error.max">Este campo debe estar en rango 1, 2</span>
                                                         </span>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="vcen">Centro</label>
-                                                        <input id="vcen" name="vcen" type="number" min="100" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Center" required />
+                                                        <input id="vcen" name="vcen" type="number" min="1" max="255" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Center" required />
                                                         <span style="color:red" ng-show="cfgform.vcen.$dirty && cfgform.vcen.$invalid">
                                                             <span ng-show="cfgform.vcen.$error.required">Este campo debe rellenarse</span>
-                                                            <span ng-show="cfgform.vcen.$error.min || cfgform.vcen.$error.max">Este campo debe estar en rango 100, 120</span>
+                                                            <span ng-show="cfgform.vcen.$error.min || cfgform.vcen.$error.max">Este campo debe estar en rango 1, 255</span>
                                                         </span>
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="vusu">Usuario</label>
-                                                        <input id="vusu" name="vusu" type="number" min="1" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Scv" required />
+                                                        <input id="vusu" name="vusu" type="number" min="1" max="65535" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Scv" required />
                                                         <span style="color:red" ng-show="cfgform.vusu.$dirty && cfgform.vusu.$invalid">
                                                             <span ng-show="cfgform.vusu.$error.required">Este campo debe rellenarse</span>
-                                                            <span ng-show="cfgform.vusu.$error.min || cfgform.vusu.$error.max">Este campo debe estar en rango 1, 120</span>
+                                                            <span ng-show="cfgform.vusu.$error.min || cfgform.vusu.$error.max">Este campo debe estar en rango 1, 65535</span>
                                                         </span>
                                                     </div>
                                                 </div>
