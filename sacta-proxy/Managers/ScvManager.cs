@@ -205,17 +205,21 @@ namespace sacta_proxy.Managers
                                             {
                                                 ProccessSectorization(msg, (ok, error) =>
                                                 {
-                                                    if (ok)
+                                                    // Será llamado por el WorkingThread del servicio PPAL en la gestion del evento que se genere...
+                                                    lock (Locker)
                                                     {
-                                                        Logger.Info<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Processed.");
-                                                        SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 1);
+                                                        if (ok)
+                                                        {
+                                                            Logger.Info<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Processed.");
+                                                            SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 1);
+                                                        }
+                                                        else
+                                                        {
+                                                            Logger.Warn<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Rejected => {error}");
+                                                            SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 0);
+                                                        }
+                                                        GlobalState = SactaState.SendingPresences;
                                                     }
-                                                    else
-                                                    {
-                                                        Logger.Warn<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Rejected => {error}");
-                                                        SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 0);
-                                                    }
-                                                    GlobalState = SactaState.SendingPresences;
                                                 });
                                             }
                                             else
@@ -482,7 +486,7 @@ namespace sacta_proxy.Managers
                 message += UnknowSectors.Count() > 0 ? $"Unknow Sectors: {String.Join(", ", UnknowSectors)}. " : "";
                 message += duplicatedSect.Count() > 0 ? $"Duplicated Sectors: {String.Join(", ", duplicatedSect)}. " : "";
 
-                deliver(false, message);
+                // deliver(false, message);
                 // Evento para el Historico.
                 SafeLaunchEvent<SectorizationReceivedArgs>(EventSectorization, new SectorizationReceivedArgs()
                 {
@@ -490,18 +494,20 @@ namespace sacta_proxy.Managers
                     ScvId = Cfg.Id,
                     //SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
                     ReceivedMap = String.Join(",", sectorsReceived.Select(s => s.ToString())),
-                    RejectCause = message
+                    RejectCause = message,
+                    Acknowledge = (result)=> deliver(false, message)
                 }); ;
             }
             else
             {
-                deliver(true, "");
+                //deliver(true, "");
                 // Actulizar con los datos recibidos la sectorizacion global...
                 SafeLaunchEvent<SectorizationReceivedArgs>(EventSectorization, new SectorizationReceivedArgs()
                 {
                     Accepted = true,
                     ScvId = Cfg.Id,
-                    SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs)
+                    SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
+                    Acknowledge = (result) => deliver(result, "")
                 }); 
             }
         }

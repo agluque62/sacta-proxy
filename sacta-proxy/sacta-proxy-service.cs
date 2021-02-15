@@ -502,10 +502,14 @@ namespace sacta_proxy
                             // Historico
                             History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "", 
                                 SectorizationHelper.MapToString(MainManager.MapOfSectors), "Recibida de SACTA");
+                            data.Acknowledge(true);
                         }
                         else
                         {
-                            Logger.Warn<SactaProxy>($"OnScvEventSectorization. IGNORED. No all Sectorization Info Present.");
+                            //Logger.Warn<SactaProxy>($"OnScvEventSectorization. IGNORED. No all Sectorization Info Present.");
+                            History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
+                                "", SectorizationHelper.MapToString(data.SectorMap), "No todas las dependencias tienen sectorizaciones válidas.");
+                            data.Acknowledge(false);
                         }
                     }
                     else
@@ -513,6 +517,7 @@ namespace sacta_proxy
                         // Evento de Sectorizacion Rechazada. Historico
                         History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
                             "", data.ReceivedMap, data.RejectCause);
+                        data.Acknowledge(false);
                     }
                 }
                 else
