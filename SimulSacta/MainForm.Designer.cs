@@ -197,7 +197,7 @@ namespace SimulSACTA
             this.MainMenuStrip = _MainMS;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
-            this.Text = "SimulSACTA";
+            this.Text = Properties.Settings.Default.Title;// "SimulSACTA";
             _InfoCM.ResumeLayout(false);
             _MainMS.ResumeLayout(false);
             _MainMS.PerformLayout();
