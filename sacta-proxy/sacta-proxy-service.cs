@@ -40,6 +40,8 @@ namespace sacta_proxy
                 LastChange = DateTime.Now;
             }
         }
+        public Dictionary<int,int> SectorsMap { get; set; }
+        public Dictionary<int,int> PositionsMap { get; set; }
         public DependencyControl(string id)
         {
             Cfg = null;
@@ -67,6 +69,18 @@ namespace sacta_proxy
                 sectorization[item.Key] = item.Value;
             }
             SectorizationPersistence.Set(Cfg.Id, sectorization);
+        }
+        public SectMap Map(SectMap map)
+        {
+            SectMap mapped = new SectMap();
+            foreach(var item in map)
+            {
+                var newSect = Int32.Parse(item.Key);
+                var newPosi = item.Value;
+                mapped.Add(SectorsMap.ContainsKey(newSect) ? SectorsMap[newSect].ToString() : newSect.ToString(),
+                    PositionsMap.ContainsKey(newPosi) ? PositionsMap[newPosi] : newPosi);
+            }
+            return mapped;
         }
 
         private SectMap sectorization = new SectMap();
@@ -234,7 +248,9 @@ namespace sacta_proxy
                     {
                         IsMain = false,
                         Cfg = dep,
-                        Manager = dependency
+                        Manager = dependency,
+                        SectorsMap = sectorsMap,
+                        PositionsMap = positionsMap
                     });
                 });
                 /** Test de la configuracion que maneja la PSI, que debe coincidir con la configurada en BD */
@@ -488,8 +504,11 @@ namespace sacta_proxy
                         // Actualizo la Sectorizacion en la Dependencia.
                         ctrldep.MapOfSectors = data.SectorMap;
 
+                        // Mapeo la sectorizacion recibida.
+                        var MapOfSectorsMapped = ctrldep.Map(data.SectorMap);
+
                         // Actualizo la Sectorizacion en el Manager.
-                        MainManager.MergeSectorization(ctrldep.MapOfSectors);
+                        MainManager.MergeSectorization(MapOfSectorsMapped);
 
                         // Historico.
                         History.Add(HistoryItems.DepSectorizationReceivedEvent, "", ctrldep.Cfg.Id, "", SectorizationHelper.MapToString(data.SectorMap));
@@ -501,7 +520,7 @@ namespace sacta_proxy
                             (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
                             // Historico
                             History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "", 
-                                SectorizationHelper.MapToString(MainManager.MapOfSectors), "Recibida de SACTA");
+                                SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Recibida de SACTA ({data.ScvId})");
                             data.Acknowledge(true);
                         }
                         else
