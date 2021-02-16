@@ -52,7 +52,7 @@ namespace sacta_proxy.model
                 {
                     return String.Format(Description.FormatString, Dep, State, Map, Cause);
                 }
-                return $"ERROR: Codigo de Historio {Code} no encontrado en la descripcion.";
+                return $"ERROR: Codigo de Historico {Code} no encontrado en la descripcion.";
             }
             static readonly List<HistoryItemDesciption> HistoryItemsDesc = new List<HistoryItemDesciption>()
             {
