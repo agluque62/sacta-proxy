@@ -69,6 +69,7 @@ namespace sacta_proxy
                 sectorization[item.Key] = item.Value;
             }
             SectorizationPersistence.Set(Cfg.Id, sectorization);
+            LastChange = DateTime.Now;
         }
         public SectMap Map(SectMap map)
         {
