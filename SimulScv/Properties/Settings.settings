@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SimulScv.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Listen" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">10.12.60.35:15101</Value>
+    </Setting>
+    <Setting Name="SendingLan1" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">225.12.101.1:19205</Value>
+    </Setting>
+    <Setting Name="SendingLan2" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">225.212.101.1:19205</Value>
+    </Setting>
+    <Setting Name="FromLan1" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">10.12.90.1</Value>
+    </Setting>
+    <Setting Name="FromLan2" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">10.12.91.1</Value>
+    </Setting>
+    <Setting Name="Sectores" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">1,2,3,4,10,11,12</Value>
+    </Setting>
+    <Setting Name="Posiciones" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1,2,3,4,10,11</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
