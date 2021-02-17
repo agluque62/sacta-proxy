@@ -27,19 +27,41 @@ namespace sacta_proxy.model
                 ActivateSactaLogic = "AND";
             }
         }
+        public class LanItem
+        {
+            public string Ip { get; set; }
+            public string FromMask { get; set; }
+            public string McastGroup { get; set; }
+            public string McastIf { get; set; }
+            public LanItem()
+            {
+                Ip = "127.0.0.1";
+                FromMask = "127.0.0.1/24";
+                McastGroup = "225.12.101.1";
+                McastIf = "127.0.0.1";
+            }
+        }
         public class CommItem
         {
             public int Port { get; set; }
-            public string Ip1 { get; set; }
-            public string Ip2 { get; set; }
-            public string FromMask1 { get; set; }
-            public string FromMask2 { get; set; }
-            public string NetworkIf { get; set; }
+            public LanItem Lan1 { get; set; }
+            public LanItem Lan2 { get; set; }
+            public CommItem()
+            {
+                Port = 9000;
+                Lan1 = new LanItem();
+                Lan2 = new LanItem();
+            }
         }
         public class CommConfig
         {
             public CommItem Listen { get; set; }
             public CommItem SendTo { get; set; }
+            public CommConfig()
+            {
+                Listen = new CommItem();
+                SendTo = new CommItem();
+            }
         }
         public class SactaProtocolSacta
         {
@@ -49,12 +71,30 @@ namespace sacta_proxy.model
             public int SpvGrup { get; set; }
             public List<int> Psis { get; set; }
             public List<int> Spvs { get; set; }
+            public SactaProtocolSacta(bool bGenerate = false)
+            {
+                Domain = 1;
+                Center = 107;
+                PsiGroup = 110;
+                SpvGrup = 85;
+                if (bGenerate)
+                {
+                    Psis = new List<int>() { 111, 112, 113, 114, 7286, 7287, 7288, 7289 };
+                    Spvs = new List<int>() { 86, 87, 88, 89, 7266, 7267, 7268, 7269 };
+                }
+            }
         }
         public class SactaProtocolScv
         {
             public int Domain { get; set; }
             public int Center { get; set; }
             public int Scv { get; set; }
+            public SactaProtocolScv()
+            {
+                Domain = 1;
+                Center = 107;
+                Scv = 10;
+            }
         }
         public class SactaProtocolConfig
         {
@@ -63,12 +103,26 @@ namespace sacta_proxy.model
             public int SectorizationTimeout { get; set; }
             public SactaProtocolSacta Sacta { get; set; }
             public SactaProtocolScv Scv { get; set; }
+            public SactaProtocolConfig(bool bGenerate = false)
+            {
+                TickAlive = 5;
+                TimeoutAlive = 30;
+                SectorizationTimeout = 60;
+                Sacta = new SactaProtocolSacta(bGenerate);
+                Scv = new SactaProtocolScv();
+            }
         }
         public class SectorizationDataConfig
         {
             public List<int> Sectors { get; set; }
             public List<int> Positions { get; set; }
             public List<int> Virtuals { get; set; }
+            public SectorizationDataConfig()
+            {
+                Sectors = new List<int>();
+                Positions = new List<int>();
+                Virtuals = new List<int>();
+            }
         }
         public class DependecyConfig
         {
@@ -76,13 +130,32 @@ namespace sacta_proxy.model
             public CommConfig Comm { get; set; }
             public SactaProtocolConfig SactaProtocol { get; set; }
             public SectorizationDataConfig Sectorization { get; set; }
+            public DependecyConfig(bool bGenerate = false)
+            {
+                Id = "IdDep";
+                Comm = new CommConfig();
+                SactaProtocol = new SactaProtocolConfig(bGenerate);
+                Sectorization = new SectorizationDataConfig();
+            }
         }
+
         /// <summary>
         /// Datos de Configuracion,
         /// </summary>
         public GeneralConfig General { get; set; }
-        public DependecyConfig Proxy { get; set; }
+        public DependecyConfig Psi { get; set; }
         public List<DependecyConfig> Dependencies { get; set; }
+        public Configuration(bool bGenerate = false)
+        {
+            General = new GeneralConfig();
+            Psi = new DependecyConfig(bGenerate);
+            Dependencies = new List<DependecyConfig>();
+            if (bGenerate)
+            {
+                Dependencies.Add(new DependecyConfig(bGenerate) { Id = "TWR" });
+                Dependencies.Add(new DependecyConfig(bGenerate) { Id = "APP" });
+            }
+        }
     }
     public class ConfigurationManager
     {
@@ -99,7 +172,7 @@ namespace sacta_proxy.model
                 }
                 else
                 {
-                    var cfg = new Configuration();
+                    var cfg = new Configuration(true);
                     var data = JsonHelper.ToString(cfg);
                     File.WriteAllText(FileName, data);
                     deliver(cfg);
@@ -109,7 +182,6 @@ namespace sacta_proxy.model
             {
                 Logger.Exception<ConfigurationManager>(x);
             }
-
         }
         public bool Set(string ConfigurationData)
         {
@@ -125,6 +197,12 @@ namespace sacta_proxy.model
                 Logger.Exception<ConfigurationManager>(x);
             }
             return false;
+        }
+
+        public void Write(Configuration cfg)
+        {
+            var data = JsonHelper.ToString(cfg);
+            File.WriteAllText(FileName, data);
         }
 
     }

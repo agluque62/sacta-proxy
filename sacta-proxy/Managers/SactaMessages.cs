@@ -18,7 +18,7 @@ namespace sacta_proxy.Managers
 	}
 
 	[Serializable]
-	class SactaMsg
+	public class SactaMsg
 	{
 		public enum MsgType : ushort { Init = 0, SectAsk = 707, SectAnswer = 710, Presence = 1530, Sectorization = 1632 }
 		public const ushort InitId = 0x4000;
@@ -201,7 +201,7 @@ namespace sacta_proxy.Managers
 			{
 				DomainOrg = (byte)cfg.SactaProtocol.Sacta.Domain,
 				CenterOrg = (byte)cfg.SactaProtocol.Sacta.Center,
-				UserOrg = (ushort)cfg.SactaProtocol.Sacta.Psis[0],
+				UserOrg =  type== MsgType.Init || type== MsgType.Presence ? (ushort)cfg.SactaProtocol.Sacta.Spvs[0] : (ushort)cfg.SactaProtocol.Sacta.Psis[0],
 				DomainDst = (byte)cfg.SactaProtocol.Scv.Domain,
 				CenterDst = (byte)cfg.SactaProtocol.Scv.Center,
 				UserDst = (ushort)cfg.SactaProtocol.Scv.Scv
