@@ -44,6 +44,34 @@ namespace sacta_proxy.model
             }
         }
 
+        public static string SqlQueryForPositions
+        {
+            get
+            {
+                var settings = Properties.Settings.Default;
+                return settings.ScvType == 1 ? "SELECT PosicionSacta FROM top WHERE IdSistema='departamento';"
+                    : "SELECT DISTINCT NumUcs from Ucs;";
+            }
+        }
+        public static string SqlQueryForSectors
+        {
+            get
+            {
+                var settings = Properties.Settings.Default;
+                return settings.ScvType == 1 ? "SELECT NumSacta FROM sectores WHERE IdSistema='departamento' AND sectorsimple=1 AND (tipo='R');"
+                    : "SELECT idSActa FROM SectorPosicion WHERE (IdNucleo != 'ACTIVA' AND tipo='R');";
+            }
+        }
+        public static string SqlQueryForVirtuals
+        {
+            get
+            {
+                var settings = Properties.Settings.Default;
+                return settings.ScvType == 1 ? "SELECT NumSacta FROM sectores WHERE IdSistema='departamento' AND sectorsimple=1 AND (tipo='V')"
+                    : "SELECT idSActa FROM SectorPosicion WHERE(IdNucleo != 'ACTIVA' AND tipo = 'V');";
+            }
+        }
+
     }
 
 }

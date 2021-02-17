@@ -1,9 +1,4 @@
 ﻿/** */
-[] Guia de Instalacion.
-	[] Modo ULISES (en HOST)
-		[] Configurar un Adaptador de Bucle con las direcciones locales.
-[] Modificaciones en CLUSTER...
-	[] Poner hasta 4 IP's virtuales.
 [x] Configuración y gestión mapeado Sectores y Puestos entre dependencias y scv.
 	[x] En fichero de configuracion.
 	[x] En carga de configuracion.
@@ -52,22 +47,24 @@
 		[x] Temporizacion para el acceso de la base de datos.
 	[x] Incluir las DLL de los paquetes...
 		[x] MySql
-[] Conexion con Base de Datos.
+[x] Conexion con Base de Datos.
 	[x] Usuarios.
 		[x] Para CD30.
 		[x] Para ULISES.
 	[x] Inclusion de Historicos.
 		[x] Para CD30.
 		[x] Para ULISES.
-	[] Test de Configuracion de Sectores con datos de Base de Datos.
-		[] Para CD30.
-		[] Para ULISES.
+	[x] Test de Configuracion de Sectores con datos de Base de Datos.
+		[x] Para CD30.
+		[x] Para ULISES.
 	[x] Supervisión de Presencia de la conexión a la base de datos.
-	[] Documentacion
-		[x] Descripcion General
-		[x] Guia de Instalación y Configuración.
-		[x] Manual de Usuario.
-		[] Protocolo de Pruebas.
 [x] Relacionar el Tipo de SCV con la versión del protocolo.
+[] Documentacion
+	[x] Descripcion General
+	[x] Guia de Instalación y Configuración.
+	[x] Manual de Usuario.
+	[] Protocolo de Pruebas.
+[] Modificaciones en CLUSTER...
+	[] Poner hasta 4 IP's virtuales.
 
 
