@@ -11,7 +11,7 @@ using sacta_proxy.model;
 
 namespace sacta_proxy.Managers
 {
-	class PSIInfo
+	class PsiOrScvInfo
 	{
 		public int LastSectMsgId = -1;
 		public uint LastSectVersion = 0;
@@ -59,7 +59,12 @@ namespace sacta_proxy.Managers
 
 				public byte Ucs = 0;
 				public byte UcsType = 2;
-			}
+
+                public override string ToString()
+                {
+                    return $"{SectorCode}:{Ucs}";
+                }
+            }
 
 			public uint Version = 0;
 			public ushort Reserved = 0;

@@ -367,16 +367,16 @@ namespace sacta_proxy
                         ctrldep.Activity = data.ActivityOnLan;
                         PS.History.Add(HistoryItems.DepActivityEvent, "", ctrldep.Cfg.Id, data.ActivityOnLan ? "ON" : "OFF");
                         /** Actualiza el Tx del SCV */
-                        var oldEnableTx = MainManager.Manager.EnableTx;
+                        var oldEnableTx = MainManager.Manager.TxEnabled;
                         var actives = DepManagers.Where(d => d.Activity == true).ToList();
-                        MainManager.Manager.EnableTx =
+                        MainManager.Manager.TxEnabled =
                             Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 :
                             Cfg.General.ActivateSactaLogic == "AND" ? actives.Count() == DepManagers.Count() :
                             actives.Count() == DepManagers.Count();
                         /** Se genera el historico si corresponde */
-                        if (oldEnableTx != MainManager.Manager.EnableTx)
+                        if (oldEnableTx != MainManager.Manager.TxEnabled)
                         {
-                            PS.History.Add(HistoryItems.DepTxstateChange, "", MainManager.Cfg.Id, MainManager.Manager.EnableTx ? "ON" : "OFF");
+                            PS.History.Add(HistoryItems.DepTxstateChange, "", MainManager.Cfg.Id, MainManager.Manager.TxEnabled ? "ON" : "OFF");
                         }
                     }
                 }
@@ -424,7 +424,7 @@ namespace sacta_proxy
                     {
                         // Evento de Sectorizacion Rechazada. Historico
                         PS.History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
-                            "", SectorizationHelper.MapToString(data.SectorMap), data.RejectCause);
+                            "", data.ReceivedMap, data.RejectCause);
                     }
                 }
                 else
@@ -445,10 +445,9 @@ namespace sacta_proxy
                     // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
                     DepManagers.ForEach(dependency =>
                         {
-                            dependency.Manager.EnableTx = MainManager.Activity;
-                          /** Historico del Cambio */
+                            dependency.Manager.TxEnabled = MainManager.Activity;
+                            /** Historico del Cambio */
                             PS.History.Add(HistoryItems.DepTxstateChange, "", dependency.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
-
                         });
                 }
             });
@@ -463,7 +462,8 @@ namespace sacta_proxy
                 {
                     (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
                     /** Historico */
-                    PS.History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "", SectorizationHelper.MapToString(MainManager.MapOfSectors), "Peticion SCV");
+                    PS.History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "", 
+                        SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Peticion SCV");
                 }
                 else
                 {
