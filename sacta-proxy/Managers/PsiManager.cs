@@ -60,7 +60,7 @@ namespace sacta_proxy.Managers
                 TickTimer.Enabled = true;
 
                 SendInitMsg();
-                Logger.Info<PsiManager>($"PsiManager. Waiting for SCV Activity...");
+                Logger.Info<PsiManager>($"PsiManager. Waiting for SCV Activity on {Cfg.Comm.Listen.Lan1.McastIf}:{Cfg.Comm.Listen.Port} / {Cfg.Comm.Listen.Lan2.McastIf}:{Cfg.Comm.Listen.Port}");
                 PS.Set(ProcessStates.Running);
             }
             catch (Exception x)

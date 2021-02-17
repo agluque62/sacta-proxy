@@ -80,5 +80,10 @@ namespace sacta_proxy.Helpers
 
             throw new NotSupportedException("Only InterNetworkV6 or InterNetwork address families are supported.");
         }
+
+        public static bool IsInSubnet(string subnetMask, string ip)
+        {
+            return IsInSubnet(subnetMask, IPAddress.Parse(ip));
+        }
     }
 }

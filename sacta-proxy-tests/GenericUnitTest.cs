@@ -17,7 +17,7 @@ namespace sacta_proxy_tests
     public class GenericUnitTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void BuildingMsgsTest()
         {
             ushort sUser = 34;
             byte[] user = BitConverter.GetBytes(UInt16.Parse(sUser.ToString()));
@@ -34,5 +34,6 @@ namespace sacta_proxy_tests
                 //Sender.Send(to, msg);
             });
         }
+
     }
 }
