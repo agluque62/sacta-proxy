@@ -12,8 +12,8 @@ namespace sacta_proxy.model
     public enum HistoryItems 
     {
         ServiceStarted = 1,                     // USER = "", DEP = "", STATE = "", MAP="", CAUSE=""
-        ServiceFatalError = 2,                  // USER = "", DEP = "", STATE = "", MAP="", CAUSE="cause"
         ServiceEnded = 2,                       // USER = "", DEP = "", STATE = "", MAP="", CAUSE=""
+        ServiceFatalError = 3,                  // USER = "", DEP = "", STATE = "", MAP="", CAUSE="cause"
 
         UserLogin = 10,                         // USER = "user", DEP = "", STATE = "", MAP="", CAUSE=""
         UserErrorAccess = 11,                   // USER = "user", DEP = "", STATE = "", MAP="", CAUSE="error"
