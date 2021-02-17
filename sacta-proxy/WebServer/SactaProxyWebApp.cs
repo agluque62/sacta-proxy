@@ -38,7 +38,7 @@ namespace sacta_proxy.WebServer
         public SactaProxyWebApp() : base()
         {
         }
-        public void Start(int port, Dictionary<string, wasRestCallBack> cbs=null)
+        public void Start(int port, int SessionDuration = 15, Dictionary<string, wasRestCallBack> cbs=null)
         {
             /** Rutina a la que llama el servidor base para autentificar un usuario */
             AuthenticateUser = (data, response) =>
@@ -97,7 +97,7 @@ namespace sacta_proxy.WebServer
                     LogoutUrl="/logout",
                     LoginErrorTag= "<div id='result'>",
                     HtmlEncode = false,
-                    SessionDuration = 60,
+                    SessionDuration=SessionDuration,
                     SecureUris = SecureUris,
                     CfgRest = cfg
                 });

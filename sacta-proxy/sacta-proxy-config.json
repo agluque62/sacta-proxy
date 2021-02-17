@@ -1,6 +1,7 @@
 ﻿{
   "General": {
     "WebPort": 8091,
+    "WebActivityMinTimeout": 30,
     "ActivateSactaLogic": "AND"
   },
   "Psi": {

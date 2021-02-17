@@ -16,8 +16,10 @@ namespace sacta_proxy.Managers
     class PsiManager : BaseManager, IDisposable
     {
         #region Events
-        public EventHandler<ActivityOnLanArgs> EventActivity;
+        public event EventHandler<ActivityOnLanArgs> EventActivity;
+        public event EventHandler<SectorizationRequestArgs> EventSectRequest;
         #endregion Events
+
         #region Publics
         public override void Start(Configuration.DependecyConfig cfg)
         {
@@ -57,13 +59,15 @@ namespace sacta_proxy.Managers
                 TickTimer.Elapsed += OnTick;
                 TickTimer.Enabled = true;
 
-                SendInit();
+                SendInitMsg();
                 Logger.Info<PsiManager>($"PsiManager. Waiting for SCV Activity...");
+                PS.Set(ProcessStates.Running);
             }
             catch (Exception x)
             {
                 Logger.Exception<PsiManager>(x, $"On PSI");
                 Dispose();
+                PS.SignalFatal<PsiManager>($"Exception on Starting => {x}");
             }
         }
         public override void Stop()
@@ -71,6 +75,7 @@ namespace sacta_proxy.Managers
             Logger.Info<PsiManager>($"Ending PsiManager...");
             Dispose();
             Logger.Info<PsiManager>($"PsiManager Ended...");
+            PS.Set(ProcessStates.Stopped);
         }
         public void Dispose()
         {
@@ -97,10 +102,41 @@ namespace sacta_proxy.Managers
         { 
             get
             {
-                return new { res = "En implementacion" };
+                return new
+                {
+                    global_state = PS.Status,
+                    act = new 
+                    { 
+                        global = IsThereLanActivity, 
+                        lan1 = new
+                        {
+                            ActivityOnLan1,
+                            LastActivityOnLan1
+                        },
+                        lan2 = new
+                        {
+                            ActivityOnLan2,
+                            LastActivityOnLan2,
+                        },
+                    },
+                    tx = EnableTx,
+                    sacta_protocol = new 
+                    { 
+                        seq = Sequence, 
+                        ver = SectorizationVersion,
+                        LastPresenceSended,
+                    },
+                };
             }
         }
         public override bool EnableTx { get; set; }
+        public void SendSectorization(Dictionary<string, int> sectorMap)
+        {
+            lock (Locker)
+            {
+                SendSectorizationMsg(sectorMap);
+            }
+        }
         #endregion Publics
 
         #region Protected Methods
@@ -132,7 +168,7 @@ namespace sacta_proxy.Managers
                                         else if (msg.Type == SactaMsg.MsgType.SectAsk)
                                         {
                                             Logger.Info<PsiManager>($"On PSI from Scv Lan {lan} Sectorization Sectoriztion Request Received");
-                                            SendSectorization();
+                                            SafeLaunchEvent<SectorizationRequestArgs>(EventSectRequest, new SectorizationRequestArgs());
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.SectAnswer)
                                         {
@@ -174,6 +210,7 @@ namespace sacta_proxy.Managers
                     if (!ScvActivity && IsThereLanActivity)
                     {
                         ScvActivity = true;
+                        Logger.Info<PsiManager>($"On Psi Activity on LAN ON ...");
                         // Evento de Conexion con SCV.
                         SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
                         {
@@ -183,6 +220,7 @@ namespace sacta_proxy.Managers
                     else if (ScvActivity && !IsThereLanActivity)
                     {
                         ScvActivity = false;
+                        Logger.Info<PsiManager>($"On Psi Activity on LAN OFF ...");
                         // Evento de Desconexion con SCV.
                         SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
                         {
@@ -191,7 +229,7 @@ namespace sacta_proxy.Managers
                     }
                     if (DateTime.Now - LastPresenceSended > TimeSpan.FromSeconds(Cfg.SactaProtocol.TickAlive))
                     {
-                        SendPresence();
+                        SendPresenceMsg();
                         LastPresenceSended = DateTime.Now;
                     }
                 }
@@ -213,7 +251,7 @@ namespace sacta_proxy.Managers
                 deliver(1, LastActivityOnLan2);
             else
             {
-                Logger.Error<PsiManager>($"On PSI Recibida Trama no identificada...");
+                Logger.Warn<PsiManager>($"On PSI Recibida Trama no identificada...");
             }
         }
         protected bool IsValid(SactaMsg msg)
@@ -225,17 +263,50 @@ namespace sacta_proxy.Managers
                     (msg.CenterDst == Cfg.SactaProtocol.Sacta.Center) &&
                     (msg.UserDst == Cfg.SactaProtocol.Sacta.PsiGroup));
         }
-        protected void SendInit()
+        protected bool BroadMessage(byte[] message)
         {
-
+            if (EnableTx)
+            {
+                Logger.Trace<PsiManager>($"On PSI Sending Data on LAN1 ...");
+                Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip), Cfg.Comm.SendTo.Port), message);
+                Logger.Trace<PsiManager>($"On PSI Sending Data on LAN2 ...");
+                Listener2.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.Ip), Cfg.Comm.SendTo.Port), message);
+                return true;
+            }
+            Logger.Trace<PsiManager>($"On PSI Discarding data on LAN1/LAN2 (TxDisabled) ...");
+            return false;
         }
-        protected void SendPresence()
+        protected void SendInitMsg()
         {
-
+            Logger.Trace<PsiManager>($"On PSI Sending Init Msg ...");
+            var msg = SactaMsg.MsgToScv(Cfg, SactaMsg.MsgType.Init, SactaMsg.InitId, 0).Serialize();
+            if (BroadMessage(msg))
+            {
+                Sequence = 0;
+                Logger.Info<PsiManager>($"On PSI Init Msg sended.");
+            }
         }
-        protected void SendSectorization()
+        protected void SendPresenceMsg()
         {
-
+            Logger.Trace<PsiManager>($"On PSI Sending Presence Msg (Sequence {Sequence}...");
+            var msg = SactaMsg.MsgToScv(Cfg, SactaMsg.MsgType.Presence, 0, Sequence).Serialize();
+            if (BroadMessage(msg))
+            {
+                Sequence = Sequence >= 287 ? 0 : Sequence + 1;
+                LastPresenceSended = DateTime.Now;
+                Logger.Info<PsiManager>($"On PSI Presence Msg sended. (New Sequence {Sequence})");
+            }
+        }
+        protected void SendSectorizationMsg(Dictionary<string,int> sectorUcs)
+        {
+            Logger.Trace<PsiManager>($"On PSI Sending Sectorization Msg (Sequence {Sequence}...");
+            var msg = SactaMsg.MsgToScv(Cfg, SactaMsg.MsgType.Sectorization, 0, Sequence, SectorizationVersion, sectorUcs).Serialize();
+            if (BroadMessage(msg))
+            {
+                Sequence = Sequence >= 287 ? 0 : Sequence + 1;
+                SectorizationVersion++;
+                Logger.Info<PsiManager>($"On PSI Sectorization Msg sended. (New Sequence {Sequence}, New Version {SectorizationVersion})");
+            }
         }
         #endregion
 
