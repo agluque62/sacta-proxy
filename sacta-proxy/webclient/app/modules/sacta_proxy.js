@@ -286,6 +286,7 @@ var regx_mkip = /((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|
 /** Validacion por directivas Angular y expresiones regulares */
 function smapTest(value) {
     if (typeof value == "string") {
+        if (value == "") return true;
         var ret = true;
         var entries = value.split(',');
         entries.forEach((entry) => {

@@ -21,7 +21,13 @@ angular.module("sacta_proxy")
             if ($scope.cfgform.$valid) {
                 alertify.confirm(DialogTitle, '¿Confirma la actualización de la Configuración',
                     () => {
-                        $serv.config_save(ctrl.config)
+                        save_config(() => {
+                            //$scope.cfgform.$setPristine();
+                            setTimeout(() => {
+                                ctrl.reset();
+                                alertify.success("Configuracion Salvada...");
+                            }, 3000);
+                        });
                     },
                     () => {
                         alertify.success('Operacion Cancelada');
@@ -37,8 +43,8 @@ angular.module("sacta_proxy")
             /** Obtiene de nuevo la configuracion del servidor */
             load_config(() => {
                 /** reinicia los estados del form de configuracion */
-                $scope.cfgform.$setPristine();
                 DataLoadOfPage(ctrl.pagina);
+                $scope.cfgform.$setPristine();
             });
         };
         ctrl.changedep = () => {
@@ -113,11 +119,19 @@ angular.module("sacta_proxy")
             });
         }
 
+        function save_config(sync) {
+            $serv.config_save(ctrl.config, (response) => {
+                if (response && response.res == "ok") {
+                    if (sync) sync();
+                }
+            });
+        }
+
         /** */
-        var timer = $interval(function () {
-            /** Info para el estado de validacion del FORM */
-            console.log("CfgForm: ", $scope.cfgform, $scope.cfgform.$dirty, $scope.cfgform.$valid);
-        }, 5000);
+        //var timer = $interval(function () {
+        //    /** Info para el estado de validacion del FORM */
+        //    console.log("CfgForm: ", $scope.cfgform, $scope.cfgform.$dirty, $scope.cfgform.$valid);
+        //}, 5000);
 
         /** */
         $scope.$on('$viewContentLoaded', function () {
