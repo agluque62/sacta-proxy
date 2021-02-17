@@ -1,5 +1,7 @@
 {
 	"res": "ok",
+	"version": "1.0.0",
+	"user": "agl2",
 	"Status": {
 		"service": {
 			"std": 1,
