@@ -20,9 +20,11 @@ namespace sacta_proxy.model
         public class GeneralConfig
         {
             public int WebPort { get; set; }
+            public string ActivateSactaLogic { get; set; }
             public GeneralConfig()
             {
                 WebPort = 8091;
+                ActivateSactaLogic = "AND";
             }
         }
         public class CommItem
@@ -30,7 +32,9 @@ namespace sacta_proxy.model
             public int Port { get; set; }
             public string Ip1 { get; set; }
             public string Ip2 { get; set; }
-            public string NetwotkIf { get; set; }
+            public string FromMask1 { get; set; }
+            public string FromMask2 { get; set; }
+            public string NetworkIf { get; set; }
         }
         public class CommConfig
         {
@@ -56,6 +60,7 @@ namespace sacta_proxy.model
         {
             public int TickAlive { get; set; }
             public int TimeoutAlive { get; set; }
+            public int SectorizationTimeout { get; set; }
             public SactaProtocolSacta Sacta { get; set; }
             public SactaProtocolScv Scv { get; set; }
         }

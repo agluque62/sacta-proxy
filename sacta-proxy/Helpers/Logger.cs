@@ -57,12 +57,12 @@ namespace sacta_proxy.Helpers
         {
             Log<T>(LogLevel.Fatal, msg, caller, lineNumber);
         }
-        public static void Exception<T>(Exception x,
+        public static void Exception<T>( Exception x, string msg1 = "",
             [System.Runtime.CompilerServices.CallerMemberName] string caller = null,
             [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
 
         {
-            var msg = "[Exception]: " + x.Message + (x.InnerException != null ? (" [Inner Exception]: " + x.InnerException.Message) : "");
+            var msg = msg1 + "[Exception]: " + x.Message + (x.InnerException != null ? (" [Inner Exception]: " + x.InnerException.Message) : "");
             Log<T>(LogLevel.Error, msg, caller, lineNumber);
             NLog.LogManager.GetCurrentClassLogger().Trace(x);
         }
