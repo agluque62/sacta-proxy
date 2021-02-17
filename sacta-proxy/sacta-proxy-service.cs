@@ -336,6 +336,7 @@ namespace sacta_proxy
                     res = "ok", 
                     user=SystemUsers.CurrentUserId, 
                     version=GenericHelper.VersionManagement.AssemblyVersion, 
+                    logic = Cfg.General.ActivateSactaLogic,
                     global = GlobalStateManager.Info,
                     Status 
                 }, false));

@@ -5,6 +5,9 @@ angular.module("sacta_proxy")
         var ctrl = this;
 
         ctrl.history = null;
+        ctrl.mainmsg = null;
+        ctrl.webmsg = null;
+        ctrl.depmsg = null;
         ctrl.pagina = "0";
         ctrl.SelectPage = (page) => {
             if (ctrl.history) {
@@ -106,6 +109,11 @@ angular.module("sacta_proxy")
             var str = mdate.format('YYYY-MM-DD, HH:mm:ss');
             return {str};
         };
+        ctrl.shortdatestr = (date) => {
+            var mdate = moment(date);
+            var str = mdate.format('DD-MM, HH:mm:ss');
+            return { str };
+        };
         ctrl.sect = (sect)=>{
             var str = "";
             if (sect) {
@@ -149,6 +157,24 @@ angular.module("sacta_proxy")
             var lan_data = lan == 'Lan1' ? cfg.status.act.lan1 : cfg.status.act.lan2;
             return { str: 'Transmite (' + lan_data.sendto + ')' };
         }
+        /** */
+        function msgTableCreate(element) {
+            var table = element.DataTable(
+                {
+                    data: [],
+                    columns: [
+                        { "data": "When", "width": "30%", "render": (data) => ctrl.shortdatestr(data).str },
+                        { "data": "Msg", "width": "70%" }
+                    ],
+                    ordering: false,
+                    language: { "emptyTable": "No hay Mensajes" },
+                    dom: "t"
+                });
+            return table;
+        }
+        function msgTableRefresh(table, data) {
+            table.clear().rows.add(data).draw()
+        }
     /***/
         $scope.$on('$viewContentLoaded', function () {
             $serv.status((status) => {
@@ -160,11 +186,26 @@ angular.module("sacta_proxy")
     /** Funcion Periodica del controlador */
         var timer = $interval(function () {
 
+            if (ctrl.std().Status) {
+                msgTableRefresh(ctrl.mainmsg, ctrl.std().Status.service.lst);
+                msgTableRefresh(ctrl.webmsg, ctrl.std().Status.web.lst);
+                msgTableRefresh(ctrl.depmsg, ctrl.seldep().status.global_state.lst);
+            }
         }, pollingTime);
+
+        // Cuando se carga la página....
+        $scope.$on('$viewContentLoaded', () => {
+            ctrl.mainmsg = msgTableCreate($('#mainmsg'));
+            ctrl.webmsg = msgTableCreate($('#webmsg'));
+            ctrl.depmsg = msgTableCreate($('#depmsg'));
+        });
 
         /** Salida del Controlador. Borrado de Variables */
         $scope.$on("$destroy", function () {
             $interval.cancel(timer);
+            ctrl.mainmsg.destroy();
+            ctrl.webmsg.destroy();
+            ctrl.depmsg.destroy();
         });
 
     });

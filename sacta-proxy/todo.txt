@@ -38,10 +38,10 @@
 		[x] Conexion de la base de datos.
 	[] Testear el configuracion de SACTA...
 		[] Que no se introduzcan Sectores/Posiciones repetidos en web por dependencia.
-	[] Mejorar la presentacion de Mensajes
-		[] ¿Modo Lista?
-		[] Mensajes Vacios.
-	[] Modo AND/OR.
+	[x] Mejorar la presentacion de Mensajes
+		[x] ¿Modo Lista?
+		[x] Mensajes Vacios.
+	[x] Visualizar Modo AND/OR.
 [x] Controlar activación / desactivación en los modos PPAL/RSVA...
 [x] Instalador del servicio.
 	[x] Incluir Opciones de Instalacion
