@@ -28,19 +28,15 @@ namespace sacta_proxy.model
 
         public static bool IsPresent(Action<bool> delivery=null)
         {
+            bool retorno = false;
             using (var connection = new MySqlConnection(StrConn))
             {
-                try
+                ControlledOpen(connection, () =>
                 {
-                    connection.Open();
-                    delivery?.Invoke(true);
-                    return true;
-                }
-                catch
-                {
-                    delivery?.Invoke(false);
-                    return false;
-                }
+                    retorno = true;
+                });
+                delivery?.Invoke(retorno);
+                return retorno;
             }
         }
 
@@ -72,6 +68,27 @@ namespace sacta_proxy.model
             }
         }
 
+        public static void ControlledOpen(MySqlConnection connection, Action Continue)
+        {
+            if (ConsecutiveErrors < Properties.Settings.Default.DbMaxConsecutiveErrors)
+            {
+                try
+                {
+                    connection.Open();
+                    ConsecutiveErrors = 0;
+                    Continue();
+                    return;
+                }
+                catch(Exception x)
+                {
+                    ConsecutiveErrors += 1;
+                    throw x;
+                }
+            }
+            throw new Exception("No Hay conexion con Base de Datos...");
+        }
+
+        private static int ConsecutiveErrors = 0;
     }
 
 }

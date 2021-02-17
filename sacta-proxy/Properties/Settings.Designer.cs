@@ -85,5 +85,14 @@ namespace sacta_proxy.Properties {
                 return ((string)(this["DbRootPwd"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int DbMaxConsecutiveErrors {
+            get {
+                return ((int)(this["DbMaxConsecutiveErrors"]));
+            }
+        }
     }
 }
