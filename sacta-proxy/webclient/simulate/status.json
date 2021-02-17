@@ -4,8 +4,8 @@
 	"version": "1.0.0",
 	"Status": {
 		"service": {
-			"std": 1,
-			"str": "State: Running, LastMessage: "
+			"std": 0,
+			"str": "Error de arranque"
 		},
 		"web": {
 			"std": 1,

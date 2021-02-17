@@ -185,7 +185,6 @@
     <Content Include="webclient\styles\ng-table.css" />
     <Content Include="webclient\styles\ngDialog-theme-default.min.css" />
     <Content Include="webclient\styles\ngDialog.css" />
-    <Content Include="webclient\styles\uv5ki-styles.css" />
     <Content Include="webclient\tiny-index.html" />
     <Content Include="webclient\tiny-login.html" />
     <None Include="App.config" />
