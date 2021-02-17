@@ -27,7 +27,7 @@ namespace sacta_proxy.model
         ScvSectorizationSendedEvent = 25,       // USER = "", DEP = "scv", STATE = "", MAP="map", CAUSE=""
 
     };
-    public class History
+    public class History : IDisposable
     {
         const string FileName = "history.json";
         class HistoryItem
@@ -43,15 +43,21 @@ namespace sacta_proxy.model
 
         public History(int maxDays=30, int maxItems = 2000)
         {
-            Locker = new object();
+            //Locker = new object();
+            WorkingThread = new EventQueue();
             MaxDays = maxDays;
             MaxItems = maxItems;
             Read();
             Sanitize();
+            WorkingThread.Start();
+        }
+        public void Dispose()
+        {
+            WorkingThread.Stop();
         }
         public void Add(HistoryItems item, string user="", string dep="", string state="", string map="", string cause = "")
         {
-            lock (Locker)
+            WorkingThread.Enqueue("", () =>
             {
                 AddItem(new HistoryItem()
                 {
@@ -63,7 +69,20 @@ namespace sacta_proxy.model
                     Map = map,
                     Cause = cause
                 });
-            }
+            });
+            //lock (Locker)
+            //{
+            //    AddItem(new HistoryItem()
+            //    {
+            //        Date = DateTime.Now,
+            //        Code = item,
+            //        User = user,
+            //        Dep = dep,
+            //        State = state,
+            //        Map = map,
+            //        Cause = cause
+            //    });
+            //}
             //Logger.Info<History>($"CODE::{item}##USER::{user}##DEP::{dep}##STATE::{state}##MAP::{map}##CAUSE::{cause}");
         }
         public Object Get { get => history; }
@@ -99,9 +118,13 @@ namespace sacta_proxy.model
             history = history.Where(i => (DateTime.Now - i.Date) <= Days).OrderBy(i => i.Date).ToList();
             history = history.Count() > MaxItems ? history.Take(MaxItems).ToList() : history;
         }
+
+
+
         int MaxDays { get; set; }
         int MaxItems { get; set; }
         List<HistoryItem> history = new List<HistoryItem>();
-        object Locker { get; set; }
+        //object Locker { get; set; }
+        EventQueue WorkingThread { get; set; }
     }
 }

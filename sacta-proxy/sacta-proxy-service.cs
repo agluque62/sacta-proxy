@@ -239,6 +239,7 @@ namespace sacta_proxy
 
             PS.Set(ProcessStates.Stopped);
             PS.History.Add(HistoryItems.ServiceEnded);
+            PS.History.Dispose();
         }
 
         #region Callbacks Web
