@@ -149,7 +149,7 @@ sacta_proxy.config(function ($translateProvider) {
     moment.locale(userLang.indexOf("en") == 0 ? "en" : userLang.indexOf("fr") == 0 ? "fr" : "es");
 
 });
-
+/** Directivas Angular */
 sacta_proxy.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
@@ -164,6 +164,19 @@ sacta_proxy.directive('fileModel', ['$parse', function ($parse) {
         }
     };
 }]);
+
+sacta_proxy.directive('ignoreDirty', [function () {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, elm, attrs, ctrl) {
+            ctrl.$setPristine = function () { };
+            ctrl.$pristine = false;
+        }
+    }
+}]);
+
+
 
 //**  Rutinas genéricas */
 function StringCut(str, maxlen) {
@@ -233,7 +246,38 @@ var regx_urival = /^sip:(.+)@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.
 var regx_fid = /^(1|2|3)[0-9]{2}\.[0-9]{2}(0|5)$/;
 var regx_fid_vhf = /^(1)(1|2|3)([0-9]{1})\.([0-9])(0|2|5|7)(0|5)$/;   /** 118.000 137.000 */
 var regx_fid_uhf = /^(2|3|4)([0-9]{2})\.([0-9])(0|2|5|7)(0|5)$/;      /** 225.000 400.000 */
+var regx_int = /^d+$/;
 
+/** Validacion por directivas Angular */
+/** Lista de Sectores o Puestos */
+sacta_proxy.directive('sectorPosition', function () {
+    return {
+        require: 'ngModel',
+        link: function (scope, element, attr, mCtrl) {
+            function Validation(value) {
+                if (value && typeof value == "string") {
+                    var valid = true;
+                    var items = value.split(",");
+                    items.forEach((item, index) => {
+                        var itemint = parseInt(item);
+                        if (itemint === NaN) {
+                            valid=false;
+                        }
+                    });
+                    mCtrl.$setValidity('sectorOrpos', false);
+                }
+                else {
+                    mCtrl.$setValidity('sectorOrpos', false);
+                }
+
+                return value;
+            }
+            mCtrl.$parsers.push(Validation);
+        }
+    };
+});
+
+/** MOCK Backend*/
 if (Simulate) {
     /** Mock Backend*/
     sacta_proxy
