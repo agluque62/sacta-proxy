@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sacta-proxy", "sacta-proxy\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sacta-proxy-tests", "sacta-proxy-tests\sacta-proxy-tests.csproj", "{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulSACTA", "SimulSacta\SimulSACTA.csproj", "{66E1165B-77A6-4A49-8270-EA43C816D1C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5747C89-8AE6-44F8-9F80-7ECA59A97C44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66E1165B-77A6-4A49-8270-EA43C816D1C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66E1165B-77A6-4A49-8270-EA43C816D1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66E1165B-77A6-4A49-8270-EA43C816D1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66E1165B-77A6-4A49-8270-EA43C816D1C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
