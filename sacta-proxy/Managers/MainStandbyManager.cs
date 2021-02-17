@@ -13,8 +13,8 @@ namespace sacta_proxy.Managers
         public static void Check(Action<bool, bool> notify)
         {
 #if !DEBUG
-            var dualMode = Properties.Settings.Default.InCluster;
-            var virtualIpIsLocal = IpHelper.IsLocalIpV4Address(Properties.Settings.Default.HistoricServer);
+            var dualMode = Properties.Settings.Default.ServerType == 1;
+            var virtualIpIsLocal = IpHelper.IsLocalIpV4Address(Properties.Settings.Default.ScvServerIp);
             notify(dualMode, virtualIpIsLocal);
 #else
             notify(Mode, Master);

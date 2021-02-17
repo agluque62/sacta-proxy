@@ -26,18 +26,18 @@ namespace sacta_proxy.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
-        public string HistoricServer {
+        public string ScvServerIp {
             get {
-                return ((string)(this["HistoricServer"]));
+                return ((string)(this["ScvServerIp"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool InCluster {
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ServerType {
             get {
-                return ((bool)(this["InCluster"]));
+                return ((int)(this["ServerType"]));
             }
         }
         
@@ -52,10 +52,19 @@ namespace sacta_proxy.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsCD30 {
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ScvType {
             get {
-                return ((bool)(this["IsCD30"]));
+                return ((int)(this["ScvType"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DbConn {
+            get {
+                return ((int)(this["DbConn"]));
             }
         }
     }
