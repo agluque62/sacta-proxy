@@ -119,11 +119,16 @@ namespace sacta_proxy.model
             public List<int> Sectors { get; set; }
             public List<int> Positions { get; set; }
             public List<int> Virtuals { get; set; }
+            public string SectorsMap { get; set; }        // Sector Dependencia => Sector SCV.
+            public string PositionsMap { get; set; }      // Posicion Dependencia => Posicion SCV.
             public SectorizationDataConfig()
             {
                 Sectors = new List<int>();
                 Positions = new List<int>();
                 Virtuals = new List<int>();
+
+                SectorsMap = "";
+                PositionsMap = "";
             }
         }
         public class DependecyConfig
@@ -140,7 +145,6 @@ namespace sacta_proxy.model
                 Sectorization = new SectorizationDataConfig();
             }
         }
-
         /// <summary>
         /// Datos de Configuracion,
         /// </summary>
@@ -157,6 +161,16 @@ namespace sacta_proxy.model
                 Dependencies.Add(new DependecyConfig(bGenerate) { Id = "TWR" });
                 Dependencies.Add(new DependecyConfig(bGenerate) { Id = "APP" });
             }
+        }
+
+        public static bool MapOfSectorsEntryValid(string input)
+        {
+            if (input.Contains(":") == false)
+                return false;
+            var pair = input.Split(':');
+            if (pair.Count() != 2)
+                return false;
+            return int.TryParse(pair[0], out _) && int.TryParse(pair[1], out _);
         }
     }
     public class ConfigurationManager
@@ -200,7 +214,6 @@ namespace sacta_proxy.model
             }
             return false;
         }
-
         public void Write(Configuration cfg)
         {
             var data = JsonHelper.ToString(cfg);

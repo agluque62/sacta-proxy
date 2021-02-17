@@ -111,8 +111,25 @@ namespace sacta_proxy
                     dependency.EventSectorization += OnScvEventSectorization;
 
                     /** Construyendo la configuracion de Sectorizacion general */
-                    cfg.Psi.Sectorization.Positions.AddRange(dep.Sectorization.Positions);
-                    cfg.Psi.Sectorization.Sectors.AddRange(dep.Sectorization.Sectors);
+                    var sectorsMap = dep.Sectorization.SectorsMap.Split(',')
+                        .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                        .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+                    var positionsMap = dep.Sectorization.PositionsMap.Split(',')
+                        .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                        .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+                    var virtuals = dep.Sectorization.Virtuals
+                        .Select(v => sectorsMap.Keys.Contains(v) ? sectorsMap[v] : v)
+                        .ToList();
+                    var reals = dep.Sectorization.Sectors
+                        .Select(r => sectorsMap.Keys.Contains(r) ? sectorsMap[r] : r)
+                        .ToList();
+                    var positions = dep.Sectorization.Positions
+                        .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p] : p)
+                        .ToList();
+                    
+                    cfg.Psi.Sectorization.Positions.AddRange(positions);
+                    cfg.Psi.Sectorization.Virtuals.AddRange(virtuals);
+                    cfg.Psi.Sectorization.Sectors.AddRange(reals);
 
                     //dependency.Start(dep);
                     DepManager[dep.Id] = new DependencyControl()
@@ -190,7 +207,7 @@ namespace sacta_proxy
             if (context.Request.HttpMethod == "GET")
             {
                 context.Response.StatusCode = 200;
-                sb.Append(JsonHelper.ToString(new { res = "ok", Status }, false));
+                sb.Append(JsonHelper.ToString(new { res = "ok", user="todo", version="todo", Status }, false));
             }
             else
             {
