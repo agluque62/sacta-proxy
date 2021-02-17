@@ -43,16 +43,6 @@
                                      <option  value="AND">AND</option>
                                     <option  value="OR">OR</option>
                                 </select>
-    
-                                <!-- <div id="opt">
-                                    <label class="radio-inline">
-                                        <input type="radio" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic" value="AND" />And
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="radio" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic" value="OR" />Or
-                                    </label>
-                                </div> -->
-
                             </div>
                         </div>
                 </div>
@@ -155,7 +145,7 @@
                                                             <input id="lmk1" name="lmk1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.lmk1.$dirty && cfgform.lmk1.$invalid">
                                                                 <span ng-show="cfgform.lmk1.$error.required">Este campo debe rellenarse</span>
-                                                                <span ng-show="cfgform.lmk1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                                <span ng-show="cfgform.lmk1.$error.nuValidate">Error Formato. Debe ser formato CIDR</span>
                                                             </span>
                                                         </td>
                                                         <td ng-show="ctrl.dep.isdep">
@@ -163,7 +153,7 @@
                                                             <input id="lmk2" name="lmk2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.lmk2.$dirty && cfgform.lmk2.$invalid">
                                                                 <span ng-show="cfgform.lmk2.$error.required">Este campo debe rellenarse</span>
-                                                                <span ng-show="cfgform.lmk2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                                <span ng-show="cfgform.lmk2.$error.nuValidate">Error Formato. Debe ser formato CIDR</span>
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -242,7 +232,7 @@
                                                             <input id="smk1" name="smk1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.smk1.$dirty && cfgform.smk1.$invalid">
                                                                 <span ng-show="cfgform.smk1.$error.required">Este campo debe rellenarse</span>
-                                                                <span ng-show="cfgform.smk1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                                <span ng-show="cfgform.smk1.$error.nuValidate">Error Formato. Debe ser formato CIDR</span>
                                                             </span>
                                                         </td>
                                                         <td ng-show="false">
@@ -250,7 +240,7 @@
                                                             <input id="smk2" name="smk2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.smk2.$dirty && cfgform.smk2.$invalid">
                                                                 <span ng-show="cfgform.smk2.$error.required">Este campo debe rellenarse</span>
-                                                                <span ng-show="cfgform.smk2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                                <span ng-show="cfgform.smk2.$error.nuValidate">Error Formato. Debe ser formato CIDR</span>
                                                             </span>
                                                         </td>
                                                     </tr>

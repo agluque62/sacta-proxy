@@ -248,7 +248,7 @@ var regx_fid_vhf = /^(1)(1|2|3)([0-9]{1})\.([0-9])(0|2|5|7)(0|5)$/;   /** 118.00
 var regx_fid_uhf = /^(2|3|4)([0-9]{2})\.([0-9])(0|2|5|7)(0|5)$/;      /** 225.000 400.000 */
 var regx_int = /^\d+$/;
 var regx_list_int = /^\d+(?:[ \t]*,[ \t]*\d+)*$/;
-var regx_mkip = /^.+$/; // todo.
+var regx_mkip = /((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\/((\b([1-9]|[12][0-9]|3[0-2])\b))$/; // 
 
 /** Validacion por directivas Angular y expresiones regulares */
 function regx_get(id) {
