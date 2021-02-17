@@ -232,6 +232,7 @@ var rest_url_std = "/status";
 var rest_url_conf = "/config";
 var rest_url_logs = "/logs";
 var rest_url_logout = "/logout";
+var HistoryData = Simulate == true ? "/simulate/history.json" : "/history";
 
 /** */
 var roles = {
@@ -247,6 +248,20 @@ var roles = {
 var srvtypes = { None: "None", Mixed: "Mixed", Phone: "Phone", Radio: "Radio" };
 var states = { Running: "Running", Stopped: "Stopped", Disabled: "Disabled" };
 var levels = { Master: "Master", Slave: "Slave", Error: "Error" };
+var HistoryCodes = [
+    { code: 1, descr: "Arranque Servicio" },
+    { code: 2, descr: "Parada Servicio" },
+    { code: 3, descr: "Error Grave" },
+    { code: 10, descr: "Login" },
+    { code: 11, descr: "Error Login" },
+    { code: 12, descr: "Cambio en datos de Usuario" },
+    { code: 13, descr: "Logout" },
+    { code: 20, descr: "Estado Dependencia" },
+    { code: 21, descr: "Estado Tx Dependencia" },
+    { code: 22, descr: "Sectorizacion Recibida" },
+    { code: 23, descr: "Sectorizacion Rechazada" },
+    { code: 25, descr: "Sectorizacion Enviada" },
+];
 
 /** */
 var routeForUnauthorizedAccess = '/noaut';

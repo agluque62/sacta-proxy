@@ -82,6 +82,10 @@ input.ng-valid.ng-dirty {
     text-align: center;
 }
 
+.historic {
+    padding: 25px;
+}
+
 /* Estilos antiguos. Para borrar */
 div#agrupar {
     margin-left: 2%;
