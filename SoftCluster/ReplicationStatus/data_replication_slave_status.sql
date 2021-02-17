@@ -1,0 +1,2 @@
+
+show slave status\G;

@@ -1,0 +1,45 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ClusterSrv.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="NodeId" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Nodo 1</Value>
+    </Setting>
+    <Setting Name="Port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">6000</Value>
+    </Setting>
+    <Setting Name="EpPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">6001</Value>
+    </Setting>
+    <Setting Name="ClusterIp1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.0.212</Value>
+    </Setting>
+    <Setting Name="ClusterIp2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.2.5</Value>
+    </Setting>
+    <Setting Name="ClusterMask1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">255.255.255.0</Value>
+    </Setting>
+    <Setting Name="ClusterMask2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">255.255.255.0</Value>
+    </Setting>
+    <Setting Name="Ip" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.1.211</Value>
+    </Setting>
+    <Setting Name="EpIp" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.0.111</Value>
+    </Setting>
+    <Setting Name="TimeToStart" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10000</Value>
+    </Setting>
+    <Setting Name="AdapterIp2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.0.221</Value>
+    </Setting>
+    <Setting Name="MaintenanceServerForTraps" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.0.129</Value>
+    </Setting>
+    <Setting Name="AdapterIp1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.0.71</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
