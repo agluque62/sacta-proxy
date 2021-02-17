@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Diagnostics;
@@ -79,6 +80,33 @@ namespace sacta_proxy_tests
             PS.SignalFatal<GenericUnitTest>("Fatal #004", null);
             PS.SignalWarning<GenericUnitTest>("Warning #005", null);
             PS.SignalFatal<GenericUnitTest>("Fatal #005", null);
+        }
+        [TestMethod]
+        public void TestModifyHmiConfig()
+        {
+            Assert.IsTrue(HMIConfigHelper.CambioModoNocturno("hmi.exe.config", "False", "True"));
+        }
+
+    }
+
+    public class HMIConfigHelper
+    {
+        public static bool CambioModoNocturno(string filename, string actualvalue, string newvalue)
+        {
+            if (File.Exists(filename))
+            {
+                var find = $"      <setting name=\"ModoNocturno\" serializeAs=\"String\">\r\n        <value>{actualvalue}</value>\r\n      </setting>";
+                var repl = $"      <setting name=\"ModoNocturno\" serializeAs=\"String\">\r\n        <value>{newvalue}</value>\r\n      </setting>";
+
+                File.WriteAllText(filename + ".old", File.ReadAllText(filename)); // backup
+
+                var data = File.ReadAllText(filename);
+                if (data.IndexOf(find) == -1) return false;
+
+                File.WriteAllText(filename, data.Replace(find, repl)); // 
+                return true;
+            }
+            return false;
         }
     }
 }
