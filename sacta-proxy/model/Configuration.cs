@@ -135,7 +135,7 @@ namespace sacta_proxy.model
             public List<int> Virtuals { get; set; }
             public string SectorsMap { get; set; }        // Sector Dependencia => Sector SCV.
             public string PositionsMap { get; set; }      // Posicion Dependencia => Posicion SCV.
-            public SectorizationDataConfig()
+            public SectorizationDataConfig(bool bGenerate = false)
             {
                 Sectors = new List<int>();
                 Positions = new List<int>();
@@ -143,6 +143,11 @@ namespace sacta_proxy.model
 
                 SectorsMap = "";
                 PositionsMap = "";
+                if (bGenerate)
+                {
+                    Sectors.Add(0);
+                    Positions.Add(0);
+                }
             }
         }
         public class DependecyConfig
@@ -156,7 +161,7 @@ namespace sacta_proxy.model
                 Id = "IdDep";
                 Comm = new CommConfig();
                 SactaProtocol = new SactaProtocolConfig(bGenerate);
-                Sectorization = new SectorizationDataConfig();
+                Sectorization = new SectorizationDataConfig(bGenerate);
             }
         }
         /// <summary>
