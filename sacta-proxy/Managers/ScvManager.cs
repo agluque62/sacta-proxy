@@ -476,10 +476,11 @@ namespace sacta_proxy.Managers
             if (err)
             {
                 var message = "";
-                message += SectorsNotFound.Count() > 0 ? $"Sectors not Found: {SectorsNotFound.Aggregate((i, j) => i + ", " + j)}. " : "";
-                message += UnknowUcs.Count() > 0 ? $"Unknow Ucs: {UnknowUcs.Aggregate((i, j) => i + ", " + j)}. " : "";
-                message += UnknowSectors.Count() > 0 ? $"Unknow Sectors: {UnknowSectors.Aggregate((i, j) => i + ", " + j)}. " : "";
-                message += duplicatedSect.Count() > 0 ? $"Duplicated Sectors: {duplicatedSect.Aggregate((i, j) => i + ", " + j)}. " : "";
+                
+                message += SectorsNotFound.Count() > 0 ? $"Sectors not Found: {String.Join(", ",SectorsNotFound)}. " : "";
+                message += UnknowUcs.Count() > 0 ? $"Unknow Ucs: {String.Join(", ", UnknowUcs)}. " : "";
+                message += UnknowSectors.Count() > 0 ? $"Unknow Sectors: {String.Join(", ", UnknowSectors)}. " : "";
+                message += duplicatedSect.Count() > 0 ? $"Duplicated Sectors: {String.Join(", ", duplicatedSect)}. " : "";
 
                 deliver(false, message);
                 // Evento para el Historico.
@@ -488,11 +489,9 @@ namespace sacta_proxy.Managers
                     Accepted = false,
                     ScvId = Cfg.Id,
                     //SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
-                    ReceivedMap = sectorsReceived
-                        .Select(s=>s.ToString())
-                        .Aggregate((a, i) => a + "," + i),
+                    ReceivedMap = String.Join(",", sectorsReceived.Select(s => s.ToString())),
                     RejectCause = message
-                }) ;
+                }); ;
             }
             else
             {

@@ -107,17 +107,17 @@ namespace sacta_proxy.model
                 var PosEquals = PosInCfg.Except(PosInDb).Count() == 0 && PosInDb.Except(PosInCfg).Count()==0;
                 if (PosEquals == false)
                 {
-                    notifyError($"Conjunto Posiciones Diferente: CFG: {PositionsList}; DB: {PosInDb.Aggregate((i, j) => i + "," + j)}");
+                    notifyError($"Conjunto Posiciones Diferente: CFG: {PositionsList}; DB: {String.Join(",",PosInDb)}");
                 }
                 var SecEquals = SecInCfg.Except(SecInDb).Count() == 0 && SecInDb.Except(SecInCfg).Count() == 0;
                 if (SecEquals == false)
                 {
-                    notifyError($"Conjunto Sectores Diferente: CFG: {SectorsList}; DB: {SecInDb.Aggregate((i, j) => i + "," + j)}");
+                    notifyError($"Conjunto Sectores Diferente: CFG: {SectorsList}; DB: {String.Join(",", SecInDb)}");
                 }
                 var VirEquals = VirInCfg.Except(VirInDb).Count() == 0 && VirInDb.Except(VirInCfg).Count() == 0;
                 if (VirEquals == false)
                 {
-                    notifyError($"Conjunto Posiciones Diferente: CFG: {VirtualSectorsList}; DB: {VirInDb.Aggregate((i, j) => i + "," + j)}");
+                    notifyError($"Conjunto Posiciones Diferente: CFG: {VirtualSectorsList}; DB: {String.Join(",", VirInDb)}");
                 }
             });
         }
