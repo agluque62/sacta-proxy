@@ -149,15 +149,16 @@ namespace sacta_proxy
                         {
                             if (isDual)
                             {
-                                // TODO Historico de Conmutaciones
                                 if (isMain && !PS.IsStarted)
                                 {
-                                    Logger.Info<SactaProxy>("Entrando en Modo DUAL-MAIN");
+                                    //Logger.Info<SactaProxy>("Entrando en Modo DUAL-MAIN");
+                                    PS.History.Add(HistoryItems.ServiceInMode, "", "", "Master");
                                     StartManagers();
                                 }
                                 else if (!isMain && PS.IsStarted)
                                 {
-                                    Logger.Info<SactaProxy>("Entrando en Modo DUAL-STANDBY");
+                                    //Logger.Info<SactaProxy>("Entrando en Modo DUAL-STANDBY");
+                                    PS.History.Add(HistoryItems.ServiceInMode, "", "", "Standby");
                                     StopManagers();
                                 }
                             }
@@ -165,7 +166,8 @@ namespace sacta_proxy
                             {
                                 if (!PS.IsStarted)
                                 {
-                                    Logger.Info<SactaProxy>("Entrando en Modo SINGLE");
+                                    //Logger.Info<SactaProxy>("Entrando en Modo SINGLE");
+                                    PS.History.Add(HistoryItems.ServiceInMode, "", "", "Simple");
                                     StartManagers();
                                 }
                             }
@@ -228,11 +230,8 @@ namespace sacta_proxy
                         .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p].ToString() : p.ToString())
                         .ToList().Aggregate((i, j) => i + "," + j.ToString());
 
-                    //cfg.Psi.Sectorization.Positions.AddRange(positions);
                     cfg.Psi.Sectorization.Positions = Configuration.AgreggateString(cfg.Psi.Sectorization.Positions, positions);
-                    //cfg.Psi.Sectorization.Virtuals.AddRange(virtuals);
                     cfg.Psi.Sectorization.Virtuals = Configuration.AgreggateString(cfg.Psi.Sectorization.Virtuals, virtuals);
-                    //cfg.Psi.Sectorization.Sectors.AddRange(reals);
                     cfg.Psi.Sectorization.Sectors = Configuration.AgreggateString(cfg.Psi.Sectorization.Sectors, reals);
 
                     Managers.Add(new DependencyControl(dep.Id)

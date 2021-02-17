@@ -25,10 +25,19 @@ namespace sacta_proxy.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ClusterVirtualIp {
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string HistoricServer {
             get {
-                return ((string)(this["ClusterVirtualIp"]));
+                return ((string)(this["HistoricServer"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool InCluster {
+            get {
+                return ((bool)(this["InCluster"]));
             }
         }
     }
