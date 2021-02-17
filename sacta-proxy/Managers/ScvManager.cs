@@ -330,7 +330,7 @@ namespace sacta_proxy.Managers
         {
             if (EnableTx)
             {
-                if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
+                if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive))
                 {
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN1 ...");
                     Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.McastGroup), Cfg.Comm.SendingPort), message);
@@ -339,7 +339,7 @@ namespace sacta_proxy.Managers
                 {
                     Logger.Trace<ScvManager>($"On {Id} Discarding data on LAN1 ...");
                 }
-                if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
+                if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive))
                 {
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN2 ...");
                     if (Version == 0)
@@ -388,9 +388,9 @@ namespace sacta_proxy.Managers
             if (BroadMessage(msg))
             {
                 Sequence = Sequence >= 287 ? 0 : Sequence + 1;
-                WhenSectorAsked = DateTime.Now;
                 Logger.Info<ScvManager>($"On {Cfg.Id} SectAsk Msg sended. (New Sequence {Sequence})");
             }
+            WhenSectorAsked = DateTime.Now;
         }
         protected void SendSectAnsw(int version, int result)
         {
