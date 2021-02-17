@@ -24,10 +24,10 @@
       <Value Profile="(Default)">255.255.255.0</Value>
     </Setting>
     <Setting Name="Ip" Type="System.String" Scope="User">
-      <Value Profile="(Default)">127.0.0.1</Value>
+      <Value Profile="(Default)">192.168.0.1</Value>
     </Setting>
     <Setting Name="EpIp" Type="System.String" Scope="User">
-      <Value Profile="(Default)">127.0.0.1</Value>
+      <Value Profile="(Default)">192.168.0.1</Value>
     </Setting>
     <Setting Name="TimeToStart" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10000</Value>

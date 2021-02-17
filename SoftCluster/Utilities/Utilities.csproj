@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomBinaryFormatter.cs" />
+    <Compile Include="EventQeue.cs" />
     <Compile Include="LocalFileAppSettingsProvider.cs" />
     <Compile Include="RegistrySettingsProvider.cs" />
     <Compile Include="UdpSocket.cs" />
