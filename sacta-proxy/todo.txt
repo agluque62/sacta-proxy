@@ -21,9 +21,6 @@
 [x] Desacoplar History con EventQueue
 [x] Gestion de Historicos.
 	[x] Generacion de un LOG...
-[] Vista de Estado
-	[x] Vista de estado global.
-	[] Visualizacion del LOG...
 [x] Adaptar a las dos versiones
 	[x] Emulador PSI
 		[x] Version 0
@@ -39,3 +36,8 @@
 		[x] Version 1
 			[x] Escucha => (Msc1, Msc2)IP1
 			[x] Envio => (IP1)MC1, (IP1)MC2
+[] Vista de Estado
+	[x] Vista de estado global.
+	[] Visualizacion del LOG...
+[] Web...
+	[] Configuracion (Listas) => Strings...

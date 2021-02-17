@@ -85,8 +85,10 @@ namespace sacta_proxy.model
             public int Center { get; set; }
             public int PsiGroup { get; set; }
             public int SpvGrup { get; set; }
-            public List<int> Psis { get; set; }
-            public List<int> Spvs { get; set; }
+            //public List<int> Psis { get; set; }
+            public string Psis { get; set; }
+            //public List<int> Spvs { get; set; }
+            public string Spvs { get; set; }
             public SactaProtocolSacta(bool bGenerate = false)
             {
                 Domain = 1;
@@ -95,9 +97,19 @@ namespace sacta_proxy.model
                 SpvGrup = 85;
                 if (bGenerate)
                 {
-                    Psis = new List<int>() { 111, 112, 113, 114, 7286, 7287, 7288, 7289 };
-                    Spvs = new List<int>() { 86, 87, 88, 89, 7266, 7267, 7268, 7269 };
+                    //Psis = new List<int>() { 111, 112, 113, 114, 7286, 7287, 7288, 7289 };
+                    //Spvs = new List<int>() { 86, 87, 88, 89, 7266, 7267, 7268, 7269 };
+                    Psis = "111, 112, 113, 114, 7286, 7287, 7288, 7289";
+                    Spvs = "86, 87, 88, 89, 7266, 7267, 7268, 7269";
                 }
+            }
+            public List<int> PsisList()
+            {
+                return Configuration.String2ListInt(Psis);
+            }
+            public List<int> SpvsList()
+            {
+                return Configuration.String2ListInt(Spvs);
             }
         }
         public class SactaProtocolScv
@@ -130,24 +142,35 @@ namespace sacta_proxy.model
         }
         public class SectorizationDataConfig
         {
-            public List<int> Sectors { get; set; }
-            public List<int> Positions { get; set; }
-            public List<int> Virtuals { get; set; }
+            public string Sectors { get; set; }
+            public string Positions { get; set; }
+            public string Virtuals { get; set; }
             public string SectorsMap { get; set; }        // Sector Dependencia => Sector SCV.
             public string PositionsMap { get; set; }      // Posicion Dependencia => Posicion SCV.
             public SectorizationDataConfig(bool bGenerate = false)
             {
-                Sectors = new List<int>();
-                Positions = new List<int>();
-                Virtuals = new List<int>();
-
+                Sectors = "";
+                Positions = "";
+                Virtuals = "";
                 SectorsMap = "";
                 PositionsMap = "";
                 if (bGenerate)
                 {
-                    Sectors.Add(0);
-                    Positions.Add(0);
+                    Sectors = "0";
+                    Positions = "0";
                 }
+            }
+            public List<int> SectorsList()
+            {
+                return String2ListInt(Sectors);
+            }
+            public List<int> PositionsList()
+            {
+                return String2ListInt(Positions);
+            }
+            public List<int> VirtualsList()
+            {
+                return String2ListInt(Virtuals);
             }
         }
         public class DependecyConfig
@@ -195,6 +218,25 @@ namespace sacta_proxy.model
                 return false;
             return int.TryParse(pair[0], out _) && int.TryParse(pair[1], out _);
         }
+        public static string AgreggateString(string input, string val)
+        {
+            if (input != "") input += ",";
+            return input + val;
+        }
+
+        public static string ListString2String(List<string> input)
+        {
+            if (input.Count() == 0) return "";
+            return input.Aggregate((i, j) => i + "," + j.ToString());
+        }
+        public static List<int> String2ListInt(string input)
+        {
+            if (input == "") return new List<int>();
+            var l1 = input.Split(',').ToList();
+            var l2 = l1.Select(i => int.Parse(i)).ToList();
+            return l2;
+        }
+
     }
     public class ConfigurationManager
     {

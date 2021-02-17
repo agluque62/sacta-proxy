@@ -65,6 +65,7 @@ namespace sacta_proxy.Managers
 
                 SendInitMsg();
                 Logger.Info<PsiManager>($"PsiManager. Waiting for SCV Activity on {Cfg.Comm.If1.Ip}:{Cfg.Comm.ListenPort} / {Cfg.Comm.If2.Ip}:{Cfg.Comm.ListenPort}");
+                Logger.Info<PsiManager>($"PsiManager. Sectores {Cfg.Sectorization.Sectors} Posiciones {Cfg.Sectorization.Positions}");
                 PS.Set(ProcessStates.Running);
             }
             catch (Exception x)
