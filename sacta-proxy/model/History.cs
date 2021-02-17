@@ -158,13 +158,13 @@ namespace sacta_proxy.model
         void WriteToDb(HistoryItem item)
         {
             var settings = Properties.Settings.Default;
-            if (settings.IsCD30)
+            if (settings.ScvType==0)
             {
                 // TODO. Acceso a la Base de Datos de CD30.
             }
             else
             {
-                using (var connection = new MySqlConnection($"Server={settings.HistoricServer};User ID=root;Password=cd40;Database=new_cd40;;Connect Timeout={settings.DbConnTimeout}"))
+                using (var connection = new MySqlConnection($"Server={settings.ScvServerIp};User ID=root;Password=cd40;Database=new_cd40;;Connect Timeout={settings.DbConnTimeout}"))
                 {
                     connection.Open();
 

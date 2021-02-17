@@ -18,6 +18,22 @@
     <Condition Message="Esta aplicacion requiere .NET Framework 4.5.2. Instale .NET Framework 4.5.2 y reintente la instalacion de Ug5kDbBackupService.">
       <![CDATA[Installed OR NETFRAMEWORK452>="#379893"]]>
     </Condition>
+    <!--Propiedades  de Configuracion -->
+    <Property Id="SCV_TYPE" Value="1" >
+      <RegistrySearch Id='SCV_TYPE_Property' Name='SCV_TYPE_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
+    </Property>
+    <Property Id="SERVER_TYPE" Value="1" >
+      <RegistrySearch Id='SERVER_TYPE_Property' Name='SERVER_TYPE_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
+    </Property>
+    <Property Id="DB_IP" Value="127.0.0.1" >
+      <RegistrySearch Id='DB_IP_Property' Name='DB_IP_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
+    </Property>
+    <Property Id="DB_CONN" Value="0" >
+      <RegistrySearch Id='DB_CONN_Property' Name='DB_CONN_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
+    </Property>
+    <Property Id="DB_TIMEOUT" Value="5" >
+      <RegistrySearch Id='DB_TIMEOUT_Property' Name='DB_TIMEOUT_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
+    </Property>
 
     <WixVariable Id="WixUIDialogBmp"  Value="bkg-image.jpg" Overridable="yes"/>
     <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
@@ -81,8 +97,29 @@
                   ResetPeriodInDays='1'/>
         </ServiceInstall>
         <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="SactaProxy" Wait="yes" />
+        <File Id="SactaProxyCfg" Name="sacta-proxy.exe.config"></File>
+        <util:XmlFile Id="ScvType" Action="setValue"
+                        File = "[#SactaProxyCfg]"
+                        ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='ScvType'[\]]/value"
+                        Value="[SCV_TYPE]"/>
+        <util:XmlFile Id="ServerType" Action="setValue"
+                        File = "[#SactaProxyCfg]"
+                        ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='ServerType'[\]]/value"
+                        Value="[SERVER_TYPE]"/>
+        <util:XmlFile Id="ScvServerIp" Action="setValue"
+                        File = "[#SactaProxyCfg]"
+                        ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='ScvServerIp'[\]]/value"
+                        Value="[DB_IP]"/>
+        <util:XmlFile Id="DbConn" Action="setValue"
+                        File = "[#SactaProxyCfg]"
+                        ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='DbConn'[\]]/value"
+                        Value="[DB_CONN]"/>
+        <util:XmlFile Id="DbConnTimeout" Action="setValue"
+                        File = "[#SactaProxyCfg]"
+                        ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='DbConnTimeout'[\]]/value"
+                        Value="[DB_TIMEOUT]"/>
       </Component>
-      <Component Id ="sacta_proxy_data" Guid="{A462BC3A-107A-4459-B6D4-800D5862D51A}">
+      <Component Id ="sacta_proxy_data" Guid="*">
         <!--<File Id="SactaProxyCfg" Name="sacta-proxy-config.json"></File>-->
         <File Id="SactaProxyVer" Name="versiones.json"></File>
       </Component>
@@ -91,8 +128,20 @@
         <File Id="NLogCfg" Name="NLog.config"></File>
         <!--<util:RemoveFolderEx Id="RemoveLogFolder" On="uninstall" Property="LogFolder" />-->
       </Component>
+      <Component Id ="MySql" Guid="*">
+        <File Id="MySqlDataDll" Name="MySql.Data.dll"></File>
+      </Component>
       <Component Id ="Newtonsoft.Json" Guid="*">
         <File Id="Newtonsoft.Json" Name="Newtonsoft.Json.dll"></File>
+      </Component>
+      <Component Id="sp_registry" Guid="*" Permanent="yes">
+        <RegistryKey Id="sp_registry_entries" Root="HKLM" Key="SOFTWARE\Wix\SACTAPROXY" Action="create">
+          <RegistryValue Name='SCV_TYPE_Property' Value='[SCV_TYPE]' Type='string' />
+          <RegistryValue Name='SERVER_TYPE_Property' Value='[SERVER_TYPE]' Type='string' />
+          <RegistryValue Name='DB_IP_Property' Value='[DB_IP]' Type='string' />
+          <RegistryValue Name='DB_CONN_Property' Value='[DB_CONN]' Type='string' />
+          <RegistryValue Name='DB_TIMEOUT_Property' Value='[DB_TIMEOUT]' Type='string' />
+        </RegistryKey>
       </Component>
     </ComponentGroup>
   </Fragment>
@@ -139,8 +188,8 @@
       <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
 
       <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
-      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2">LicenseAccepted = "1"</Publish>
-      <!--<Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="SactaProxyOptionsDlg" Order="2">LicenseAccepted = "1"</Publish>-->
+      <!--<Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2">LicenseAccepted = "1"</Publish>-->
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="SactaProxyOptionsDlg" Order="2">LicenseAccepted = "1"</Publish>
       <!--<Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="SetupTypeDlg" Order="2">LicenseAccepted = "1"</Publish>-->
 
       <Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
@@ -170,11 +219,36 @@
 
       <!--Dialogo de Opciones -->
       <!-- Dialogo para Generar spread.conf -->
-      <Dialog Id="SactaProxyOptionsDlg" Width="370" Height="270" Title="Titulo de Dialogo" NoMinimize="yes">
-        <Control Id="ElementsNumberLabel" Type="Text" X="45"  Y="63" Width="100" Height="18" TabSkip="no" Text="Numero de Elementos" />
-        <!--<Control Id="ElementsNumberEdit"  Type="Edit" X="150" Y="60" Width="100" Height="18" Property="SPREAD_NUMBER" Text="{5}" />-->
-        <Control Id="IpBaseLabel"         Type="Text" X="45"  Y="83" Width="100" Height="18" TabSkip="no" Text="IP-Base" />
-        <!--<Control Id="IpBaseEdit"          Type="Edit" X="150" Y="80" Width="100" Height="18" Property="SPREAD_IPBASE" Text="{20}" />-->
+      <Dialog Id="SactaProxyOptionsDlg" Width="370" Height="270" Title="Instalacion de Nucleo Sacta Proxy" NoMinimize="yes">
+        <Control Id="ServerTypeLabel" Type="Text"     X="45"  Y="60" Width="100" Height="10" TabSkip="no" Text="Tipo de Servidor" />
+        <Control Id="ServerTypeValue" Type="ComboBox" X="45"  Y="70" Width="100" Height="18" Property="SERVER_TYPE" ComboList="yes" >
+          <ComboBox Property="SERVER_TYPE">
+            <ListItem Value="0" Text="Simple" />
+            <ListItem Value="1" Text="Dual" />
+          </ComboBox>
+        </Control>
+
+        <Control Id="ScvTypeLabel" Type="Text"     X="205" Y="60" Width="100" Height="10" TabSkip="no" Text="Tipo de SCV" />
+        <Control Id="ScvTypeValue" Type="ComboBox" X="205" Y="70" Width="100" Height="18" Property="SCV_TYPE" ComboList="yes" >
+          <ComboBox Property="SCV_TYPE">
+            <ListItem Value="0" Text="CD30" />
+            <ListItem Value="1" Text="Ulises" />
+          </ComboBox>
+        </Control>
+
+        <Control Id="ServerIpLabel" Type="Text" X="45" Y="90" Width="100" Height="10" TabSkip="no" Text="Ip del Servidor SCV" />
+        <Control Id="ServerIpValue" Type="Edit" X="45" Y="100" Width="100" Height="18" Property="DB_IP" Text="{20}" />
+        
+        <Control Id="DbConnLabel" Type="Text"     X="45" Y="120" Width="100" Height="10" TabSkip="no" Text="Conexion a BDT?" />
+        <Control Id="DbConnValue" Type="ComboBox" X="45" Y="130" Width="100" Height="18" Property="DB_CONN" ComboList="yes" >
+          <ComboBox Property="DB_CONN">
+            <ListItem Value="0" Text="No" />
+            <ListItem Value="1" Text="Si" />
+          </ComboBox>
+        </Control>
+
+        <Control Id="DbConnTimeoutLabel" Type="Text" X="205" Y="120" Width="100" Height="10" TabSkip="no" Text="Timeout de Conexion BDT" />
+        <Control Id="DbConnTimeoutValue" Type="Edit" X="205" Y="130" Width="100" Height="18" Property="DB_TIMEOUT" Text="{4}" />
 
         <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back"/>
         <!--<Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)" />-->
@@ -186,11 +260,11 @@
 
         <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
         <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>Opciones de Instalacion</Text>
+          <Text></Text>
         </Control>
         <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
         <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
-          <Text>Titulo de contenido</Text>
+          <Text>Sacta Proxy. Opciones de Instalacion</Text>
         </Control>
         <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
 
