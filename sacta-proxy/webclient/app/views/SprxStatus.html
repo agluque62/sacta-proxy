@@ -21,20 +21,22 @@
                             <tr>
                                 <td style="width: 15%;" class="text-info"><strong>Modo</strong></td>
                                 <td style="width: 15%;">{{ctrl.std().global.server}}</td>
-                                <td style="width: 20%;" class="text-info"><strong>Estado</strong></td>
-                                <td>{{ctrl.std().global.main ? "Activo" : "Standby"}}</td>
+                                <td style="width: 15%;" class="text-info"><strong>Estado</strong></td>
+                                <td style="width: 15%">{{ctrl.std().global.main ? "Activo" : "Standby"}}</td>
+                                <td style="width: 15%;" class="text-info"><strong>Logica</strong></td>
+                                <td style="width: 25%">{{ctrl.std().logic}}</td>
                             </tr>
                             <tr ng-class="ctrl.stds(ctrl.std().Status.service.std).css">
                                 <td style="width: 15%;" class="text-info"><strong>Servicio</strong></td>
                                 <td style="width: 15%;">{{ctrl.stds(ctrl.std().Status.service.std).txt}}</td>
-                                <td style="width: 20%;" class="text-info"><strong>Ultimo Mensaje</strong></td>
-                                <td>{{ctrl.std().Status.service.str}}</td>
+                                <td style="width: 15%;" class="text-info"><strong>Mensajes:</strong></td>
+                                <td colspan="3" style="vertical-align: top"><table id="mainmsg" class="display" width="100%"></table></td>
                             </tr>
                             <tr ng-class="ctrl.stds(ctrl.std().Status.web.std).css">
                                 <td style="width: 15%;" class="text-info"><strong>Web</strong></td>
                                 <td style="width: 15%">{{ctrl.stds(ctrl.std().Status.web.std).txt}}</td>
-                                <td style="width: 20%;" class="text-info"><strong>Ultimo Mensaje</strong></td>
-                                <td>{{ctrl.std().Status.web.str}}</td>
+                                <td style="width: 15%;" class="text-info"><strong>Mensajes:</strong></td>
+                                <td colspan="3"><table id="webmsg" class="display" width="100%"></table></td>
                             </tr>
                         </table>
                     </div>
@@ -56,16 +58,17 @@
                             <tr>
                                 <td style="width: 15%;"></td>
                                 <td style="width: 15%;"></td>
-                                <td style="width: 20%;"></td>
                                 <td style="width: 15%;"></td>
-                                <td style="width: 20%;"></td>
                                 <td style="width: 15%;"></td>
+                                <td style="width: 15%;"></td>
+                                <td style="width: 25%;"></td>
                             </tr>
                             <tr ng-class="ctrl.stds(ctrl.seldep().status.global_state.std).css">
                                 <td class="text-info"><strong>Servicio</strong></td>
                                 <td>{{ctrl.stds(ctrl.seldep().status.global_state.std).txt}}</td>
-                                <td class="text-info"><strong>Ultimo Mensaje</strong></td>
-                                <td colspan="3">{{ctrl.seldep().status.global_state.str}}</td>
+                                <td class="text-info"><strong>Mensajes:</strong></td>
+                                <!--<td colspan="3">{{ctrl.seldep().status.global_state.str}}</td>-->
+                                <td colspan="3"><table id="depmsg" class="display" width="100%"></table></td>
                             </tr>
                             <tr ng-class="ctrl.isactive(ctrl.seldep().status.act.global).css">
                                 <td><label>Actividad LAN</label></td>

@@ -94,6 +94,10 @@ input.ng-valid.ng-dirty {
 .historic-ctrl {
 }
 
+table.dataTable tbody td {
+    vertical-align: top;
+}
+
 /* Estilos antiguos. Para borrar */
 div#agrupar {
     margin-left: 2%;
