@@ -1,0 +1,2 @@
+
+show master status\G;
