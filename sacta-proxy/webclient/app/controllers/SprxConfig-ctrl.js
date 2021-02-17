@@ -8,14 +8,15 @@ angular.module("sacta_proxy")
         ctrl.selecteddep = "0";
         ctrl.selecteddep_mirror = "0";
         ctrl.dep = {
-            cfg: null,
             isdep: false,
+            ver: 1,
+            cfg: null
         };
         ctrl.topage = (page) => {
             ConsolidateFromPage(ctrl.pagina);
             DataLoadOfPage(page);
             ctrl.pagina = page;
-        }
+        };
         ctrl.update = () => {
             if ($scope.cfgform.$valid) {
                 alertify.confirm(DialogTitle, '¿Confirma la actualización de la Configuración',
@@ -45,6 +46,23 @@ angular.module("sacta_proxy")
             ctrl.selecteddep_mirror = ctrl.selecteddep;
             DataLoadOfPage(ctrl.pagina);
         };
+        ctrl.elementState = (id) => {
+            var disabled = false;
+            if (id == "lmk1" || id == "lmk2") {
+                disabled = ctrl.dep.isdep == false || ctrl.dep.ver == 0;
+            }
+            else if (id == "lip2") {
+                disabled = ctrl.dep.isdep == true && ctrl.dep.ver == 1;
+            }
+            else if (id == "ipt1") {
+                disabled = ctrl.dep.isdep == true;
+            }
+            else if (id == "ipt2") {
+                disabled = ctrl.dep.isdep == true || ctrl.dep.ver == 1;
+            }
+
+            return { disabled, show: !disabled };
+        };
 
         /**
          * 
@@ -67,12 +85,14 @@ angular.module("sacta_proxy")
                 if (ctrl.config) {
                     ctrl.dep.cfg = ctrl.config.Psi;
                     ctrl.dep.isdep = false;
+                    ctrl.dep.ver = ctrl.config.ProtocolVersion;
                 }
             }
             else if (page == 2) {
                 if (ctrl.config) {
                     ctrl.dep.cfg = ctrl.config.Dependencies[ctrl.selecteddep_mirror];
                     ctrl.dep.isdep = true;
+                    ctrl.dep.ver = ctrl.config.ProtocolVersion;
                 }
             }
         }

@@ -179,10 +179,11 @@ namespace sacta_proxy
                     .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
                 TestDuplicated(duplicatedPos, duplicatedSec, () =>
                 {
+                    Logger.Info<SactaProxy>($"Arrancando Servicio. ProtocolVersion => {cfg.ProtocolVersion}, InCluster => {cfg.InCluster}");
                     // Solo arranca el programa cuando no hay duplicados.
                     Managers.ForEach(dependency =>
                     {
-                        dependency.Manager.Start(dependency.Cfg);
+                        dependency.Manager.Start(cfg.ProtocolVersion, dependency.Cfg);
                     });
                     webCallbacks.Add("/config", OnWebRequestConfig);
                     webCallbacks.Add("/status", OnWebRequestState);
@@ -213,12 +214,13 @@ namespace sacta_proxy
 #endif
                     PS.Set(ProcessStates.Running);
                     PS.History.Add(HistoryItems.ServiceStarted);
+                    Logger.Info<SactaProxy>("Servicio Arrancado");
                 });
             }));
         }
         protected void StopService() 
         {
-            // Se ejecuta al finalizar el programa.
+            Logger.Info<SactaProxy>("Deteniendo Servicio.");
             SactaProxyWebApp?.Stop();
             webCallbacks.Clear();
 
@@ -241,6 +243,7 @@ namespace sacta_proxy
             PS.Set(ProcessStates.Stopped);
             PS.History.Add(HistoryItems.ServiceEnded);
             PS.History.Dispose();
+            Logger.Info<SactaProxy>("Servicio Detenido.");
         }
 
         #region Callbacks Web
