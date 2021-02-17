@@ -76,8 +76,7 @@ namespace sacta_proxy.model
 
         public History(int maxDays=30, int maxItems = 2000)
         {
-            //Locker = new object();
-            WorkingThread = new EventQueue();
+            WorkingThread = new EventQueue((sender, x) => Logger.Exception<History>(x));
             MaxDays = maxDays;
             MaxItems = maxItems;
             Read();
