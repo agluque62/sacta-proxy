@@ -6,7 +6,7 @@
 	[] Usuarios.
 	[] Test de Configuracion de Sectores con datos de Base de Datos.
 	[] Inclusion de Historicos.
-[] Instalador del servicio.
+[x] Instalador del servicio.
 [x] Configuración y gestión mapeado Sectores y Puestos entre dependencias y scv.
 	[x] En fichero de configuracion.
 	[x] En carga de configuracion.
