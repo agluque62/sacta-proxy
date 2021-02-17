@@ -5,6 +5,7 @@ angular
         /** Para las Traducciones */
         var $translate = $filter('translate');
         var globalStd = {};
+        var MainMenuCurrent = 0;
 
         return {
             translate: function (key) {
@@ -27,12 +28,18 @@ angular
                     default:
                         return true;
                 }
-            },
-            GlobalStd: (std) => {
+            }
+            , GlobalStd: (std) => {
                 if (std) {
                     globalStd = std;
                 }
                 return globalStd;
+            }
+            , MenuOption: (opt) => {
+                if (opt != undefined) {
+                    MainMenuCurrent = opt;
+                }
+                return MainMenuCurrent;
             }
         };
 

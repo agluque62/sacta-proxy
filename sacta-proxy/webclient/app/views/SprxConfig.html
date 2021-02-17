@@ -417,8 +417,10 @@
 
                 </div>
                 <div id="cfgBotones" class="form-group" style="float:right;margin-right:15px;">
-                    <input type="submit" class="btn btn-primary" ng-click="ctrl.update()" value="Save" ng-disabled="cfgform.$dirty==false" />
+                    <input type="submit" class="btn btn-primary" ng-click="ctrl.update()" value="Save" ng-disabled="cfgform.$invalid" />
                     <input type="submit" class="btn btn-primary" ng-click="ctrl.reset()" value="Reset" ng-disabled="cfgform.$dirty==false" />
+                    <!--<pre>invalid = {{cfgform.$invalid}}</pre>-->
+                    <!--<pre>dirty = {{cfgform.$dirty}}</pre>-->
                 </div>
             </form>
         </section>

@@ -10,14 +10,14 @@
       "Listen": {
         "Port": 15001,
         "Lan1": {
-          "Ip": "",
-          "FromMask": "",
+          "Ip": "0.0.0.0",
+          "FromMask": "0.0.0.0/0",
           "McastGroup": "225.12.101.1",
           "McastIf": "192.168.90.50"
         },
         "Lan2": {
-          "Ip": "",
-          "FromMask": "",
+          "Ip": "0.0.0.0",
+          "FromMask": "0.0.0.0/0",
           "McastGroup": "225.212.101.1",
           "McastIf": "127.0.0.1"
         }
@@ -26,15 +26,15 @@
         "Port": 19205,
         "Lan1": {
           "Ip": "192.168.90.50",
-          "FromMask": "",
-          "McastGroup": "",
-          "McastIf": ""
+          "FromMask": "0.0.0.0/0",
+          "McastGroup": "0.0.0.0",
+          "McastIf": "0.0.0.0"
         },
         "Lan2": {
           "Ip": "127.0.0.1",
-          "FromMask": "",
-          "McastGroup": "",
-          "McastIf": ""
+          "FromMask": "0.0.0.0/0",
+          "McastGroup": "0.0.0.0",
+          "McastIf": "0.0.0.0"
         }
       }
     },
@@ -75,8 +75,8 @@
       }
     },
     "Sectorization": {
-      "Sectors": [],
-      "Positions": [],
+      "Sectors": [0],
+      "Positions": [0],
       "Virtuals": [],
       "SectorsMaps": "",
       "PositionMaps": ""
@@ -91,27 +91,27 @@
           "Lan1": {
             "Ip": "192.168.90.50",
             "FromMask": "192.168.90.0/24",
-            "McastGroup": "",
-            "McastIf": ""
+            "McastGroup": "0.0.0.0",
+            "McastIf": "0.0.0.0"
           },
           "Lan2": {
-            "Ip": "",
+            "Ip": "0.0.0.0",
             "FromMask": "127.0.0.1/24",
-            "McastGroup": "",
-            "McastIf": ""
+            "McastGroup": "0.0.0.0",
+            "McastIf": "0.0.0.0/0"
           }
         },
         "SendTo": {
           "Port": 15100,
           "Lan1": {
-            "Ip": "",
-            "FromMask": "",
+            "Ip": "0.0.0.0",
+            "FromMask": "0.0.0.0",
             "McastGroup": "225.12.101.1",
             "McastIf": "127.0.0.1"
           },
           "Lan2": {
-            "Ip": "",
-            "FromMask": "",
+            "Ip": "0.0.0.0",
+            "FromMask": "0.0.0.0",
             "McastGroup": "225.212.101.1",
             "McastIf": "127.0.0.1"
           }
@@ -169,27 +169,27 @@
           "Lan1": {
             "Ip": "127.0.0.1",
             "FromMask": "127.0.0.1/24",
-            "McastGroup": "",
-            "McastIf": ""
+            "McastGroup": "0.0.0.0",
+            "McastIf": "0.0.0.0"
           },
           "Lan2": {
-            "Ip": "",
+            "Ip": "0.0.0.0",
             "FromMask": "127.0.0.1/24",
-            "McastGroup": "",
-            "McastIf": ""
+            "McastGroup": "0.0.0.0",
+            "McastIf": "0.0.0.0"
           }
         },
         "SendTo": {
           "Port": 15100,
           "Lan1": {
-            "Ip": "",
-            "FromMask": "",
+            "Ip": "0.0.0.0",
+            "FromMask": "0.0.0.0/0",
             "McastGroup": "225.12.101.1",
             "McastIf": "127.0.0.1"
           },
           "Lan2": {
-            "Ip": "",
-            "FromMask": "",
+            "Ip": "0.0.0.0",
+            "FromMask": "0.0.0.0/0",
             "McastGroup": "225.212.101.1",
             "McastIf": "127.0.0.1"
           }

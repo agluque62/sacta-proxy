@@ -36,15 +36,15 @@
                         <div class="panel-heading ncc-panel">Opciones</div>
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
-                                <li data-ng-class="{'active': ctrl.pagina==0}">
-                                    <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
+                                <li data-ng-class="{'active': ctrl.pagina()==0}">
+                                    <a href="#/" data-ng-click="ctrl.pagina(0)" translate>Estado</a>
                                 </li>
-                                <li data-ng-class="{'active': ctrl.pagina==1}">
-                                    <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
+                                <li data-ng-class="{'active': ctrl.pagina()==1}">
+                                    <a href="#/config" data-ng-click="ctrl.pagina(1)" translate>Configuracion</a>
                                 </li>
                                 <li><br /></li>
-                                <li data-ng-class="{'active': ctrl.pagina==2}">
-                                    <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
+                                <li data-ng-class="{'active': ctrl.pagina()==2}">
+                                    <a href="#/about" data-ng-click="ctrl.pagina(2)" translate>Acerca de...</a>
                                 </li>
                                 <li><br /></li>
                                 <li><br /></li>

@@ -189,8 +189,7 @@ namespace sacta_proxy.model
                 else
                 {
                     var cfg = new Configuration(true);
-                    var data = JsonHelper.ToString(cfg);
-                    File.WriteAllText(FileName, data);
+                    Write(cfg);
                     deliver(cfg);
                 }
             }
@@ -203,9 +202,8 @@ namespace sacta_proxy.model
         {
             try
             {
-                var cfg = new Configuration();
-                var data = JsonHelper.ToString(cfg);
-                File.WriteAllText(FileName, data);
+                var cfg = JsonHelper.Parse<Configuration>(ConfigurationData);
+                Write(cfg);
                 return true;
             }
             catch (Exception x)

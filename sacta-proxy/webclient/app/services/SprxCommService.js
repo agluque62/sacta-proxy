@@ -15,8 +15,8 @@ angular
             , config: function (deliver) {
                 Get(rest_url_conf, deliver);
             }
-            , config_save: function (cfg) {
-                return remotePost(rest_url_conf, cfg);
+            , config_save: function (cfg, response) {
+                Post(rest_url_conf, cfg, response);
             }
             , logs_get: function (deliver) {
                 Get(rest_url_logs, deliver);
@@ -25,7 +25,7 @@ angular
                 return remotePost(rest_url_logout);
             }
             , version: function (deliver) {
-                return Get("/version", deliver);
+                Get("/version", deliver);
             }
         };
 
@@ -60,6 +60,32 @@ angular
             return $http.get(normalizeUrl(url));
         }
 
+        function Post(url, data, deliver) {
+            $http.post(normalizeUrl(url), data).then(
+                (response) => {
+                    if (response.status == 200) {
+                        if ((typeof response.data) == 'object') {
+                            if (deliver) deliver(response.data);
+                        }
+                        else {
+                            // Seguramente ha vencido la sesion.
+                            console.log("Sesion Vencida...");
+                            window.location.href = "/login.html";
+                        }
+                    }
+                    else {
+                        // Error en el servidor.
+                        console.log("Error Servidor " + response.status);
+                    }
+                },
+                (error) => {
+                    // Error en el tratamiento de la peticion.
+                    console.log("Error Peticion");
+                    window.open("/", "_self");
+                }
+            );
+
+        }
         //
         function remotePost(url, data) {
             return $http.post(normalizeUrl(url), data);

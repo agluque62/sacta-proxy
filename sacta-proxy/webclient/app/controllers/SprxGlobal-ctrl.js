@@ -3,7 +3,12 @@ angular.module("sacta_proxy")
     .controller("SprxGlobalCtrl", function ($scope, $interval, $location, $translate, $serv, $lserv) {
         /** Inicializacion */
         var ctrl = this;
-        ctrl.pagina = 0;
+        ctrl.pagina = (pag) => {
+            if (pag != undefined) {
+                $lserv.MenuOption(pag);
+            }
+            return $lserv.MenuOption();
+        };
 
         ctrl.HashCode = 0;
         ctrl.timer = 0;

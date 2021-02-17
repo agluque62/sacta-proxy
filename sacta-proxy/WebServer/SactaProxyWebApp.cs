@@ -5,35 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 
+using sacta_proxy.model;
 using sacta_proxy.Helpers;
 
 namespace sacta_proxy.WebServer
 {
     class SactaProxyWebApp : WebServerBase
     {
-        class SystemUsers
-        {
-            class SystemUserInfo
-            {
-                public string id { get; set; }
-                public string pwd { get; set; }
-                public int prf { get; set; }
-            }
-            static public bool Authenticate(string user, string pwd)
-            {
-                if (user == "root" && pwd == "#ncc#")
-                    return true;
-                try
-                {
-                    // Obtener los usuarios, y comprobar si tienen acceso
-                    return false;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
-        }
 
         public SactaProxyWebApp() : base()
         {

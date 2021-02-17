@@ -67,6 +67,12 @@ body
     padding: 10px;
     float:left;
 }
+input.ng-invalid.ng-dirty {
+    background-color: #FA787E;
+}
+input.ng-valid.ng-dirty {
+    background-color: #78FA89;
+}
 .pie {
     height: 30px;
     padding-top: 5px;
