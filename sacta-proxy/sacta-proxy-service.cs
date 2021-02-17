@@ -15,7 +15,6 @@ using sacta_proxy.WebServer;
 using sacta_proxy.model;
 using sacta_proxy.Managers;
 
-
 namespace sacta_proxy
 {
     using SectMap = Dictionary<string, int>;
@@ -73,6 +72,14 @@ namespace sacta_proxy
             if (WebEnabled)
             {
                 SactaProxyWebApp = new SactaProxyWebApp();
+                SactaProxyWebApp.UserActivityEvent += (sender, args) =>
+                {
+                    EventThread?.Enqueue("OnUserActivityEvent", () =>
+                    {
+                        var idh = args.InOut ? HistoryItems.UserLogin : args.Cause == "" ? HistoryItems.UserLogout : HistoryItems.UserErrorAccess;
+                        PS.History?.Add(idh, args.User, "", "", "", args.Cause);
+                    });
+                };
             }
             else
             {
@@ -105,19 +112,15 @@ namespace sacta_proxy
         {
             cfgManager.Get((cfg =>
             {
-                DepManager.Clear();
+                PS.History = new History(cfg.General.HistoryMaxDays, cfg.General.HistoryMaxItems);
+                ManagersDescription.Clear();
                 cfg.Psi.Sectorization.Positions.Clear();
                 cfg.Psi.Sectorization.Sectors.Clear();
 
                 var manager = new PsiManager();
                 manager.EventActivity += OnPsiEventActivity;
                 manager.EventSectRequest += OnPsiEventSectorizationAsk;
-
-                MainManager = new DependencyControl(cfg.Psi.Id)
-                {
-                    Cfg = cfg.Psi,
-                    Manager = manager
-                };
+                ManagersDescription.Add(new DependencyControlEntry() { Id = cfg.Psi.Id, Dep = new DependencyControl(cfg.Psi.Id) { Cfg = cfg.Psi, Manager = manager }, IsMain = true });
 
                 cfg.Dependencies.ForEach(dep =>
                 {
@@ -146,12 +149,7 @@ namespace sacta_proxy
                     cfg.Psi.Sectorization.Virtuals.AddRange(virtuals);
                     cfg.Psi.Sectorization.Sectors.AddRange(reals);
 
-                    //dependency.Start(dep);
-                    DepManager[dep.Id] = new DependencyControl(dep.Id)
-                    {
-                        Cfg = dep,
-                        Manager = dependency
-                    };
+                    ManagersDescription.Add(new DependencyControlEntry() { Id = dep.Id, Dep = new DependencyControl(dep.Id) { Cfg = dep, Manager = dependency }, IsMain = false });
                 });
                 /** */
                 var ids = cfg.Dependencies.Select(d => d.Id).ToList();
@@ -166,10 +164,9 @@ namespace sacta_proxy
                 TestDuplicated(duplicatedPos, duplicatedSec, () =>
                 {
                     // Solo arranca el programa cuando no hay duplicados.
-                    MainManager.Manager.Start(cfg.Psi);
-                    DepManager.Values.ToList().ForEach(dependency =>
+                    ManagersDescription.ForEach(dependency =>
                     {
-                        dependency.Manager.Start(dependency.Cfg);
+                        dependency.Dep.Manager.Start(dependency.Dep.Cfg);
                     });
                     webCallbacks.Add("/config", OnWebRequestConfig);
                     webCallbacks.Add("/status", OnWebRequestState);
@@ -198,6 +195,7 @@ namespace sacta_proxy
                     MainManager.MergeSectorization(DepManager.Where(d => d.Key == "APP").First().Value.MapOfSectors);
 #endif
                     PS.Set(ProcessStates.Running);
+                    PS.History.Add(HistoryItems.ServiceStarted);
                 });
             }));
         }
@@ -207,17 +205,24 @@ namespace sacta_proxy
             SactaProxyWebApp?.Stop();
             webCallbacks.Clear();
 
-            DepManager.Values.ToList().ForEach(dependency =>
+            ManagersDescription.ForEach(depEntry =>
             {
-                (dependency.Manager as ScvManager).EventActivity -= OnScvEventActivity;
-                (dependency.Manager as ScvManager).EventSectorization -= OnScvEventSectorization;
-                dependency.Manager.Stop();
+                if (depEntry.IsMain)
+                {
+                    (depEntry.Dep.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
+                    (depEntry.Dep.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
+                }
+                else
+                {
+                    (depEntry.Dep.Manager as ScvManager).EventActivity -= OnScvEventActivity;
+                    (depEntry.Dep.Manager as ScvManager).EventSectorization -= OnScvEventSectorization;
+                }
+                depEntry.Dep.Manager.Stop();
             });
-            DepManager.Clear();
-            (MainManager.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
-            (MainManager.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
-            MainManager.Manager.Stop();
+            ManagersDescription.Clear();
+
             PS.Set(ProcessStates.Stopped);
+            PS.History.Add(HistoryItems.ServiceEnded);
         }
 
         #region Callbacks Web
@@ -258,6 +263,8 @@ namespace sacta_proxy
                     {
                         /** Reiniciar el Servicio */
                         Reset();
+                        /** Historico */
+                        PS.History.Add(HistoryItems.UserConfigChange, SystemUsers.CurrentUserId);
                         context.Response.StatusCode = 200;
                         sb.Append(JsonHelper.ToString(new { res = "ok" }, false));
                     }
@@ -315,18 +322,28 @@ namespace sacta_proxy
         {
             EventThread.Enqueue("OnScvEventActivity", () =>
             {
-                var controlDep = DepManager.Where(d => d.Key == data.ScvId).Select(d => d.Value).ToList();
-                if (controlDep.Count == 1)
+                //var controlDep = DepManager.Where(d => d.Key == data.ScvId).Select(d => d.Value).ToList();
+                var ctrldep = DepManagers.Where(d => d.Cfg.Id == data.ScvId).FirstOrDefault();
+                if (ctrldep != null)
                 {
-                    if (controlDep[0].Activity != data.ActivityOnLan)
+                    if (ctrldep.Activity != data.ActivityOnLan)
                     {
-                        controlDep[0].Activity = data.ActivityOnLan;
+                        /** Actualiza el estado de la dependencia y Genera el Historico */
+                        ctrldep.Activity = data.ActivityOnLan;
+                        PS.History.Add(HistoryItems.DepActivityEvent, "", ctrldep.Cfg.Id, data.ActivityOnLan ? "ON" : "OFF");
+                        /** Actualiza el Tx del SCV */
+                        var oldEnableTx = MainManager.Manager.EnableTx;
+                        var actives = DepManagers.Where(d => d.Activity == true).ToList();
+                        MainManager.Manager.EnableTx =
+                            Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 :
+                            Cfg.General.ActivateSactaLogic == "AND" ? actives.Count() == DepManagers.Count() :
+                            actives.Count() == DepManagers.Count();
+                        /** Se genera el historico si corresponde */
+                        if (oldEnableTx != MainManager.Manager.EnableTx)
+                        {
+                            PS.History.Add(HistoryItems.DepTxstateChange, "", MainManager.Cfg.Id, MainManager.Manager.EnableTx ? "ON" : "OFF");
+                        }
                     }
-                    var actives = DepManager.Select(s => s.Value).Where(d => d.Activity == true).ToList();
-                    MainManager.Manager.EnableTx =
-                        Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 :
-                        Cfg.General.ActivateSactaLogic == "AND" ? actives.Count() == DepManager.Count() :
-                        actives.Count() == DepManager.Count();
                 }
                 else
                 {
@@ -340,24 +357,39 @@ namespace sacta_proxy
             /** Se ha recibido una sectorizacion correcta de una dependencia */ 
             EventThread.Enqueue("OnScvEventSectorization", () =>
             {
-                var controlDep = DepManager.Where(d => d.Key == data.ScvId).Select(d => d.Value).ToList();
-                if (controlDep.Count == 1)
+                var ctrldep = DepManagers.Where(d => d.Cfg.Id == data.ScvId).FirstOrDefault();
+                if (ctrldep != null)
                 {
-                    // Actualizo la Sectorizacion en la Dependencia.
-                    controlDep[0].MapOfSectors = data.SectorMap;
-
-                    // Actualizo la Sectorizacion en el Manager.
-                    MainManager.MergeSectorization(controlDep[0].MapOfSectors);
-
-                    // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
-                    var DepWithSectInfo = DepManager.Where(d => d.Value.MapOfSectors.Count() > 0).ToList();
-                    if (DepWithSectInfo.Count == DepManager.Count)
+                    if (data.Accepted)
                     {
-                        (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
+                        // Actualizo la Sectorizacion en la Dependencia.
+                        ctrldep.MapOfSectors = data.SectorMap;
+
+                        // Actualizo la Sectorizacion en el Manager.
+                        MainManager.MergeSectorization(ctrldep.MapOfSectors);
+
+                        // Historico.
+                        PS.History.Add(HistoryItems.DepSectorizationReceivedEvent, "", ctrldep.Cfg.Id, "", SectorizationHelper.MapToString(data.SectorMap));
+
+                        // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
+                        var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
+                        if (DepWithSectInfo.Count == DepManagers.Count)
+                        {
+                            (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
+                            // Historico
+                            PS.History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "", 
+                                SectorizationHelper.MapToString(MainManager.MapOfSectors), "Recibida de SACTA");
+                        }
+                        else
+                        {
+                            Logger.Warn<SactaProxy>($"OnScvEventSectorization. IGNORED. No all Sectorization Info Present.");
+                        }
                     }
                     else
                     {
-                        Logger.Warn<SactaProxy>($"OnScvEventSectorization. IGNORED. No all Sectorization Info Present.");
+                        // Evento de Sectorizacion Rechazada. Historico
+                        PS.History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
+                            "", SectorizationHelper.MapToString(data.SectorMap), data.RejectCause);
                     }
                 }
                 else
@@ -373,11 +405,16 @@ namespace sacta_proxy
                 if (data.ActivityOnLan != MainManager.Activity)
                 {
                     MainManager.Activity = data.ActivityOnLan;
+                    /** Historico del Cambio */
+                    PS.History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
                     // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
-                    DepManager.Values.ToList().ForEach(dependency =>
-                    {
-                        dependency.Manager.EnableTx = MainManager.Activity;
-                    });
+                    DepManagers.ForEach(dependency =>
+                        {
+                            dependency.Manager.EnableTx = MainManager.Activity;
+                          /** Historico del Cambio */
+                            PS.History.Add(HistoryItems.DepTxstateChange, "", dependency.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
+
+                        });
                 }
             });
         }
@@ -385,10 +422,13 @@ namespace sacta_proxy
         {
             EventThread.Enqueue("OnPsiEventActivity", () =>
             {
-                var DepWithSectInfo = DepManager.Where(d => d.Value.MapOfSectors.Count() > 0).ToList();
-                if (DepWithSectInfo.Count == DepManager.Count)
+                //var DepWithSectInfo = DepManager.Where(d => d.Value.MapOfSectors.Count() > 0).ToList();
+                var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
+                if (DepWithSectInfo.Count == DepManagers.Count)
                 {
                     (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
+                    /** Historico */
+                    PS.History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "", SectorizationHelper.MapToString(MainManager.MapOfSectors), "Peticion SCV");
                 }
                 else
                 {
@@ -415,14 +455,8 @@ namespace sacta_proxy
                 return new
                 {
                     service = PS.Status,
-                    web = 0,
-                    psi_em = MainManager.Manager.Status,
-                    scv_em = DepManager.Select(dep => new { id=dep.Key, std=dep.Value.Manager.Status}).ToList(),
-                    sectorizations = new
-                    {
-                        global = MainManager.Sectorization,
-                        deps = DepManager.Select(dep => new { id = dep.Key, sect = dep.Value.Sectorization }).ToList()
-                    }
+                    web = SactaProxyWebApp?.Status,
+                    ems = ManagersDescription.Select(d => new { id = d.Id, status = d.Dep.Manager.Status, sect=d.Dep.Sectorization }).ToList()
                 };
             }
         }
@@ -430,7 +464,7 @@ namespace sacta_proxy
         {
             EventThread.Enqueue("Reset", () =>
             {
-                Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
+                Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
                 StopService();
                 Task.Delay(TimeSpan.FromMilliseconds(1000)).Wait();
                 StartService();
@@ -443,10 +477,30 @@ namespace sacta_proxy
 
         private readonly ConfigurationManager cfgManager = new ConfigurationManager();
         private Configuration Cfg { get; set; }
-
-        private DependencyControl MainManager { get; set; }
-        private readonly Dictionary<string, DependencyControl> DepManager = new Dictionary<string, DependencyControl>();
         private readonly ProcessStatusControl PS = new ProcessStatusControl();
+        class DependencyControlEntry
+        {
+            public string Id { get; set; }
+            public DependencyControl Dep { get; set; }
+            public bool IsMain { get; set; }
+        }
+        private readonly List<DependencyControlEntry> ManagersDescription = new List<DependencyControlEntry>();
+        private DependencyControl MainManager
+        {
+            get
+            {
+                var dep = ManagersDescription.Where(d => d.IsMain).FirstOrDefault();
+                return dep?.Dep;
+            }
+        }
+        private List<DependencyControl> DepManagers
+        {
+            get
+            {
+                var deps = ManagersDescription.Where(d => d.IsMain == false).Select(d => d.Dep).ToList();
+                return deps;
+            }
+        }
         #endregion
     }
 
