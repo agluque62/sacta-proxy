@@ -36,7 +36,7 @@ namespace sacta_proxy.Managers
                 LastActivityOnLan2 = DateTime.MinValue;
                 LastPresenceSended = DateTime.MinValue;
 
-                Listener1 = new UdpSocket(Cfg.Comm.Listen.Lan1.Ip, Cfg.Comm.Listen.Port);
+                Listener1 = new UdpSocket(Cfg.Comm.Listen.Lan1.McastIf, Cfg.Comm.Listen.Port);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener1.Base.MulticastLoopback = false;
                 Listener1.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.Listen.Lan1.McastGroup),
@@ -45,7 +45,7 @@ namespace sacta_proxy.Managers
                 Listener1.NewDataEvent += OnDataReceived;
                 Listener1.BeginReceive();
 
-                Listener2 = new UdpSocket(Cfg.Comm.Listen.Lan2.Ip, Cfg.Comm.Listen.Port);
+                Listener2 = new UdpSocket(Cfg.Comm.Listen.Lan2.McastIf, Cfg.Comm.Listen.Port);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener2.Base.MulticastLoopback = false;
                 Listener2.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.Listen.Lan2.McastGroup),

@@ -96,7 +96,7 @@
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="ctrl.dep.isdep">
                                                             <label for="lip1">Ip</label>
                                                             <input id="lip1" name="lip1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.Ip" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.lip1.$dirty && cfgform.lip1.$invalid">
@@ -104,7 +104,7 @@
                                                                 <span ng-show="cfgform.lip1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="false">
                                                             <label for="lip2">Ip2</label>
                                                             <input id="lip2" name="lip2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.Ip" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.lip2.$dirty && cfgform.lip2.$invalid">
@@ -114,7 +114,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="ctrl.dep.isdep==false">
                                                             <label for="lmc1">Grupo Multicast</label>
                                                             <input id="lmc1" name="lmc1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.McastGroup" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.lmc1.$dirty && cfgform.lmc1.$invalid">
@@ -122,7 +122,7 @@
                                                                 <span ng-show="cfgform.lmc1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="ctrl.dep.isdep==false">
                                                             <label for="lmc2">Grupo Multicast 2</label>
                                                             <input id="lmc2" name="lmc2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.McastGroup" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.lmc2.$dirty && cfgform.lmc2.$invalid">
@@ -132,7 +132,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="ctrl.dep.isdep==false">
                                                             <label for="lif1">Interfaz de Red</label>
                                                             <input id="lif1" name="lif1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.McastIf" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.lif1.$dirty && cfgform.lif1.$invalid">
@@ -140,7 +140,7 @@
                                                                 <span ng-show="cfgform.lif1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="ctrl.dep.isdep==false">
                                                             <label for="lif2">Interfaz de Red 2</label>
                                                             <input id="lif2" name="lif2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.McastIf" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.lif2.$dirty && cfgform.lif2.$invalid">
@@ -150,7 +150,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="ctrl.dep.isdep">
                                                             <label for="lmk1">Mascara Lan1</label>
                                                             <input id="lmk1" name="lmk1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.lmk1.$dirty && cfgform.lmk1.$invalid">
@@ -158,7 +158,7 @@
                                                                 <span ng-show="cfgform.lmk1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="ctrl.dep.isdep">
                                                             <label for="lmk2">Mascara Lan2</label>
                                                             <input id="lmk2" name="lmk2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.lmk2.$dirty && cfgform.lmk2.$invalid">
@@ -183,7 +183,7 @@
                                                         <td></td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="ctrl.dep.isdep==false">
                                                             <label for="sip1">Ip</label>
                                                             <input id="sip1" name="sip1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.Ip" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.sip1.$dirty && cfgform.sip1.$invalid">
@@ -191,7 +191,7 @@
                                                                 <span ng-show="cfgform.sip1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="ctrl.dep.isdep==false">
                                                             <label for="sip2">Ip2</label>
                                                             <input id="sip2" name="sip2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.Ip" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.sip2.$dirty && cfgform.sip2.$invalid">
@@ -201,7 +201,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="ctrl.dep.isdep">
                                                             <label for="smc1">Grupo Multicast</label>
                                                             <input id="smc1" name="smc1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.McastGroup" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.smc1.$dirty && cfgform.smc1.$invalid">
@@ -209,7 +209,7 @@
                                                                 <span ng-show="cfgform.smc1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="ctrl.dep.isdep">
                                                             <label for="smc2">Grupo Multicast 2</label>
                                                             <input id="smc2" name="smc2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.McastGroup" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.smc2.$dirty && cfgform.smc2.$invalid">
@@ -219,7 +219,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="ctrl.dep.isdep">
                                                             <label for="sif1">Interfaz de Red</label>
                                                             <input id="sif1" name="sif1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.McastIf" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.sif1.$dirty && cfgform.sif1.$invalid">
@@ -227,7 +227,7 @@
                                                                 <span ng-show="cfgform.sif1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="ctrl.dep.isdep">
                                                             <label for="sif2">Interfaz de Red 2</label>
                                                             <input id="sif2" name="sif2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.McastIf" required nu-validate="ip" />
                                                             <span style="color:red" ng-show="cfgform.sif2.$dirty && cfgform.sif2.$invalid">
@@ -237,7 +237,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width:50%;">
+                                                        <td style="width:50%;" ng-show="false">
                                                             <label for="smk1">Mascara Lan1</label>
                                                             <input id="smk1" name="smk1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.smk1.$dirty && cfgform.smk1.$invalid">
@@ -245,7 +245,7 @@
                                                                 <span ng-show="cfgform.smk1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
                                                             </span>
                                                         </td>
-                                                        <td ng-show="true">
+                                                        <td ng-show="false">
                                                             <label for="smk2">Mascara Lan2</label>
                                                             <input id="smk2" name="smk2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.FromMask" required nu-validate="mkip" />
                                                             <span style="color:red" ng-show="cfgform.smk2.$dirty && cfgform.smk2.$invalid">
