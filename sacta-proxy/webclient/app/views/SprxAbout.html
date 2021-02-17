@@ -1,0 +1,37 @@
+<div class="panel panel-default" style="margin: 1em 1em 1em 1em">
+    <div class="panel-heading">Detalle de Version Software Instalada</div>
+    <div class="panel-body">
+        <section id="_contenido">
+            <div class="modal-content" style="margin: 2%;">
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item ndf-ver-01">{{"Nucleo Sacta Proxy Version " + ctrl.version.Version + " (" + ctrl.version.Fecha + ")"}}</li>
+                        <li class="list-group-item">
+                            <ul class="list-group">
+                                <li class="list-group-item" data-ng_repeat="comp in ctrl.version.Components">
+                                    <button type="button" class="btn btn-default ndf-ver-02" data-toggle="collapse" data-target="#comp-{{$index}}">{{comp.Name + " Ver " + ctrl.version.Version}}</button>
+                                    <div id="comp-{{$index}}" class="collapse in">
+                                        <ul class="list-group">
+                                            <li class="list-group-item  ndf-ver-03" data-ng_repeat="file in comp.Files">
+                                                <div class="row">
+                                                    <div class="col-md-4 text-primary">{{file.Path.substring(file.Path.lastIndexOf("\\") + 1)}}</div>
+                                                    <div class="col-md-2 text-success">{{file.Size}}</div>
+                                                    <div class="col-md-2 text-success">{{file.Date}}</div>
+                                                    <div class="col-md-3 text-success">{{file.MD5}}</div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <p style="text-align: right"><a href="{{ctrl.url_license}}" target="_blank">Acuerdo de Licencia</a></p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+

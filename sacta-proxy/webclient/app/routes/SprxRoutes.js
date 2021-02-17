@@ -14,7 +14,13 @@ function config($routeProvider) {
             templateUrl: 'app/views/SprxConfig.html',
             controller: 'SprxConfigCtrl',
             controllerAs: 'ctrl'
-        });
+        })
+        .when(routeAbout, {
+            templateUrl: 'app/views/SprxAbout.html',
+            controller: 'SprxAboutCtrl',
+            controllerAs: 'ctrl'
+        })
+        ;
     // .when(routeForUnauthorizedAccess, {
     // templateUrl: 'app/views/session-expired.html'
     // // templateUrl: 'session-expired.html'
