@@ -218,12 +218,14 @@ namespace sacta_proxy
                             dep.Sectorization.VirtualsList()
                                 .Select(v => sectorsMap.Keys.Contains(v) ? sectorsMap[v].ToString() : v.ToString())
                                 .ToList());
-                    var reals = dep.Sectorization.SectorsList()
+                    var reals = String.Join(",", dep.Sectorization.SectorsList()
                         .Select(r => sectorsMap.Keys.Contains(r) ? sectorsMap[r].ToString() : r.ToString())
-                        .ToList().Aggregate((i, j) => i + "," + j.ToString());
-                    var positions = dep.Sectorization.PositionsList()
+                        .ToList());
+                    //.Aggregate((i, j) => i + "," + j.ToString());
+                    var positions = String.Join(",", dep.Sectorization.PositionsList()
                         .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p].ToString() : p.ToString())
-                        .ToList().Aggregate((i, j) => i + "," + j.ToString());
+                        .ToList());
+                        //.Aggregate((i, j) => i + "," + j.ToString());
 
                     cfg.Psi.Sectorization.Positions = Configuration.AgreggateString(cfg.Psi.Sectorization.Positions, positions);
                     cfg.Psi.Sectorization.Virtuals = Configuration.AgreggateString(cfg.Psi.Sectorization.Virtuals, virtuals);
@@ -560,9 +562,9 @@ namespace sacta_proxy
         void TestDuplicated(List<string> pos, List<string> sec, Action continues)
         {
             if (pos.Count() > 0)
-                PS.SignalFatal<SactaProxy>($"There are duplicate positions in configuration => {pos.Aggregate((i, j) => i + "," + j)}", History);
+                PS.SignalFatal<SactaProxy>($"There are duplicate positions in configuration => {String.Join(",", pos)}", History);
             if (sec.Count() > 0)
-                PS.SignalFatal<SactaProxy>($"There are duplicate sectors in configuration => {sec.Aggregate((i, j) => i + "," + j)}", History);
+                PS.SignalFatal<SactaProxy>($"There are duplicate sectors in configuration => {String.Join(",", sec)}", History);
             if (pos.Count() <= 0 && sec.Count() <= 0)
                 continues();
         }
