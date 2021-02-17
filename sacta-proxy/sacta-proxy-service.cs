@@ -183,6 +183,8 @@ namespace sacta_proxy
             Logger.Info<SactaProxy>("Configurando Servicio");
             cfgManager.Get((cfg =>
             {
+                // Se utiliza 'siempre' version 0 para CD30 y version 1 para ULISES.
+                cfg.ProtocolVersion = Properties.Settings.Default.ScvType;
                 History.Configure(cfg.General.HistoryMaxDays, cfg.General.HistoryMaxItems);
                 Managers.Clear();
                 cfg.Psi.Sectorization.Positions = "";
