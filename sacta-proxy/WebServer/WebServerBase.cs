@@ -10,16 +10,18 @@ using sacta_proxy.Helpers;
 
 namespace sacta_proxy.WebServer
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public delegate void wasRestCallBack(HttpListenerContext context, StringBuilder sb);
     class WebServerBase
     {
+        #region Public
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public delegate void wasRestCallBack(HttpListenerContext context, StringBuilder sb);
-
-        #region Public
         public class CfgServer
         {
             public string DefaultUrl { get; set; }
@@ -294,6 +296,7 @@ namespace sacta_proxy.WebServer
             {".txt","text/text"},
             {".bmp","image/bmp"}
         };
+
         /// <summary>
         /// 
         /// </summary>
@@ -309,44 +312,13 @@ namespace sacta_proxy.WebServer
         #endregion
 
         #region Autenticacion
-        //bool MustAuthenticate = true;
         protected DateTime SessionExpiredAt = DateTime.Now;
-        //private bool Authenticated(HttpListenerContext context)
-        //{
-        //    /** Es una peticion que el Selector ha determinado como 'segura' y no requiere autentificarse */
-        //    if (context.User == null)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        if (/*!MustAuthenticate*/ DateTime.Now < SessionExpiredAt)
-        //        {
-        //            HttpListenerBasicIdentity identity = (HttpListenerBasicIdentity)context.User.Identity;
-        //            if (AuthenticateUser?.Invoke(identity?.Name, identity?.Password) == true)
-        //            {
-        //                MustAuthenticate = true;
-        //                SessionExpiredAt = DateTime.Now;
-        //                return true;
-        //            }
-        //        }
-
-        //        MustAuthenticate = false;
-        //        SessionExpiredAt = DateTime.Now + TimeSpan.FromMinutes(1);
-        //        /** Operador no autentificado. Presenta peticion de Login / Password. */
-        //        /** Para presentar la pantalla de peticion LOGIN / PASSWORD... */
-        //        context.Response.StatusCode = 401;
-        //        context.Response.AddHeader("WWW-Authenticate",
-        //            "Basic Realm=\"My WebDAV Server\""); // show login dialog
-        //        byte[] message = new UTF8Encoding().GetBytes("Access denied");
-        //        context.Response.ContentLength64 = message.Length;
-        //        context.Response.OutputStream.Write(message, 0, message.Length);
-        //        context.Response.Close();
-
-        //        return false;
-        //    }
-        //}
-
+        protected Action<string, Action<bool, string>> AuthenticateUser = null;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         private bool IsAuthenticated(HttpListenerContext context)
         {
             // Control de los Post de Login
@@ -397,7 +369,7 @@ namespace sacta_proxy.WebServer
             context.Response.Redirect(Config?.LoginUrl);
             return false;
         }
-        protected Action<string, Action<bool, string>> AuthenticateUser = null;
+
         #endregion Autentificacion
 
         #region Testing
@@ -425,6 +397,7 @@ namespace sacta_proxy.WebServer
         string DisableCause { get; set; }
         Object locker = new Object();
         CfgServer Config { get; set; }
+
         #endregion
     }
 }

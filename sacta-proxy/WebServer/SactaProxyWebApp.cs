@@ -38,7 +38,7 @@ namespace sacta_proxy.WebServer
         public SactaProxyWebApp() : base()
         {
         }
-        public void Start(int port)
+        public void Start(int port, Dictionary<string, wasRestCallBack> cbs=null)
         {
             /** Rutina a la que llama el servidor base para autentificar un usuario */
             AuthenticateUser = (data, response) =>
@@ -77,6 +77,18 @@ namespace sacta_proxy.WebServer
             };
             try
             {
+                /** Añado los callback 'exteriores' */
+                if (cbs != null)
+                {
+                    foreach(var item in cbs)
+                    {
+                        if (cfg.Keys.Contains(item.Key) == false)
+                        {
+                            cfg[item.Key] = item.Value;
+                        }
+                    }
+                }
+
                 base.Start(port, new CfgServer() 
                 {
                     DefaultDir = "/webclient",
