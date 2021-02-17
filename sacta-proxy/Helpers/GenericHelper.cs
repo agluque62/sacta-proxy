@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
+using System.Reflection;
+using System.Diagnostics;
 
 
 namespace sacta_proxy.Helpers
@@ -149,7 +151,7 @@ namespace sacta_proxy.Helpers
             }
         }
         #endregion
-        public class VersionDetails
+        public class VersionManagement
         {
             public class VersionDataFileItem
             {
@@ -172,7 +174,7 @@ namespace sacta_proxy.Helpers
             }
             VersionData version;
             public VersionData Version { get => version; set => version = value; }
-            public VersionDetails(string filepath)
+            public VersionManagement(string filepath)
             {
                 Version = JsonHelper.Parse<VersionData>(File.ReadAllText(@filepath));
                 Version.Server = System.Environment.MachineName;
@@ -197,6 +199,16 @@ namespace sacta_proxy.Helpers
             public override string ToString()
             {
                 return JsonHelper.ToString(Version);
+            }
+
+            public static string AssemblyVersion
+            {
+                get
+                {
+                    Assembly asm = Assembly.GetExecutingAssembly();
+                    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(asm.Location);
+                    return String.Format("{0}.{1}.{2}", fvi.ProductMajorPart, fvi.ProductMinorPart, fvi.ProductBuildPart);
+                }
             }
         }
         #region Fichero de Versiones

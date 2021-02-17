@@ -1,5 +1,5 @@
 angular.module("sacta_proxy")
-    .controller("SprxConfigCtrl", function ($scope, $interval, $serv, $lserv) {
+    .controller("SprxConfigCtrl", function ($scope, $interval, $location, $serv, $lserv) {
 
         /** Inicializacion */
         var ctrl = this;
@@ -17,8 +17,20 @@ angular.module("sacta_proxy")
             ctrl.pagina = page;
         }
         ctrl.update = () => {
-            alertify.success("Updating config..")
-            ConsolidateFromPage(ctrl.pagina);
+            if ($scope.cfgform.$valid) {
+                alertify.confirm(DialogTitle, '¿Confirma la actualización de la Configuración',
+                    () => {
+                        $serv.config_save(ctrl.config)
+                    },
+                    () => {
+                        alertify.success('Operacion Cancelada');
+                    });
+            }
+            else {
+                alertify.error("No se puede actualizar la configuración. Existen campos no válidos.");
+            }
+            //alertify.success("Updating config..");
+            //ConsolidateFromPage(ctrl.pagina);
         };
         ctrl.reset = () => {
             /** Obtiene de nuevo la configuracion del servidor */
@@ -34,6 +46,10 @@ angular.module("sacta_proxy")
             DataLoadOfPage(ctrl.pagina);
         };
 
+        /**
+         * 
+         * @param {any} page
+         */
         function ConsolidateFromPage(page) {
             if (page == 1) {
                 ctrl.config.Psi = ctrl.dep.cfg;
@@ -42,9 +58,12 @@ angular.module("sacta_proxy")
                 ctrl.config.Dependencies[ctrl.selecteddep_mirror] = ctrl.dep.cfg;
             }
         }
-
+        /**
+         * 
+         * @param {any} page
+         */
         function DataLoadOfPage(page) {
-            if (page == 1) {
+            if (page < 2) {
                 if (ctrl.config) {
                     ctrl.dep.cfg = ctrl.config.Psi;
                     ctrl.dep.isdep = false;
@@ -57,7 +76,10 @@ angular.module("sacta_proxy")
                 }
             }
         }
-
+        /**
+         * 
+         * @param {any} sync
+         */
         function load_config(sync) {
             $serv.config((config) => {
                 if (config.res == "ok") {
@@ -65,17 +87,48 @@ angular.module("sacta_proxy")
                     if (sync) sync();
                 }
                 else {
-                    // todo
+                    // 
+                    alertify.error("Error: " + config.res + ". Al cargar la configuracion...");
                 }
             });
         }
 
         /** */
-        $scope.$on('$viewContentLoaded', function () {
-            load_config();
-        });
-        /** Salida del Controlador. Borrado de Variables */
-        $scope.$on("$destroy", function () {
+        var timer = $interval(function () {
+            /** Info para el estado de validacion del FORM */
+            console.log("CfgForm: ", $scope.cfgform, $scope.cfgform.$dirty, $scope.cfgform.$valid);
+        }, 5000);
 
+        /** */
+        $scope.$on('$viewContentLoaded', function () {
+            load_config(() => {
+                DataLoadOfPage(ctrl.pagina);
+                $scope.cfgform.$setPristine();
+            });
+        });
+        /** */
+        var onRouteChangeOff = $scope.$on("$locationChangeStart", async function (event, newUrl, oldUrl) {
+            var msg = 'Existen Modificaciones sin salvar. ¿Desea salir de la página?. Las modificaciones se perderan';
+            if ($scope.cfgform.$dirty) {
+                alertify.confirm(DialogTitle, msg,
+                    function () {
+                        /** Continue */
+                        onRouteChangeOff(); //Stop listening for location changes
+                        $location.path($location.url(newUrl).hash()); //Go to page they're interested in
+                    }
+                    , function () {
+                        /** Cancela*/
+                        $lserv.MenuOption(1);
+                    });
+                //prevent navigation by default since we'll handle it
+                //once the user selects a dialog option
+                event.preventDefault();
+            }
+            return;
+        });
+
+    /** Salida del Controlador. Borrado de Variables */
+        $scope.$on("$destroy", function () {
+            $interval.cancel(timer);
         });
     });
