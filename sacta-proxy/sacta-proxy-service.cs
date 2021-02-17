@@ -189,6 +189,7 @@ namespace sacta_proxy
                 Managers.Clear();
                 cfg.Psi.Sectorization.Positions = "";
                 cfg.Psi.Sectorization.Sectors = "";
+                cfg.Psi.Sectorization.Virtuals = "";
 
                 var manager = new PsiManager(cfg.ProtocolVersion, cfg.Psi, () => History);
                 manager.EventActivity += OnPsiEventActivity;
@@ -234,6 +235,13 @@ namespace sacta_proxy
                         Manager = dependency
                     });
                 });
+                /** Test de la configuracion que maneja la PSI, que debe coincidir con la configurada en BD */
+                SectorizationHelper.CompareWithDb(cfg.Psi.Sectorization.Positions,
+                    cfg.Psi.Sectorization.Sectors, cfg.Psi.Sectorization.Virtuals, (error) =>
+                    {
+                        // Marcar el Warning...
+                        PS.SignalWarning<SactaProxy>($"Incoherencia de Configuración con Base de Datos: {error}", History);
+                    });
                 /** */
                 var ids = cfg.Dependencies.Select(d => d.Id).ToList();
                 ids.Add(cfg.Psi.Id);

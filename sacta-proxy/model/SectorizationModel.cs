@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
+using MySql.Data.MySqlClient;
+
 using sacta_proxy.helpers;
 
 namespace sacta_proxy.model
@@ -93,6 +95,84 @@ namespace sacta_proxy.model
                 mapstr += $"{entry.Key}:{entry.Value},";
             }
             return mapstr;
+        }
+
+        public static void CompareWithDb(string PositionsList, string SectorsList, string VirtualSectorsList, Action<string> notifyError)
+        {
+            var PosInCfg = PositionsList.Split(',').OrderBy(i => i).ToList();
+            var SecInCfg = SectorsList.Split(',').OrderBy(i => i).ToList();
+            var VirInCfg = VirtualSectorsList.Split(',').OrderBy(i => i).ToList();
+            SectorizationsItemsInDB((PosInDb, SecInDb, VirInDb) =>
+            {
+                var PosEquals = PosInCfg.Except(PosInDb).Count() == 0 && PosInDb.Except(PosInCfg).Count()==0;
+                if (PosEquals == false)
+                {
+                    notifyError($"Conjunto Posiciones Diferente: CFG: {PositionsList}; DB: {PosInDb.Aggregate((i, j) => i + "," + j)}");
+                }
+                var SecEquals = SecInCfg.Except(SecInDb).Count() == 0 && SecInDb.Except(SecInCfg).Count() == 0;
+                if (SecEquals == false)
+                {
+                    notifyError($"Conjunto Sectores Diferente: CFG: {SectorsList}; DB: {SecInDb.Aggregate((i, j) => i + "," + j)}");
+                }
+                var VirEquals = VirInCfg.Except(VirInDb).Count() == 0 && VirInDb.Except(VirInCfg).Count() == 0;
+                if (VirEquals == false)
+                {
+                    notifyError($"Conjunto Posiciones Diferente: CFG: {VirtualSectorsList}; DB: {VirInDb.Aggregate((i, j) => i + "," + j)}");
+                }
+            });
+        }
+
+        public static void SectorizationsItemsInDB(Action<List<string>, List<string>, List<string>> notify)
+        {
+            var settings = Properties.Settings.Default;
+            if (settings.DbConn == 1)
+            {
+                // Solo efectuamos el acceso para MySql
+                using (var connection = new MySqlConnection(DbControl.StrConn))
+                {
+                    try
+                    {
+                        connection.Open();
+                        using (var PositionsCommand = new MySqlCommand(DbControl.SqlQueryForPositions, connection))
+                        using (var SectorsCommand = new MySqlCommand(DbControl.SqlQueryForSectors, connection))
+                        using (var VirtualsCommand = new MySqlCommand(DbControl.SqlQueryForVirtuals, connection))
+                        {
+                            var positions = new List<string>();
+                            var sectors = new List<string>();
+                            var virtuals = new List<string>();
+                            using (var PositionsReader = PositionsCommand.ExecuteReader())
+                            {
+                                while (PositionsReader.Read())
+                                    positions.Add(PositionsReader[0].ToString());
+                            }
+                            using (var SectorsReader = SectorsCommand.ExecuteReader())
+                            {
+                                while (SectorsReader.Read())
+                                    sectors.Add(SectorsReader[0].ToString());
+                            }
+                            using (var VirtualsReader = VirtualsCommand.ExecuteReader())
+                            {
+                                while (VirtualsReader.Read())
+                                    virtuals.Add(VirtualsReader[0].ToString());
+                            }
+                            positions = positions.Count == 0 ? new List<string>() { "-1" } : positions;
+                            sectors = sectors.Count == 0 ? new List<string>() { "-1" } : sectors;
+                            virtuals = virtuals.Count == 0 ? new List<string>() { "-1" } : virtuals;
+                            notify(positions, sectors, virtuals);
+                        }
+                    }
+                    catch (Exception x)
+                    {
+                        Logger.Exception<SectorizationHelper>(x);
+                        notify(new List<string>() { "-3" }, new List<string>() { "-3" }, new List<string>() { "-3" });
+                    }
+                }
+            }
+            else
+            {
+                notify(new List<string>() { "-2" }, new List<string>() { "-2" }, new List<string>() { "-2" });
+            }
+
         }
     }
 }
