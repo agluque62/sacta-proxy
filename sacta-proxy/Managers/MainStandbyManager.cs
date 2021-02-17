@@ -13,9 +13,9 @@ namespace sacta_proxy.Managers
         public static void Check(Action<bool, bool> notify)
         {
 #if !DEBUG
-            var dualMode = Properties.Settings.Default.ClusterVirtualIp != string.Empty;
-            var virtualIpAvailable = IpHelper.IsLocalIpV4Address(Properties.Settings.Default.ClusterVirtualIp);
-            notify(dualMode, virtualIpAvailable);
+            var dualMode = Properties.Settings.Default.InCluster;
+            var virtualIpIsLocal = IpHelper.IsLocalIpV4Address(Properties.Settings.Default.HistoricServer);
+            notify(dualMode, virtualIpIsLocal);
 #else
             notify(Mode, Master);
 #endif
