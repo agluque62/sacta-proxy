@@ -1,4 +1,5 @@
 ﻿{
+  "ProtocolVersion": 1,
   "General": {
     "WebPort": 8091,
     "WebActivityMinTimeout": 30,

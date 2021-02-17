@@ -16,6 +16,24 @@ angular.module("sacta_proxy")
                 css: std == 0 ? "bg-danger text-danger" : std == 1 ? "bg-success text-succes" : std == 2 ? "bg-danger text-danger" : std + "???"
                 }
         };
+        ctrl.isactive=(std)=>{
+            return {
+                txt: std == true ? "Si" :  "No",
+                css: std == true ? "bg-success text-succes" : "bg-danger text-danger"
+                }
+        };
+        ctrl.datestr = (date) => {
+            var mdate = moment(date);
+            var str = mdate.format('DD-MM-YY HH:mm:ss');
+            return {str};
+        };
+        ctrl.sect = (sect)=>{
+            var str = "";
+            sect.forEach(element => {
+                str += (element.Sector + ":" + element.Position + ", ");
+            });
+            return {str};
+        };
         ctrl.seldepindex = undefined;
         ctrl.seldep = () => { return ctrl.deps()[ctrl.seldepindex]; };
         ctrl.deps = () => {
