@@ -60,27 +60,29 @@ namespace sacta_proxy.model
                 // Solo efectuamos el acceso para MySql
                 using (var connection = new MySqlConnection(DbControl.StrConn))
                 {
-                    connection.Open();
-                    var query = settings.ScvType == 0 ?
-                        $"SELECT idusuario, clave, perfil FROM opeusu;" :
-                        $"SELECT IdOperador, Clave, NivelAcceso FROM operadores WHERE IdSistema = 'departamento';";
-
-                    using (var command = new MySqlCommand(query, connection))
-                    using (var reader = command.ExecuteReader())
+                    DbControl.ControlledOpen(connection, () =>
                     {
-                        var users = new List<SystemUserInfo>();
-                        while (reader.Read())
+                        var query = settings.ScvType == 0 ?
+                            $"SELECT idusuario, clave, perfil FROM opeusu;" :
+                            $"SELECT IdOperador, Clave, NivelAcceso FROM operadores WHERE IdSistema = 'departamento';";
+
+                        using (var command = new MySqlCommand(query, connection))
+                        using (var reader = command.ExecuteReader())
                         {
-                            var perfil = settings.ScvType == 0 ? (uint)(long)reader[2] : (uint)reader[2];
-                            users.Add(new SystemUserInfo()
+                            var users = new List<SystemUserInfo>();
+                            while (reader.Read())
                             {
-                                Id = reader[0] as string,
-                                Clave = reader[1] as string,
-                                Perfil = perfil
-                            });
+                                var perfil = settings.ScvType == 0 ? (uint)(long)reader[2] : (uint)reader[2];
+                                users.Add(new SystemUserInfo()
+                                {
+                                    Id = reader[0] as string,
+                                    Clave = reader[1] as string,
+                                    Perfil = perfil
+                                });
+                            }
+                            delivery(users);
                         }
-                        delivery(users);
-                    }
+                    });
                 }
             }
         }

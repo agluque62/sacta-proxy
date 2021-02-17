@@ -132,34 +132,36 @@ namespace sacta_proxy.model
                 {
                     try
                     {
-                        connection.Open();
-                        using (var PositionsCommand = new MySqlCommand(DbControl.SqlQueryForPositions, connection))
-                        using (var SectorsCommand = new MySqlCommand(DbControl.SqlQueryForSectors, connection))
-                        using (var VirtualsCommand = new MySqlCommand(DbControl.SqlQueryForVirtuals, connection))
+                        DbControl.ControlledOpen(connection, () =>
                         {
-                            var positions = new List<string>();
-                            var sectors = new List<string>();
-                            var virtuals = new List<string>();
-                            using (var PositionsReader = PositionsCommand.ExecuteReader())
+                            using (var PositionsCommand = new MySqlCommand(DbControl.SqlQueryForPositions, connection))
+                            using (var SectorsCommand = new MySqlCommand(DbControl.SqlQueryForSectors, connection))
+                            using (var VirtualsCommand = new MySqlCommand(DbControl.SqlQueryForVirtuals, connection))
                             {
-                                while (PositionsReader.Read())
-                                    positions.Add(PositionsReader[0].ToString());
+                                var positions = new List<string>();
+                                var sectors = new List<string>();
+                                var virtuals = new List<string>();
+                                using (var PositionsReader = PositionsCommand.ExecuteReader())
+                                {
+                                    while (PositionsReader.Read())
+                                        positions.Add(PositionsReader[0].ToString());
+                                }
+                                using (var SectorsReader = SectorsCommand.ExecuteReader())
+                                {
+                                    while (SectorsReader.Read())
+                                        sectors.Add(SectorsReader[0].ToString());
+                                }
+                                using (var VirtualsReader = VirtualsCommand.ExecuteReader())
+                                {
+                                    while (VirtualsReader.Read())
+                                        virtuals.Add(VirtualsReader[0].ToString());
+                                }
+                                positions = positions.Count == 0 ? new List<string>() { "-1" } : positions;
+                                sectors = sectors.Count == 0 ? new List<string>() { "-1" } : sectors;
+                                virtuals = virtuals.Count == 0 ? new List<string>() { "-1" } : virtuals;
+                                notify(positions, sectors, virtuals);
                             }
-                            using (var SectorsReader = SectorsCommand.ExecuteReader())
-                            {
-                                while (SectorsReader.Read())
-                                    sectors.Add(SectorsReader[0].ToString());
-                            }
-                            using (var VirtualsReader = VirtualsCommand.ExecuteReader())
-                            {
-                                while (VirtualsReader.Read())
-                                    virtuals.Add(VirtualsReader[0].ToString());
-                            }
-                            positions = positions.Count == 0 ? new List<string>() { "-1" } : positions;
-                            sectors = sectors.Count == 0 ? new List<string>() { "-1" } : sectors;
-                            virtuals = virtuals.Count == 0 ? new List<string>() { "-1" } : virtuals;
-                            notify(positions, sectors, virtuals);
-                        }
+                        });
                     }
                     catch (Exception x)
                     {
