@@ -13,6 +13,7 @@ namespace sacta_proxy.Managers
 {
     public abstract class BaseManager
     {
+
         public abstract void Start(Configuration.DependecyConfig cfg);
         public abstract void Stop();
         public abstract bool EnableTx { get; set; }
@@ -49,7 +50,8 @@ namespace sacta_proxy.Managers
         protected DateTime LastActivityOnLan2 { get; set; }
         protected DateTime LastPresenceSended { get; set; }
         protected int Sequence { get; set; }
-        #endregion Datos.
+        protected ProcessStatusControl PS = new ProcessStatusControl();
+        #endregion
     }
     public class ManagerEventArgs : EventArgs
     {
@@ -59,9 +61,10 @@ namespace sacta_proxy.Managers
     {
         public bool ActivityOnLan { get; set; }
     }
-    public class SectorizationArgs : ManagerEventArgs
+    public class SectorizationReceivedArgs : ManagerEventArgs
     {
         public Dictionary<string, int> SectorMap { get; set; }
     }
+    public class SectorizationRequestArgs : ManagerEventArgs { }
     
 }

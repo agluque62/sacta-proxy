@@ -70,6 +70,7 @@
     <Compile Include="Managers\SactaMessages.cs" />
     <Compile Include="Managers\ScvManager.cs" />
     <Compile Include="model\Configuration.cs" />
+    <Compile Include="model\ProcessStatusControl.cs" />
     <Compile Include="sacta-proxy-installer.cs">
       <SubType>Component</SubType>
     </Compile>

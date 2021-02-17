@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
-
 using sacta_proxy.Helpers;
 using sacta_proxy.WebServer;
 using sacta_proxy.model;
@@ -17,18 +16,27 @@ using sacta_proxy.Managers;
 
 namespace sacta_proxy
 {
+    using SectMap = Dictionary<string, int>;
     public class DependencyControl
     {
         public Configuration.DependecyConfig Cfg { get; set; }
         public BaseManager Manager { get; set; }
         public bool Activity { get; set; }
-        public Dictionary<string, int> SectorMap { get; set; }
+        public Dictionary<string,int> MapOfSectors { get; set; }
         public DependencyControl()
         {
             Cfg = null;
             Manager = null;
             Activity = false;
-            SectorMap = new Dictionary<string, int>();
+            MapOfSectors = new Dictionary<string, int>();
+        }
+        public static SectMap CopyMap(SectMap src, SectMap dst)
+        {
+            foreach(var item in src)
+            {
+                dst[item.Key] = item.Value;
+            }
+            return dst;
         }
     }
     public partial class SactaProxy : ServiceBase
@@ -65,6 +73,7 @@ namespace sacta_proxy
 
                 var manager = new PsiManager();
                 manager.EventActivity += OnPsiEventActivity;
+                manager.EventSectRequest += OnPsiEventSectorizationAsk;
 
                 MainManager = new DependencyControl()
                 {
@@ -98,18 +107,16 @@ namespace sacta_proxy
                 {
                     // Solo arranca el programa cuando no hay duplicados.
                     EventThread.Start();
-
                     MainManager.Manager.Start(cfg.Psi);
-
                     DepManager.Values.ToList().ForEach(dependency =>
                     {
                         dependency.Manager.Start(dependency.Cfg);
                     });
-
                     webCallbacks.Add("/config", OnConfig);
                     webCallbacks.Add("/status", OnState);
-                    SactaProxyWebApp?.Start(cfg.General.WebPort, webCallbacks);
+                    SactaProxyWebApp?.Start(cfg.General.WebPort, cfg.General.WebActivityMinTimeout, webCallbacks);
                     Cfg = cfg;
+                    PS.Set(ProcessStates.Running);
                 });
             }));
         }
@@ -124,8 +131,11 @@ namespace sacta_proxy
                 dependency.Manager.Stop();
             });
             DepManager.Clear();
+            (MainManager.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
+            (MainManager.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
             MainManager.Manager.Stop();
             EventThread.Stop();
+            PS.Set(ProcessStates.Stopped);
         }
 
         #region Callbacks Web
@@ -135,12 +145,7 @@ namespace sacta_proxy
             if (context.Request.HttpMethod == "GET")
             {
                 context.Response.StatusCode = 200;
-                var status = new
-                {
-                    psiManager = MainManager.Manager.Status,
-                    dependencies = DepManager.Values.Select(dep => dep.Manager.Status).ToList()
-                };
-                sb.Append(JsonHelper.ToString(new { res = "ok", status }, false));
+                sb.Append(JsonHelper.ToString(new { res = "ok", Status }, false));
             }
             else
             {
@@ -208,17 +213,40 @@ namespace sacta_proxy
                 }
                 else
                 {
-                    // Algo no va bien---
+                    // Algo no va bien.
+                    Logger.Fatal<SactaProxy>($"OnScvEventActivity. {data.ScvId} Dependency is missing or duplicated");
                 }
             });
         }
-        protected void OnScvEventSectorization(Object sender, SectorizationArgs data)
+        protected void OnScvEventSectorization(Object sender, SectorizationReceivedArgs data)
         {
             /** Se ha recibido una sectorizacion correcta de una dependencia */ 
             EventThread.Enqueue("OnScvEventSectorization", () =>
             {
-                // TODO
+                var controlDep = DepManager.Where(d => d.Key == data.ScvId).Select(d => d.Value).ToList();
+                if (controlDep.Count == 1)
+                {
+                    // Actualizo la Sectorizacion en la Dependencia.
+                    controlDep[0].MapOfSectors = data.SectorMap;
 
+                    // Actualizo la Sectorizacion en el Manager.
+                    MainManager.MapOfSectors = DependencyControl.CopyMap(controlDep[0].MapOfSectors, MainManager.MapOfSectors);
+
+                    // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
+                    var DepWithSectInfo = DepManager.Where(d => d.Value.MapOfSectors.Count() > 0).ToList();
+                    if (DepWithSectInfo.Count == DepManager.Count)
+                    {
+                        (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
+                    }
+                    else
+                    {
+                        Logger.Warn<SactaProxy>($"OnScvEventSectorization. IGNORED. No all Sectorization Info Present.");
+                    }
+                }
+                else
+                {
+                    Logger.Fatal<SactaProxy>($"OnScvEventSectorization. {data.ScvId} Dependency is missing or duplicated");
+                }
             });
         }
         protected void OnPsiEventActivity(Object sender, ActivityOnLanArgs data)
@@ -236,17 +264,50 @@ namespace sacta_proxy
                 }
             });
         }
+        protected void OnPsiEventSectorizationAsk(Object sender, SectorizationRequestArgs data)
+        {
+            EventThread.Enqueue("OnPsiEventActivity", () =>
+            {
+                var DepWithSectInfo = DepManager.Where(d => d.Value.MapOfSectors.Count() > 0).ToList();
+                if (DepWithSectInfo.Count == DepManager.Count)
+                {
+                    (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
+                }
+                else
+                {
+                    Logger.Warn<SactaProxy>($"OnPsiEventSectorizationAsk. IGNORED. No all Sectorization Info Present.");
+                }
+            });
+        }
 
         #endregion EventManagers
 
         void TestDuplicated(List<string> pos, List<string> sec, Action continues)
         {
             if (pos.Count() > 0)
-                Logger.Fatal<SactaProxy>($"There are duplicate positions in configuration => {pos.Aggregate((i, j) => i + "," + j)}");
+                PS.SignalFatal<SactaProxy>($"There are duplicate positions in configuration => {pos.Aggregate((i, j) => i + "," + j)}");
             if (sec.Count() > 0)
-                Logger.Fatal<SactaProxy>($"There are duplicate sectors in configuration => {sec.Aggregate((i, j) => i + "," + j)}");
+                PS.SignalFatal<SactaProxy>($"There are duplicate sectors in configuration => {sec.Aggregate((i, j) => i + "," + j)}");
             if (pos.Count() <= 0 && sec.Count() <= 0)
                 continues();
+        }
+        Object Status 
+        { 
+            get
+            {
+                return new
+                {
+                    service = PS.Status,
+                    web = 0,
+                    psi_em = MainManager.Manager.Status,
+                    scv_em = DepManager.Select(dep => new { id=dep.Key, std=dep.Value.Manager.Status}).ToList(),
+                    sectorizations = new
+                    {
+                        global = MainManager.MapOfSectors,
+                        deps = DepManager.Select(dep => new { id = dep.Key, sect = dep.Value.MapOfSectors }).ToList()
+                    }
+                };
+            }
         }
 
         #region Data
@@ -258,6 +319,7 @@ namespace sacta_proxy
 
         private DependencyControl MainManager { get; set; }
         private readonly Dictionary<string, DependencyControl> DepManager = new Dictionary<string, DependencyControl>();
+        private readonly ProcessStatusControl PS = new ProcessStatusControl();
         #endregion
     }
 
