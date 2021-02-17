@@ -17,18 +17,26 @@ using sacta_proxy.Managers;
 
 namespace sacta_proxy
 {
+    public class DependencyControl
+    {
+        public Configuration.DependecyConfig Cfg { get; set; }
+        public BaseManager Manager { get; set; }
+        public bool Activity { get; set; }
+        public Dictionary<string, int> SectorMap { get; set; }
+        public DependencyControl()
+        {
+            Cfg = null;
+            Manager = null;
+            Activity = false;
+            SectorMap = new Dictionary<string, int>();
+        }
+    }
     public partial class SactaProxy : ServiceBase
     {
-        private readonly SactaProxyWebApp sactaProxyWebApp = null;
-        private readonly ConfigurationManager cfgManager = new ConfigurationManager();
-        private readonly PsiManager psiManager = new PsiManager();
-        private readonly Dictionary<string, ScvManager> dependenciesManager = new Dictionary<string, ScvManager>();
-        private readonly Dictionary<string, wasRestCallBack> webCallbacks = new Dictionary<string, wasRestCallBack>();
-
         public SactaProxy()
         {
             InitializeComponent();
-            sactaProxyWebApp = new SactaProxyWebApp();
+            SactaProxyWebApp = new SactaProxyWebApp();
         }
         public void StartOnConsole(string[] args)
         {
@@ -43,30 +51,73 @@ namespace sacta_proxy
             // Se ejecuta al arrancar el programa.
             cfgManager.Get((cfg =>
             {
-                psiManager.Start(cfg.Proxy);
-                dependenciesManager.Clear();
+                DepManager.Clear();
+                cfg.Proxy.Sectorization.Positions.Clear();
+                cfg.Proxy.Sectorization.Sectors.Clear();
+
+                var manager = new PsiManager();
+                manager.EventActivity += OnPsiEventActivity;
+
+                MainManager = new DependencyControl()
+                {
+                    Cfg = cfg.Proxy,
+                    Manager = manager
+                }; 
+
                 cfg.Dependencies.ForEach(dep =>
                 {
                     var dependency = new ScvManager();
-                    dependency.Start(dep);
-                    dependenciesManager[dep.Id] = dependency;
-                });
+                    dependency.EventActivity += OnScvEventActivity;
+                    dependency.EventSectorization += OnScvEventSectorization;
 
-                webCallbacks.Add("/config", OnConfig);
-                webCallbacks.Add("/status", OnState);
-                sactaProxyWebApp.Start(cfg.General.WebPort, webCallbacks);
+                    /** Construyendo la configuracion de Sectorizacion general */
+                    cfg.Proxy.Sectorization.Positions.AddRange(dep.Sectorization.Positions);
+                    cfg.Proxy.Sectorization.Sectors.AddRange(dep.Sectorization.Sectors);
+
+                    //dependency.Start(dep);
+                    DepManager[dep.Id] = new DependencyControl()
+                    {
+                        Cfg = dep,
+                        Manager = dependency
+                    };
+                });
+                /** Chequear que no haya sectores o posiciones repetidas */
+                var duplicatedSec = cfg.Proxy.Sectorization.Sectors.GroupBy(s => s)
+                    .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
+                var duplicatedPos = cfg.Proxy.Sectorization.Positions.GroupBy(s => s)
+                    .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
+                TestDuplicated(duplicatedPos, duplicatedSec, () =>
+                {
+                    // Solo arranca el programa cuando no hay duplicados.
+                    EventThread.Start();
+
+                    MainManager.Manager.Start(cfg.Proxy);
+
+                    DepManager.Values.ToList().ForEach(dependency =>
+                    {
+                        dependency.Manager.Start(dependency.Cfg);
+                    });
+
+                    webCallbacks.Add("/config", OnConfig);
+                    webCallbacks.Add("/status", OnState);
+                    SactaProxyWebApp.Start(cfg.General.WebPort, webCallbacks);
+                    Cfg = cfg;
+                });
             }));
         }
         protected override void OnStop()
         {
             // Se ejecuta al finalizar el programa.
-            sactaProxyWebApp.Stop();
-            dependenciesManager.Values.ToList().ForEach(mng =>
+            SactaProxyWebApp.Stop();
+            DepManager.Values.ToList().ForEach(dependency =>
             {
-                mng.Stop();
+                (dependency.Manager as ScvManager).EventActivity -= OnScvEventActivity;
+                (dependency.Manager as ScvManager).EventSectorization -= OnScvEventSectorization;
+                dependency.Manager.Stop();
             });
-            dependenciesManager.Clear();
-            psiManager.Stop();
+            DepManager.Clear();
+            MainManager.Manager.Stop();
+            EventThread.Stop();
         }
 
         #region Callbacks Web
@@ -78,8 +129,8 @@ namespace sacta_proxy
                 context.Response.StatusCode = 200;
                 var status = new
                 {
-                    psiManager = psiManager.Status,
-                    dependencies = dependenciesManager.Values.Select(dep => dep.Status).ToList()
+                    psiManager = MainManager.Manager.Status,
+                    dependencies = DepManager.Values.Select(dep => dep.Manager.Status).ToList()
                 };
                 sb.Append(JsonHelper.ToString(new { res = "ok", status }, false));
             }
@@ -127,5 +178,78 @@ namespace sacta_proxy
             }
         }
         #endregion Callbacks Web
+
+        #region EventManagers
+        private readonly EventQueue EventThread = new EventQueue();
+        protected void OnScvEventActivity(Object sender, ScvManagerActivityArgs data)
+        {
+            EventThread.Enqueue("OnScvEventActivity", () =>
+            {
+                var controlDep = DepManager.Where(d => d.Key == data.ScvId).Select(d => d.Value).ToList();
+                if (controlDep.Count == 1)
+                {
+                    if (controlDep[0].Activity != data.Activity)
+                    {
+                        controlDep[0].Activity = data.Activity;
+                    }
+                    var actives = DepManager.Select(s => s.Value).Where(d => d.Activity == true).ToList();
+                    MainManager.Manager.EnableTx =
+                        Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 :
+                        Cfg.General.ActivateSactaLogic == "AND" ? actives.Count() == DepManager.Count() :
+                        actives.Count() == DepManager.Count();
+                }
+                else
+                {
+                    // Algo no va bien---
+                }
+            });
+        }
+        protected void OnScvEventSectorization(Object sender, ScvManagerSectorizationArgs data)
+        {
+            EventThread.Enqueue("OnScvEventSectorization", () =>
+            {
+                // TODO
+
+            });
+        }
+        protected void OnPsiEventActivity(Object sender, PsiManagerActivityArgs data)
+        {
+            EventThread.Enqueue("OnPsiEventActivity", () =>
+            {
+                if (data.Activity != MainManager.Activity)
+                {
+                    MainManager.Activity = data.Activity;
+                    // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
+                    DepManager.Values.ToList().ForEach(dependency =>
+                    {
+                        dependency.Manager.EnableTx = MainManager.Activity;
+                    });
+                }
+            });
+        }
+
+        #endregion EventManagers
+
+        void TestDuplicated(List<string> pos, List<string> sec, Action continues)
+        {
+            if (pos.Count() > 0)
+                Logger.Fatal<SactaProxy>($"There are duplicate positions in configuration => {pos.Aggregate((i, j) => i + "," + j)}");
+            if (sec.Count() > 0)
+                Logger.Fatal<SactaProxy>($"There are duplicate sectors in configuration => {sec.Aggregate((i, j) => i + "," + j)}");
+            if (pos.Count() <= 0 && sec.Count() <= 0)
+                continues();
+        }
+
+        #region Data
+        private SactaProxyWebApp SactaProxyWebApp { get; set; }
+        private readonly Dictionary<string, wasRestCallBack> webCallbacks = new Dictionary<string, wasRestCallBack>();
+
+        private readonly ConfigurationManager cfgManager = new ConfigurationManager();
+        private Configuration Cfg { get; set; }
+
+        private DependencyControl MainManager { get; set; }
+        private readonly Dictionary<string, DependencyControl> DepManager = new Dictionary<string, DependencyControl>();
+        #endregion
     }
+
 }

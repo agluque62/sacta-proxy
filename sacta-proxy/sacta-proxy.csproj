@@ -59,9 +59,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\CustomBinaryFormatter.cs" />
+    <Compile Include="Helpers\EventQeue.cs" />
+    <Compile Include="Helpers\IpHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\Logger.cs" />
+    <Compile Include="Helpers\UdpSocket.cs" />
+    <Compile Include="Managers\BaseManager.cs" />
     <Compile Include="Managers\PsiManager.cs" />
+    <Compile Include="Managers\SactaMessages.cs" />
     <Compile Include="Managers\ScvManager.cs" />
     <Compile Include="model\Configuration.cs" />
     <Compile Include="sacta-proxy-installer.cs">
@@ -70,9 +76,7 @@
     <Compile Include="sacta-proxy-installer.Designer.cs">
       <DependentUpon>sacta-proxy-installer.cs</DependentUpon>
     </Compile>
-    <Compile Include="sacta-proxy-service.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="sacta-proxy-service.cs" />
     <Compile Include="sacta-proxy-service.Designer.cs">
       <DependentUpon>sacta-proxy-service.cs</DependentUpon>
     </Compile>

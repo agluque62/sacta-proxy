@@ -10,26 +10,32 @@ using sacta_proxy.model;
 
 namespace sacta_proxy.Managers
 {
-    class PsiManager
+    class PsiManager : BaseManager
     {
-        public void Start(Configuration.DependecyConfig cfg)
+        #region Events
+        public EventHandler<PsiManagerActivityArgs> EventActivity;
+        #endregion Events
+        public override void Start(Configuration.DependecyConfig cfg)
         {
             Logger.Info<PsiManager>($"Starting PsiManager...");
 
+            EnableTx = false;
 
         }
-        public void Stop()
+        public override void Stop()
         {
             Logger.Info<PsiManager>($"Stopping PsiManager...");
 
         }
 
-        public object Status 
+        public override object Status 
         { 
             get
             {
                 return new { res = "En implementacion" };
             }
         }
+
+        public override bool EnableTx { get; set; }
     }
 }
