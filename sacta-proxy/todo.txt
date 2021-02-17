@@ -1,17 +1,18 @@
 ﻿/** */
 [] Gestion de Historicos.
-  [] Generacion de un LOG...
-  [] Visualizacion del LOG...
-[] Persistencia Ultimas Sectorizaciones.
+	[] Generacion de un LOG...
+	[] Visualizacion del LOG...
 [] Conexion con Base de Datos.
+	[] Usuarios.
 	[] Test de Configuracion de Sectores con datos de Base de Datos.
 	[] Inclusion de Historicos.
 [x] Configuración y gestión mapeado Sectores y Puestos entre dependencias y scv.
-   [x] En fichero de configuracion.
-   [x] En carga de configuracion.
-   [x] En pantalla de configuracion.
+	[x] En fichero de configuracion.
+	[x] En carga de configuracion.
+	[x] En pantalla de configuracion.
 [x] Validacion del formulario de Configuracion.
-   [x] Aviso de Cambios sin salvar...
+	[x] Aviso de Cambios sin salvar...
 	[x] Al cancelar el cambio, volver a marcar el menu correcto.
-   [x] Aviso de Cambio con Valores no validos.
-   [x] Ejecución de la orden de cambio de configuracion.
+	[x] Aviso de Cambio con Valores no validos.
+	[x] Ejecución de la orden de cambio de configuracion.
+[x] Persistencia Ultimas Sectorizaciones.

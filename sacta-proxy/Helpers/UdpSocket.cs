@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 
-namespace sacta_proxy.Helpers
+namespace sacta_proxy.helpers
 {
     public struct DataGram
     {

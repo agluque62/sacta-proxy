@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Converters;
 
-namespace sacta_proxy.Helpers
+namespace sacta_proxy.helpers
 {
     class JsonHelper
     {

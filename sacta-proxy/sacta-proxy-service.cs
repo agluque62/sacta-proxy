@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 
-using sacta_proxy.Helpers;
+using sacta_proxy.helpers;
 using sacta_proxy.WebServer;
 using sacta_proxy.model;
 using sacta_proxy.Managers;
@@ -25,13 +25,27 @@ namespace sacta_proxy
         public Configuration.DependecyConfig Cfg { get; set; }
         public BaseManager Manager { get; set; }
         public bool Activity { get; set; }
-        public Dictionary<string,int> MapOfSectors { get; set; }
-        public DependencyControl()
+        public Dictionary<string,int> MapOfSectors 
+        {
+            get
+            {
+                return sectorization;
+            }
+            set
+            {
+                sectorization = value;
+                SectorizationPersistence.Set(Cfg.Id, sectorization);
+            }
+        }
+        public DependencyControl(string id)
         {
             Cfg = null;
             Manager = null;
             Activity = false;
-            MapOfSectors = new Dictionary<string, int>();
+            SectorizationPersistence.Get(id, (data) =>
+            {
+                sectorization = data;
+            });
         }
         public List<SectorizationItem> Sectorization
         {
@@ -41,14 +55,15 @@ namespace sacta_proxy
                 return sect;
             }
         }
-        public static SectMap CopyMap(SectMap src, SectMap dst)
+        public void MergeSectorization(SectMap map)
         {
-            foreach(var item in src)
+            foreach(var item in map)
             {
-                dst[item.Key] = item.Value;
+                sectorization[item.Key] = item.Value;
             }
-            return dst;
+            SectorizationPersistence.Set(Cfg.Id, sectorization);
         }
+        private SectMap sectorization = new SectMap();
     }
     public partial class SactaProxy : ServiceBase
     {
@@ -98,7 +113,7 @@ namespace sacta_proxy
                 manager.EventActivity += OnPsiEventActivity;
                 manager.EventSectRequest += OnPsiEventSectorizationAsk;
 
-                MainManager = new DependencyControl()
+                MainManager = new DependencyControl(cfg.Psi.Id)
                 {
                     Cfg = cfg.Psi,
                     Manager = manager
@@ -132,12 +147,17 @@ namespace sacta_proxy
                     cfg.Psi.Sectorization.Sectors.AddRange(reals);
 
                     //dependency.Start(dep);
-                    DepManager[dep.Id] = new DependencyControl()
+                    DepManager[dep.Id] = new DependencyControl(dep.Id)
                     {
                         Cfg = dep,
                         Manager = dependency
                     };
                 });
+                /** */
+                var ids = cfg.Dependencies.Select(d => d.Id).ToList();
+                ids.Add(cfg.Psi.Id);
+                SectorizationPersistence.Sanitize(ids);
+
                 /** Chequear que no haya sectores o posiciones repetidas */
                 var duplicatedSec = cfg.Psi.Sectorization.Sectors.GroupBy(s => s)
                     .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
@@ -159,7 +179,7 @@ namespace sacta_proxy
 #endif
                     SactaProxyWebApp?.Start(cfg.General.WebPort, cfg.General.WebActivityMinTimeout, webCallbacks);
                     Cfg = cfg;
-#if DEBUG
+#if DEBUG1
                     DepManager.Where(d => d.Key == "TWR").First().Value.MapOfSectors = new SectMap()
                     {
                         {"0001", 1 },
@@ -174,8 +194,8 @@ namespace sacta_proxy
                         {"0013", 12 },
                         {"0014", 12 },
                     };
-                    DependencyControl.CopyMap(DepManager.Where(d => d.Key == "TWR").First().Value.MapOfSectors, MainManager.MapOfSectors);
-                    DependencyControl.CopyMap(DepManager.Where(d => d.Key == "APP").First().Value.MapOfSectors, MainManager.MapOfSectors);
+                    MainManager.MergeSectorization(DepManager.Where(d => d.Key == "TWR").First().Value.MapOfSectors);
+                    MainManager.MergeSectorization(DepManager.Where(d => d.Key == "APP").First().Value.MapOfSectors);
 #endif
                     PS.Set(ProcessStates.Running);
                 });
@@ -327,7 +347,7 @@ namespace sacta_proxy
                     controlDep[0].MapOfSectors = data.SectorMap;
 
                     // Actualizo la Sectorizacion en el Manager.
-                    MainManager.MapOfSectors = DependencyControl.CopyMap(controlDep[0].MapOfSectors, MainManager.MapOfSectors);
+                    MainManager.MergeSectorization(controlDep[0].MapOfSectors);
 
                     // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
                     var DepWithSectInfo = DepManager.Where(d => d.Value.MapOfSectors.Count() > 0).ToList();
