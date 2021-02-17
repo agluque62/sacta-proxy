@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System.Net;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using sacta_proxy.helpers;
 
@@ -75,6 +76,41 @@ namespace sacta_proxy_tests
             Assert.IsTrue(IpHelper.IsLocalIpV4Address(LoopbackIp));
             Assert.IsTrue(IpHelper.IsLocalIpV4Address(LocalIp));
             Assert.IsFalse(IpHelper.IsLocalIpV4Address(ExternIp));
+        }
+        [TestMethod]
+        public void RoutingMcastTest()
+        {
+            // Programar el LISTEN de LAN1 en el simulador.
+            var Listener1 = new UdpSocket("10.12.90.1", 19205);
+            Listener1.Base.JoinMulticastGroup(IPAddress.Parse("225.12.101.1"), IPAddress.Parse("10.12.90.1"));
+            Listener1.NewDataEvent += (s, d) =>
+            {
+                Debug.WriteLine("Trama Recibida en LISTENER 1");
+            };
+            Listener1.BeginReceive();
+            // Programar el LISTEN de LAN2 en el simulador.
+            var Listener2 = new UdpSocket("10.20.91.1", 19205);
+            Listener2.Base.JoinMulticastGroup(IPAddress.Parse("225.212.101.1"), IPAddress.Parse("10.20.91.1"));
+            Listener2.NewDataEvent += (s, d) =>
+            {
+                Debug.WriteLine("Trama Recibida en LISTENER 2");
+            };
+            Listener2.BeginReceive();
+
+            // Envio de la trama por el código del SCV.
+            var ScvSender = new UdpSocket("10.12.90.1", 15001);
+            ScvSender.Base.MulticastLoopback = false;
+            ScvSender.Base.JoinMulticastGroup(IPAddress.Parse("225.12.101.1"), IPAddress.Parse("10.12.90.1"));
+            ScvSender.Base.JoinMulticastGroup(IPAddress.Parse("225.212.101.1"), IPAddress.Parse("10.12.90.1"));
+            IPEndPoint to1 = new IPEndPoint(IPAddress.Parse("225.12.101.1"), 19205);
+            IPEndPoint to2 = new IPEndPoint(IPAddress.Parse("225.212.101.1"), 19205);
+
+            Task.Delay(1000).Wait();
+            ScvSender.Send(to1, new byte[] { 1, 2, 3 });
+            Task.Delay(1000).Wait();
+            ScvSender.Send(to2, new byte[] { 1, 2, 3 });
+
+            Task.Delay(1000).Wait();
         }
     }
 }

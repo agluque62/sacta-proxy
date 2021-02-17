@@ -33,14 +33,16 @@
 		[x] Version 1
 			[x] Escucha => (Msc1, Msc2)IP1
 			[x] Envio => (IP1)MC1, (IP1)MC2
-[] Web...
+[x] Web...
 	[x] Vista de estado global.
 	[x] Visualizacion del LOG...
 	[x] Configuracion (Listas) => Strings...
-	[] Revisar los string de Estado de los Servicios / Managers.
-	[] Incluir informacion relativa:
-		[] Modo de Funcionamiento.
-		[] Conexion de la base de datos.
+	[x] Revisar los string de Estado de los Servicios / Managers.
+	[x] Incluir informacion relativa:
+		[x] Modo de Funcionamiento.
+		[x] Conexion de la base de datos.
+	[] Testear el configuracion de SACTA...
+		[] Que no se introduzcan Sectores/Posiciones repetidos en por dependencia.
 [x] Controlar activación / desactivación en los modos PPAL/RSVA...
 [x] Instalador del servicio.
 	[x] Incluir Opciones de Instalacion
@@ -61,3 +63,11 @@
 		[] Para CD30.
 		[] Para ULISES.
 	[x] Supervisión de Presencia de la conexión a la base de datos.
+	[] Documentacion
+		[] Descripcion General
+		[] Guia de Instalación y Configuración.
+		[] Manual de Usuario.
+		[] Protocolo de Pruebas.
+[] Relacionar el Tipo de SCV con la versión del protocolo.
+
+
