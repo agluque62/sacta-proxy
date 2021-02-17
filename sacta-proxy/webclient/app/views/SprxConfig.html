@@ -4,49 +4,94 @@
         <section id="_tabs">
             <ul class="nav nav-tabs">
                 <li data-ng-class="{'active': ctrl.pagina==0}">
-                    <a href="" data-ng-click="ctrl.pagina=0" translate>Parametros Generales</a>
+                    <a href="" data-ng-click="ctrl.topage(0)" translate>Parametros Generales</a>
                 </li>
                 <li data-ng-class="{'active': ctrl.pagina==1}">
-                    <a href="" data-ng-click="ctrl.pagina=1" translate>Interfaz SCV</a>
+                    <a href="" data-ng-click="ctrl.topage(1)" translate>Interfaz SCV</a>
                 </li>
                 <li data-ng-class="{'active': ctrl.pagina==2}">
-                    <a href="" data-ng-click="ctrl.pagina=2" translate>Interfaz SACTA</a>
+                    <a href="" data-ng-click="ctrl.topage(2)" translate>Interfaz SACTA</a>
                 </li>
             </ul>
         </section>
-        <section id="_contenido">
-            <form novalidate >
+        <section class="contenido" id="contenido">
+            <form name="cfgform" novalidate>
+
                 <div id="cfggen" data-ng-show="ctrl.pagina==0" class="form-group">
-                    <h1><strong translate>Parametros Generales</strong></h1>
-                    <div class="form-group">
-                        <label class="control-label col-sm-4">Puerto de Servicio WEB</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" ng-model="ctrl.config.General.WebPort" />
+                    <!--<h1><strong translate>Parametros Generales</strong></h1>-->
+                    <div class="row form-group">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-3">
+                            <label for="wp">Puerto de Servicio WEB</label>
+                            <input id="wp" name="wp" type="number" min="1024" max="49000" class="form-control" ng-model="ctrl.config.General.WebPort" required />
+                            <span style="color:red" ng-show="cfgform.wp.$dirty && cfgform.wp.$invalid">
+                                <span ng-show="cfgform.wp.$error.required">Este campo debe rellenarse</span>
+                                <span ng-show="cfgform.wp.$error.min || cfgform.wp.$error.max">Este campo debe estar en rango 1024, 49000</span>
+                            </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-4">Duracion Sesion WEB (minutos)</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" />
+                    <div class="row form-group">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-3">
+                            <label for="ws">Duracion Sesion WEB (m)</label>
+                            <input id="ws" name="ws" type="number" min="15" max="60" class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" required />
+                            <span style="color:red" ng-show="cfgform.ws.$dirty && cfgform.ws.$invalid">
+                                <span ng-show="cfgform.ws.$error.required">Este campo debe rellenarse</span>
+                                <span ng-show="cfgform.ws.$error.min || cfgform.ws.$error.max">Este campo debe estar en rango 15, 60</span>
+                            </span>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-sm-4">Logica de Activacion SACTA</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" ng-model="ctrl.config.General.ActivateSactaLogic" />
+                    <div class="row form-group">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-3">
+                            <label for="opt">Logica de Activacion SACTA</label>
+                            <div id="opt">
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="ctrl.config.General.ActivateSactaLogic" value="AND" />And
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" ng-model="ctrl.config.General.ActivateSactaLogic" value="OR" />Or
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="cfgScv" data-ng-show="ctrl.pagina==1" class="form-group">
-                    <h1><strong translate>Interfaz SCV</strong></h1>
+                <div id="cfgScv" data-ng-show="ctrl.pagina==1 || ctrl.pagina==2" class="form-group">
+                    <!-- Seleccion de Dependencia  -->
+                    <div class="row form-group">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3" ng-show="ctrl.dep.showselect">
+                            <label for="sdep">Seleccione Dependencia</label>
+                            <select id="sdep" class="form-control" ng-model="ctrl.selecteddep">
+                                <option ng-repeat="dep in ctrl.config.Dependencies" value="{{$index}}">{{dep.Id}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tic">Tic Presencia</label>
+                            <input id="tic" name="tic" type="number" min="1" max="10" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TickAlive" required />
+                            <span style="color:red" ng-show="cfgform.tic.$dirty && cfgform.tic.$invalid">
+                                <span ng-show="cfgform.tic.$error.required">Este campo debe rellenarse</span>
+                                <span ng-show="cfgform.tic.$error.min || cfgform.tic.$error.max">Este campo debe estar en rango 1, 10</span>
+                            </span>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="toc">Timeout Presencia</label>
+                            <input id="toc" name="toc" type="number" min="20" max="60" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TimeoutAlive" required />
+                            <span style="color:red" ng-show="cfgform.toc.$dirty && cfgform.toc.$invalid">
+                                <span ng-show="cfgform.toc.$error.required">Este campo debe rellenarse</span>
+                                <span ng-show="cfgform.toc.$error.min || cfgform.toc.$error.max">Este campo debe estar en rango 20, 60</span>
+                            </span>
+                        </div>
+                    </div>
+                    <hr class="linea"/>
+                
                 </div>
 
-                <div id="cfgSacta" data-ng-show="ctrl.pagina==2" class="form-group">
-                    <h1><strong translate>Interfaz Sacta</strong></h1>
+                <div id="cfgBotones" class="form-group" style="float:right;margin-right:15px;">
+                    <input type="submit" class="btn btn-primary" ng-click="ctrl.update()" value="Save" ng-disabled="cfgform.$dirty==false" />
+                    <input type="submit" class="btn btn-primary" ng-click="ctrl.reset()" value="Reset" ng-disabled="cfgform.$dirty==false" />
                 </div>
-
-                <input type="submit" class="btn btn-primary" ng-click="ctrl.update()" value="Save" />
             </form>
         </section>
     </div>

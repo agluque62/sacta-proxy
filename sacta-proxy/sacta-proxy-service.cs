@@ -76,6 +76,18 @@ namespace sacta_proxy
         protected override void OnStart(string[] args)
         {
             // Se ejecuta al arrancar el programa.
+            EventThread.Start();
+            StartService();
+
+        }
+        protected override void OnStop()
+        {
+            StopService();
+            EventThread.Stop();
+        }
+
+        protected void StartService()
+        {
             cfgManager.Get((cfg =>
             {
                 DepManager.Clear();
@@ -90,7 +102,7 @@ namespace sacta_proxy
                 {
                     Cfg = cfg.Psi,
                     Manager = manager
-                }; 
+                };
 
                 cfg.Dependencies.ForEach(dep =>
                 {
@@ -117,7 +129,6 @@ namespace sacta_proxy
                 TestDuplicated(duplicatedPos, duplicatedSec, () =>
                 {
                     // Solo arranca el programa cuando no hay duplicados.
-                    EventThread.Start();
                     MainManager.Manager.Start(cfg.Psi);
                     DepManager.Values.ToList().ForEach(dependency =>
                     {
@@ -126,6 +137,9 @@ namespace sacta_proxy
                     webCallbacks.Add("/config", OnWebRequestConfig);
                     webCallbacks.Add("/status", OnWebRequestState);
                     webCallbacks.Add("/version", OnWebRequestVersion);
+#if DEBUG
+                    webCallbacks.Add("/testing/*", OnWebRequestTesting);
+#endif
                     SactaProxyWebApp?.Start(cfg.General.WebPort, cfg.General.WebActivityMinTimeout, webCallbacks);
                     Cfg = cfg;
 #if DEBUG
@@ -150,10 +164,12 @@ namespace sacta_proxy
                 });
             }));
         }
-        protected override void OnStop()
+        protected void StopService() 
         {
             // Se ejecuta al finalizar el programa.
             SactaProxyWebApp?.Stop();
+            webCallbacks.Clear();
+
             DepManager.Values.ToList().ForEach(dependency =>
             {
                 (dependency.Manager as ScvManager).EventActivity -= OnScvEventActivity;
@@ -164,7 +180,6 @@ namespace sacta_proxy
             (MainManager.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
             (MainManager.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
             MainManager.Manager.Stop();
-            EventThread.Stop();
             PS.Set(ProcessStates.Stopped);
         }
 
@@ -204,6 +219,8 @@ namespace sacta_proxy
                     string strData = reader.ReadToEnd();
                     if (cfgManager.Set(strData))
                     {
+                        /** Reiniciar el Servicio */
+                        Reset();
                         context.Response.StatusCode = 200;
                         sb.Append(JsonHelper.ToString(new { res = "ok" }, false));
                     }
@@ -227,6 +244,25 @@ namespace sacta_proxy
             {
                 context.Response.StatusCode = 200;
                 sb.Append(JsonHelper.ToString((new GenericHelper.VersionDetails("versiones.json")).Version, false));
+            }
+            else
+            {
+                context.Response.StatusCode = 404;
+                sb.Append(JsonHelper.ToString(new { res = context.Request.HttpMethod + ": Metodo No Permitido" }, false));
+            }
+        }
+        protected void OnWebRequestTesting(HttpListenerContext context, StringBuilder sb)
+        {
+            string cmd = context.Request.Url.LocalPath.Split('/')[2];
+            context.Response.ContentType = "application/json";
+            if (context.Request.HttpMethod == "GET")
+            {
+                if (cmd == "reset")
+                {
+                    Reset();
+                }
+                context.Response.StatusCode = 200;
+                sb.Append(JsonHelper.ToString(new { res = "ok"}, false));
             }
             else
             {
@@ -352,6 +388,16 @@ namespace sacta_proxy
                     }
                 };
             }
+        }
+        void Reset()
+        {
+            EventThread.Enqueue("Reset", () =>
+            {
+                Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
+                StopService();
+                Task.Delay(TimeSpan.FromMilliseconds(1000)).Wait();
+                StartService();
+            });
         }
 
         #region Data
