@@ -31,6 +31,7 @@ namespace sacta_proxy.model
         public void SignalFatal<T>(string cause)
         {
             Set(ProcessStates.Error, cause);
+            History?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
             Logger.Fatal<T>(cause);
         }
         public object Status
@@ -40,5 +41,6 @@ namespace sacta_proxy.model
                 return new { std = State, str = ToString() };
             }
         }
+        public History History { get; set; }
     }
 }

@@ -83,4 +83,16 @@ namespace sacta_proxy.model
         }
         static List<PersistenceItem> PersistenceItems = new List<PersistenceItem>();
     }
+    public class SectorizationHelper
+    {
+        public static string MapToString(SectMap map)
+        {
+            var mapstr = string.Empty;
+            foreach(var entry in map)
+            {
+                mapstr += $"{entry.Key}:{entry.Value},";
+            }
+            return mapstr;
+        }
+    }
 }

@@ -63,7 +63,9 @@ namespace sacta_proxy.Managers
     }
     public class SectorizationReceivedArgs : ManagerEventArgs
     {
+        public bool Accepted { get; set; }
         public Dictionary<string, int> SectorMap { get; set; }
+        public string RejectCause { get; set; }
     }
     public class SectorizationRequestArgs : ManagerEventArgs { }
     

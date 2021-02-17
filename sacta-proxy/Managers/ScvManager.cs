@@ -417,21 +417,35 @@ namespace sacta_proxy.Managers
             bool err = UnknowUcs.Count() > 0 || UnknowSectors.Count() > 0 || duplicatedSect.Count() > 0;
             if (err)
             {
-                if (UnknowUcs.Count() > 0)
-                    deliver(false, $"Unknow Ucs: {UnknowUcs.Aggregate((i, j) => i + ", " + j)}");
-                if (UnknowSectors.Count() > 0)
-                    deliver(false, $"Unknow Sectors: {UnknowSectors.Aggregate((i, j) => i + ", " + j)}");
-                if (duplicatedSect.Count() > 0)
-                    deliver(false, $"Duplicated Sectors: {duplicatedSect.Aggregate((i, j) => i + ", " + j)}");
+                var message = UnknowUcs.Count() > 0 ? $"Unknow Ucs: {UnknowUcs.Aggregate((i, j) => i + ", " + j)}. " : "";
+                message += UnknowSectors.Count() > 0 ? $"Unknow Sectors: {UnknowSectors.Aggregate((i, j) => i + ", " + j)}. " : "";
+                message += duplicatedSect.Count() > 0 ? $"Duplicated Sectors: {duplicatedSect.Aggregate((i, j) => i + ", " + j)}. " : "";
+
+                // Evento para el Historico.
+                SafeLaunchEvent<SectorizationReceivedArgs>(EventSectorization, new SectorizationReceivedArgs()
+                {
+                    Accepted = false,
+                    ScvId = Cfg.Id,
+                    SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
+                    RejectCause = message
+                });
+                deliver(false, message);
+                //if (UnknowUcs.Count() > 0)
+                //    deliver(false, $"Unknow Ucs: {UnknowUcs.Aggregate((i, j) => i + ", " + j)}");
+                //if (UnknowSectors.Count() > 0)
+                //    deliver(false, $"Unknow Sectors: {UnknowSectors.Aggregate((i, j) => i + ", " + j)}");
+                //if (duplicatedSect.Count() > 0)
+                //    deliver(false, $"Duplicated Sectors: {duplicatedSect.Aggregate((i, j) => i + ", " + j)}");
             }
             else
             {
                 // Actulizar con los datos recibidos la sectorizacion global...
                 SafeLaunchEvent<SectorizationReceivedArgs>(EventSectorization, new SectorizationReceivedArgs()
                 {
+                    Accepted = true,
                     ScvId = Cfg.Id,
                     SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs)
-                });
+                }); 
                 deliver(true, "");
             }
         }

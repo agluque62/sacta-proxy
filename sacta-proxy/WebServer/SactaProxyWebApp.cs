@@ -10,9 +10,15 @@ using sacta_proxy.helpers;
 
 namespace sacta_proxy.WebServer
 {
+    class WebUserActivityArgs : EventArgs
+    {
+        public string User { get; set; }
+        public bool InOut { get; set; }
+        public string Cause { get; set; }
+    }
     class SactaProxyWebApp : WebServerBase
     {
-
+        public event EventHandler<WebUserActivityArgs> UserActivityEvent;
         public SactaProxyWebApp() : base()
         {
         }
@@ -30,7 +36,9 @@ namespace sacta_proxy.WebServer
                 if (items.Keys.Contains("username") && items.Keys.Contains("password"))
                 {
                     var res = SystemUsers.Authenticate(items["username"], items["password"]);
-                    response(res, "Usuario o password incorrecta");
+                    var cause = res ? "" : "Usuario o password incorrecta";
+                    response(res, cause);
+                    UserActivityEvent?.Invoke(this, new WebUserActivityArgs() { User = items["username"], InOut = res, Cause = cause });
                 }
                 else
                 {
@@ -79,10 +87,12 @@ namespace sacta_proxy.WebServer
                     SecureUris = SecureUris,
                     CfgRest = cfg
                 });
+                stdcontrol.Set(ProcessStates.Running);
             }
             catch (Exception x)
             {
                 Logger.Exception<SactaProxyWebApp>(x);
+                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on starting => {x.Message}");
             }
         }
         public new void Stop()
@@ -90,12 +100,16 @@ namespace sacta_proxy.WebServer
             try
             {
                 base.Stop();
+                stdcontrol.Set(ProcessStates.Stopped);
             }
             catch (Exception x)
             {
                 Logger.Exception<SactaProxyWebApp>(x);
+                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on ending => {x.Message}");
             }
         }
+
+        public object Status { get => stdcontrol.Status; }
 
         #region Manejadores REST
         protected void RestLogout(HttpListenerContext context, StringBuilder sb)
@@ -103,6 +117,7 @@ namespace sacta_proxy.WebServer
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "POST")
             {
+                UserActivityEvent?.Invoke(this, new WebUserActivityArgs() { User = SystemUsers.CurrentUserId, InOut = false, Cause="" });
                 SessionExpiredAt = DateTime.Now;
                 context.Response.Redirect("/login.html");
             }
@@ -142,7 +157,9 @@ namespace sacta_proxy.WebServer
                 sb.Append(JsonHelper.ToString(new { res = context.Request.HttpMethod + ": Metodo No Permitido" }, false));
             }
         }
-        
+
+        private readonly ProcessStatusControl stdcontrol = new ProcessStatusControl();
+
         #endregion Manejadores REST
     }
 }

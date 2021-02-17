@@ -1,40 +1,77 @@
 {
 	"res": "ok",
+	"user": "root",
 	"version": "1.0.0",
-	"user": "agl2",
 	"Status": {
 		"service": {
 			"std": 1,
 			"str": "State: Running, LastMessage: "
 		},
 		"web": 0,
-		"psi_em": {
-			"global_state": {
-				"std": 1,
-				"str": "State: Running, LastMessage: "
-			},
-			"act": {
-				"global": false,
-				"lan1": {
-					"ActivityOnLan1": false,
-					"LastActivityOnLan1": "0001-01-01T00:00:00"
+		"ems": [
+			{
+				"id": "SCV",
+				"status": {
+					"global_state": {
+						"std": 1,
+						"str": "State: Running, LastMessage: "
+					},
+					"act": {
+						"global": false,
+						"lan1": {
+							"ActivityOnLan1": false,
+							"LastActivityOnLan1": "0001-01-01T00:00:00"
+						},
+						"lan2": {
+							"ActivityOnLan2": false,
+							"LastActivityOnLan2": "0001-01-01T00:00:00"
+						}
+					},
+					"tx": false,
+					"sacta_protocol": {
+						"seq": 0,
+						"ver": 0,
+						"LastPresenceSended": "2020-12-03T16:55:30.3072987+01:00"
+					}
 				},
-				"lan2": {
-					"ActivityOnLan2": false,
-					"LastActivityOnLan2": "0001-01-01T00:00:00"
-				}
+				"sect": [
+					{
+						"Sector": "0001",
+						"Position": 1
+					},
+					{
+						"Sector": "0002",
+						"Position": 1
+					},
+					{
+						"Sector": "0003",
+						"Position": 2
+					},
+					{
+						"Sector": "0004",
+						"Position": 2
+					},
+					{
+						"Sector": "0011",
+						"Position": 11
+					},
+					{
+						"Sector": "0012",
+						"Position": 11
+					},
+					{
+						"Sector": "0013",
+						"Position": 12
+					},
+					{
+						"Sector": "0014",
+						"Position": 12
+					}
+				]
 			},
-			"tx": false,
-			"sacta_protocol": {
-				"seq": 0,
-				"ver": 0,
-				"LastPresenceSended": "2020-11-20T08:23:31.5611561+01:00"
-			}
-		},
-		"scv_em": [
 			{
 				"id": "TWR",
-				"std": {
+				"status": {
 					"global_state": {
 						"std": 1,
 						"str": "State: Running, LastMessage: "
@@ -57,11 +94,29 @@
 						"LastPresenceSended": "0001-01-01T00:00:00",
 						"LastSectorAscked": "0001-01-01T00:00:00"
 					}
-				}
+				},
+				"sect": [
+					{
+						"Sector": "0001",
+						"Position": 1
+					},
+					{
+						"Sector": "0002",
+						"Position": 1
+					},
+					{
+						"Sector": "0003",
+						"Position": 2
+					},
+					{
+						"Sector": "0004",
+						"Position": 2
+					}
+				]
 			},
 			{
 				"id": "APP",
-				"std": {
+				"status": {
 					"global_state": {
 						"std": 1,
 						"str": "State: Running, LastMessage: "
@@ -84,88 +139,26 @@
 						"LastPresenceSended": "0001-01-01T00:00:00",
 						"LastSectorAscked": "0001-01-01T00:00:00"
 					}
-				}
+				},
+				"sect": [
+					{
+						"Sector": "0011",
+						"Position": 11
+					},
+					{
+						"Sector": "0012",
+						"Position": 11
+					},
+					{
+						"Sector": "0013",
+						"Position": 12
+					},
+					{
+						"Sector": "0014",
+						"Position": 12
+					}
+				]
 			}
-		],
-		"sectorizations": {
-			"global": [
-				{
-					"Sector": "0001",
-					"Position": 1
-				},
-				{
-					"Sector": "0002",
-					"Position": 1
-				},
-				{
-					"Sector": "0003",
-					"Position": 2
-				},
-				{
-					"Sector": "0004",
-					"Position": 2
-				},
-				{
-					"Sector": "0011",
-					"Position": 11
-				},
-				{
-					"Sector": "0012",
-					"Position": 11
-				},
-				{
-					"Sector": "0013",
-					"Position": 12
-				},
-				{
-					"Sector": "0014",
-					"Position": 12
-				}
-			],
-			"deps": [
-				{
-					"id": "TWR",
-					"sect": [
-						{
-							"Sector": "0001",
-							"Position": 1
-						},
-						{
-							"Sector": "0002",
-							"Position": 1
-						},
-						{
-							"Sector": "0003",
-							"Position": 2
-						},
-						{
-							"Sector": "0004",
-							"Position": 2
-						}
-					]
-				},
-				{
-					"id": "APP",
-					"sect": [
-						{
-							"Sector": "0011",
-							"Position": 11
-						},
-						{
-							"Sector": "0012",
-							"Position": 11
-						},
-						{
-							"Sector": "0013",
-							"Position": 12
-						},
-						{
-							"Sector": "0014",
-							"Position": 12
-						}
-					]
-				}
-			]
-		}
+		]
 	}
 }
