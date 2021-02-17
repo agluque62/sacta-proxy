@@ -7,7 +7,10 @@
 			"std": 1,
 			"str": "State: Running, LastMessage: "
 		},
-		"web": 0,
+		"web": {
+			"std": 1,
+			"str": "State: Running, LastMessage: "
+		},
 		"ems": [
 			{
 				"id": "SCV",
@@ -31,43 +34,46 @@
 					"sacta_protocol": {
 						"seq": 0,
 						"ver": 0,
-						"LastPresenceSended": "2020-12-03T16:55:30.3072987+01:00"
+						"LastPresenceSended": "2020-12-04T07:46:46.064526+01:00"
 					}
 				},
-				"sect": [
-					{
-						"Sector": "0001",
-						"Position": 1
-					},
-					{
-						"Sector": "0002",
-						"Position": 1
-					},
-					{
-						"Sector": "0003",
-						"Position": 2
-					},
-					{
-						"Sector": "0004",
-						"Position": 2
-					},
-					{
-						"Sector": "0011",
-						"Position": 11
-					},
-					{
-						"Sector": "0012",
-						"Position": 11
-					},
-					{
-						"Sector": "0013",
-						"Position": 12
-					},
-					{
-						"Sector": "0014",
-						"Position": 12
-					}
-				]
+				"sect": {
+					"LastChange": "2020-12-03T10:33:21.2101807+01:00",
+					"Sectorization": [
+						{
+							"Sector": "0001",
+							"Position": 1
+						},
+						{
+							"Sector": "0002",
+							"Position": 1
+						},
+						{
+							"Sector": "0003",
+							"Position": 2
+						},
+						{
+							"Sector": "0004",
+							"Position": 2
+						},
+						{
+							"Sector": "0011",
+							"Position": 11
+						},
+						{
+							"Sector": "0012",
+							"Position": 11
+						},
+						{
+							"Sector": "0013",
+							"Position": 12
+						},
+						{
+							"Sector": "0014",
+							"Position": 12
+						}
+					]
+				}
 			},
 			{
 				"id": "TWR",
@@ -95,24 +101,27 @@
 						"LastSectorAscked": "0001-01-01T00:00:00"
 					}
 				},
-				"sect": [
-					{
-						"Sector": "0001",
-						"Position": 1
-					},
-					{
-						"Sector": "0002",
-						"Position": 1
-					},
-					{
-						"Sector": "0003",
-						"Position": 2
-					},
-					{
-						"Sector": "0004",
-						"Position": 2
-					}
-				]
+				"sect": {
+					"LastChange": "2020-12-03T10:33:21.1171807+01:00",
+					"Sectorization": [
+						{
+							"Sector": "0001",
+							"Position": 1
+						},
+						{
+							"Sector": "0002",
+							"Position": 1
+						},
+						{
+							"Sector": "0003",
+							"Position": 2
+						},
+						{
+							"Sector": "0004",
+							"Position": 2
+						}
+					]
+				}
 			},
 			{
 				"id": "APP",
@@ -140,24 +149,27 @@
 						"LastSectorAscked": "0001-01-01T00:00:00"
 					}
 				},
-				"sect": [
-					{
-						"Sector": "0011",
-						"Position": 11
-					},
-					{
-						"Sector": "0012",
-						"Position": 11
-					},
-					{
-						"Sector": "0013",
-						"Position": 12
-					},
-					{
-						"Sector": "0014",
-						"Position": 12
-					}
-				]
+				"sect": {
+					"LastChange": "2020-12-03T10:33:21.2071807+01:00",
+					"Sectorization": [
+						{
+							"Sector": "0011",
+							"Position": 11
+						},
+						{
+							"Sector": "0012",
+							"Position": 11
+						},
+						{
+							"Sector": "0013",
+							"Position": 12
+						},
+						{
+							"Sector": "0014",
+							"Position": 12
+						}
+					]
+				}
 			}
 		]
 	}

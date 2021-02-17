@@ -19,17 +19,17 @@ namespace sacta_proxy.model
     public class SectorizationPersistence
     {
         const string FileName = "sacta-proxy-sectorizations.json";
-        public static void Get(string id, Action<SectMap> deliver)
+        public static void Get(string id, Action<DateTime, SectMap> deliver)
         {
             ReadData();
             var item = PersistenceItems.Where(i => i.Id == id).FirstOrDefault();
             if (item != null)
             {
-                deliver(item.Map);
+                deliver(item.Date, item.Map);
             }
             else
             {
-                deliver(new SectMap());
+                deliver(DateTime.Now, new SectMap());
             }
         }
         public static void Set(string id, SectMap map)
