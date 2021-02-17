@@ -51,6 +51,7 @@ angular.module("sacta_proxy")
          * */
         function alive() {
             $serv.alive((data) => {
+                ctrl.user=data.user;
 
             //        if (userLang != response.data.lang) {
             //            userLang = response.data.lang;
