@@ -71,6 +71,7 @@ namespace sacta_proxy.Managers
         public string ReceivedMap { get; set; }
         public Dictionary<string, int> SectorMap { get; set; }
         public string RejectCause { get; set; }
+        public Action<bool> Acknowledge { get; set; }
     }
     public class SectorizationRequestArgs : ManagerEventArgs 
     { 
