@@ -170,14 +170,14 @@ namespace sacta_proxy.model
                             String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.Date),
                             4,
                             9999,
-                            $"{item.ToString()} {item.User}",
+                            $"{Environment.MachineName.ToString()}: {item.ToString()} {item.User}",
                             99) :
                         string.Format("INSERT INTO historicoincidencias (IdSistema, Scv, IdIncidencia, IdHw, TipoHw, FechaHora, Usuario, Descripcion) " +
                             "VALUES (\"{0}\",{1},{2},\"{3}\",{4},\"{5}\",\"{6}\",\"{7}\")",
                             "departamento", 0, 50, "ProxySacta", 4,
                             String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.Date),
                             item.User,
-                            item.ToString());
+                            $"{Environment.MachineName.ToString()}: {item.ToString()}");
                     using (var command = new MySqlCommand(query, connection))
                     {
                         command.ExecuteNonQuery();
