@@ -19,8 +19,9 @@ namespace sacta_proxy.WebServer
     class SactaProxyWebApp : WebServerBase
     {
         public event EventHandler<WebUserActivityArgs> UserActivityEvent;
-        public SactaProxyWebApp() : base()
+        public SactaProxyWebApp(Func<History> hist) : base()
         {
+            History = hist;
         }
         public void Start(int port, int SessionDuration = 15, Dictionary<string, wasRestCallBack> cbs=null)
         {
@@ -92,7 +93,7 @@ namespace sacta_proxy.WebServer
             catch (Exception x)
             {
                 Logger.Exception<SactaProxyWebApp>(x);
-                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on starting => {x.Message}");
+                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on starting => {x.Message}", History());
             }
         }
         public new void Stop()
@@ -105,7 +106,7 @@ namespace sacta_proxy.WebServer
             catch (Exception x)
             {
                 Logger.Exception<SactaProxyWebApp>(x);
-                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on ending => {x.Message}");
+                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on ending => {x.Message}", History());
             }
         }
 
@@ -159,7 +160,7 @@ namespace sacta_proxy.WebServer
         }
 
         private readonly ProcessStatusControl stdcontrol = new ProcessStatusControl();
-
+        private Func<History> History { get; set; }
         #endregion Manejadores REST
     }
 }
