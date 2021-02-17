@@ -7,24 +7,9 @@ angular.module("sacta_proxy")
         ctrl.config = {};
 
         function load_config() {
-            $serv.config().then(
-                (response) => {
-                    if (response.status == 200) {
-                        if ((typeof response) == 'object') {
+            $serv.config((config) => {
 
-                        }
-                        else {
-                            // Seguramente ha vencido la sesion.
-                        }
-                    }
-                    else {
-                        // Error en el servidor.
-                    }
-                },
-                (error) => {
-                    // Error en el tratamiento de la peticion.
-                }
-            );
+            });
         }
 
         /** */

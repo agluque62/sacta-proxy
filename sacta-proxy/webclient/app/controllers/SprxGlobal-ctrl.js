@@ -31,65 +31,46 @@ angular.module("sacta_proxy")
         }
 
     /** Funciones  */
+        /**
+         * */
         function get_status() {
-            $serv.status().then(
-                (response) => {
-                    if (response.status == 200) {
-                        if ((typeof response) == 'object') {
-                            $lserv.GlobalStd(response.data);
-                        }
-                        else {
-                            // Seguramente ha vencido la sesion.
-                        }
-                    }
-                    else {
-                        // Error en el servidor.
-                    }
-                },
-                (error) => {
-                    // Error en el tratamiento de la peticion.
-                }
-            );
+            $serv.status((status) => {
+                $lserv.GlobalStd(status);
+            });
         }
-
-        function getInci() {
-            $serv.inci_get().then(function (response) {
-                if (response.status == 200 && (typeof response) == 'object') {
-                    if (ctrl.HashCode != response.data.hash) {
-                        ctrl.listainci = response.data.li;
-                        ctrl.HashCode = response.data.hash;
-                        inciPaginate();
-                    }
-                    // console.log(ctrl.listainci);
-                    /** */
-                    if (userLang != response.data.lang) {
-                        userLang = response.data.lang;
-                        if (userLang.indexOf("en") == 0)
-                            $translate.use('en_US');
-                        else if (userLang.indexOf("fr") == 0)
-                            $translate.use('fr_FR');
-                        else
-                            $translate.use('es_ES');
-                    }
+        function get_inci() {
+            $serv.inci_get((data) => {
+                if (ctrl.HashCode != data.hash) {
+                    ctrl.listainci = data.li;
+                    ctrl.HashCode = data.hash;
+                    inciPaginate();
                 }
-                else {
-                    /** El servidor me devuelve errores... */
-                    // window.open(routeForDisconnect, "_self");
-                }
-            }
-                , function (response) {
-                    // Error. No puedo conectarme al servidor.
-                    // window.open(routeForDisconnect, "_self");
-                });
+            });
         }
+        /**
+         * */
+        function alive() {
+            $serv.alive((data) => {
 
+            //        if (userLang != response.data.lang) {
+            //            userLang = response.data.lang;
+            //            if (userLang.indexOf("en") == 0)
+            //                $translate.use('en_US');
+            //            else if (userLang.indexOf("fr") == 0)
+            //                $translate.use('fr_FR');
+            //            else
+            //                $translate.use('es_ES');
+            //        }
+            });
+        }         
+        /**
+         * */
         function getTitle() {
             return "Nucleo Sacta Proxy";
         }
-
-
-
-        /** Funcion Periodica del controlador */
+        /** 
+         *  Funcion Periodica del controlador 
+         * */
         var timer = $interval(function () {
 
             ctrl.date = moment().format('ll');
@@ -98,19 +79,19 @@ angular.module("sacta_proxy")
             ctrl.timer++;
 
             if ((ctrl.timer % 5) == 0) {
-                $serv.alive();
+                alive();
                 get_status();
             }
 
             ctrl.title = getTitle();
         }, 1000);
-
-        /** */
+        /** 
+         */
         $scope.$on('$viewContentLoaded', function () {
             /** Alertify */
             alertify.defaults.transition = 'zoom';
             alertify.defaults.glossary = {
-                title: $lserv.translate("ULISES V 5000 I. Nodebox"),
+                title: $lserv.translate("Nucleo SACTA PROXY"),
                 ok: $lserv.translate("Aceptar"),
                 cancel: $lserv.translate("Cancelar")
             };

@@ -3,28 +3,57 @@ angular
     .module('sacta_proxy')
     .factory('$serv', function ($q, $http) {
         return {
-            alive: function () {
-                return remoteGet(rest_url_alive);
+            alive: function (deliver) {
+                Get(rest_url_alive, deliver);
             }
-            , incidents: function () {
-                return remoteGet(rest_url_inci);
+            , incidents: function (deliver) {
+                Get(rest_url_inci, deliver);
             }
-            , status: function () {
-                return remoteGet(rest_url_std);
+            , status: function (deliver) {
+                Get(rest_url_std, deliver);
             }
-            , config: function () {
-                return remoteGet(rest_url_conf);
+            , config: function (deliver) {
+                Get(rest_url_conf, deliver);
             }
             , config_save: function (cfg) {
                 return remotePost(rest_url_conf, cfg);
             }
-            , logs_get: function () {
-                return remoteGet(rest_url_logs);
+            , logs_get: function (deliver) {
+                Get(rest_url_logs, deliver);
             }
             , logout: function () {
                 return remotePost(rest_url_logout);
             }
+            , version: function (deliver) {
+                return Get("/version", deliver);
+            }
         };
+
+        function Get(url, deliver) {
+            $http.get(normalizeUrl(url)).then(
+                (response) => {
+                    if (response.status == 200) {
+                        if ((typeof response.data) == 'object') {
+                            if (deliver) deliver(response.data);
+                        }
+                        else {
+                            // Seguramente ha vencido la sesion.
+                            console.log("Sesion Vencida...");
+                            window.location.href = "/login.html";
+                        }
+                    }
+                    else {
+                        // Error en el servidor.
+                        console.log("Error Servidor " + response.status);
+                    }
+                },
+                (error) => {
+                    // Error en el tratamiento de la peticion.
+                    console.log("Error Peticion");
+                    window.open("/", "_self");
+                }
+            );
+        }
 
         //
         function remoteGet(url) {

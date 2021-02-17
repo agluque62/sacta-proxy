@@ -1,0 +1,17 @@
+{
+	"Version" : "1.0.0",
+	"Fecha": "11-1-2021",
+	"Components" : [
+		{
+			"Name": "Nucleo Sacta Proxy",
+			"Files" : [
+				{
+					"Path": ".\\sacta-proxy.exe",
+					"MD5": "",
+					"Date": "",
+					"Size": ""
+				}
+			]
+		}
+	]
+}

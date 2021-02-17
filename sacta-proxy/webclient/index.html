@@ -9,7 +9,7 @@
     <title>Sacta Proxy</title>
     <!-- Estilos  -->
     <link rel="stylesheet" href="./styles/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="./styles/uv5ki-styles.css" />
+    <link rel="stylesheet" href="./styles/ncc-styles.css" />
     <link rel="stylesheet" type="text/css" href="./styles/alertify/alertify.min.css" />
     <link rel="stylesheet" type="text/css" href="./styles/alertify/themes/bootstrap.css" />
 <!--     <link rel="stylesheet" type="text/css" href="./styles/jquery-te-1.4.0.css" />
@@ -36,7 +36,38 @@
         </header>
         <!--<section id="_separador"></section>-->
         <nav id="_menu" class="container">
-            <h3 translate>Opciones</h3>
+            <div class="panel panel-default" style="margin: 1em 1em 1em 1em">
+                <div class="panel-heading">Opciones</div>
+                <div class="panel-body">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li data-ng-class="{'active': ctrl.pagina==0}">
+                            <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
+                        </li>
+                        <li data-ng-class="{'active': ctrl.pagina==1}">
+                            <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
+                        </li>
+                        <li><br /></li>
+                        <li data-ng-class="{'active': ctrl.pagina==2}">
+                            <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
+                        </li>
+                        <li><br /></li>
+                        <li><br /></li>
+                        <li>
+                            <form method="POST" action="/logout">
+                                <div>
+                                    <!-- Submit Button -->
+                                    <input type="submit" class="btn btn-default" style="width: 100%;" value="Logout" />
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--<h3 translate>Opciones</h3>-->
+            <!--<h3><span class="label label-default" translate>Opciones</span></h3>-->
+            <!--<div class="panel panel-default">
+                <div class="panel-body">Opciones</div>
+            </div>
             <ul class="nav nav-pills nav-stacked">
                 <li data-ng-class="{'active': ctrl.pagina==0}">
                     <a href="#/" data-ng-click="ctrl.pagina=0" translate>Estado</a>
@@ -44,10 +75,20 @@
                 <li data-ng-class="{'active': ctrl.pagina==1}">
                     <a href="#/config" data-ng-click="ctrl.pagina=1" translate>Configuracion</a>
                 </li>
+                <li><br /></li>
                 <li data-ng-class="{'active': ctrl.pagina==2}">
-                    <a href="" data-ng-click="ctrl.logout()" translate>Logout</a>
+                    <a href="#/about" data-ng-click="ctrl.pagina=2" translate>Acerca de...</a>
                 </li>
-            </ul>
+                <li><br /></li>
+                <li><br /></li>
+                <li>
+                    <form method="POST" action="/logout">
+                        <div>
+                            <input type="submit" class="btn btn-default" style="width: 100%;" value="Logout" />
+                        </div>
+                    </form>
+                </li>
+            </ul>-->
         </nav>
 
         <section id="_ppal">
@@ -80,7 +121,6 @@
     <script type="text/javascript" src="./scripts/cryptojs/md5-min.js"></script>
     <script type="text/javascript" src="./scripts/ace/src-min/ace.js"></script>
     <script type="text/javascript" src="./scripts/ace/src-min/mode-xml.js"></script>-->
-
     <!-- inject-app:js -->
     <script src="./app/modules/sacta_proxy.js"></script>
     <script src="./app/routes/SprxRoutes.js"></script>
@@ -91,6 +131,7 @@
     <script src="./app/controllers/SprxGlobal-ctrl.js"></script>
     <script src="./app/controllers/SprxStatus-ctrl.js"></script>
     <script src="./app/controllers/SprxConfig-ctrl.js"></script>
+    <script src="./app/controllers/SprxAbout-ctrl.js"></script>
 
 </body>
 </html>

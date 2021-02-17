@@ -1,27 +1,31 @@
-<h3 translate>Configuracion</h3>
-<section id="_tabs">
-    <ul class="nav nav-tabs">
-        <li data-ng-class="{'active': ctrl.pagina==0}">
-            <a href="" data-ng-click="ctrl.pagina=0" translate>Parametros Generales</a>
-        </li>
-        <li data-ng-class="{'active': ctrl.pagina==1}">
-            <a href="" data-ng-click="ctrl.pagina=1" translate>Interfaz SCV</a>
-        </li>
-        <li data-ng-class="{'active': ctrl.pagina==2}">
-            <a href="" data-ng-click="ctrl.pagina=2" translate>Interfaz SACTA</a>
-        </li>
-    </ul>
-</section>
-<section id="_contenido">
-    <div id="cfgGen" data-ng-show="ctrl.pagina==0">
-        <h1><strong translate>Parámetros Generales</strong></h1>
-    </div>
+<div class="panel panel-default" style="margin: 1em 1em 1em 1em">
+    <div class="panel-heading">Configuracion</div>
+    <div class="panel-body">
+        <section id="_tabs">
+            <ul class="nav nav-tabs">
+                <li data-ng-class="{'active': ctrl.pagina==0}">
+                    <a href="" data-ng-click="ctrl.pagina=0" translate>Parametros Generales</a>
+                </li>
+                <li data-ng-class="{'active': ctrl.pagina==1}">
+                    <a href="" data-ng-click="ctrl.pagina=1" translate>Interfaz SCV</a>
+                </li>
+                <li data-ng-class="{'active': ctrl.pagina==2}">
+                    <a href="" data-ng-click="ctrl.pagina=2" translate>Interfaz SACTA</a>
+                </li>
+            </ul>
+        </section>
+        <section id="_contenido">
+            <div id="cfgGen" data-ng-show="ctrl.pagina==0">
+                <h1><strong translate>Parámetros Generales</strong></h1>
+            </div>
 
-    <div id="cfgScv" data-ng-show="ctrl.pagina==1">
-        <h1><strong translate>Interfaz SCV</strong></h1>
-    </div>
+            <div id="cfgScv" data-ng-show="ctrl.pagina==1">
+                <h1><strong translate>Interfaz SCV</strong></h1>
+            </div>
 
-    <div id="cfgSacta" data-ng-show="ctrl.pagina==2">
-        <h1><strong translate>Interfaz Sacta</strong></h1>
+            <div id="cfgSacta" data-ng-show="ctrl.pagina==2">
+                <h1><strong translate>Interfaz Sacta</strong></h1>
+            </div>
+        </section>
     </div>
-</section>
+</div>

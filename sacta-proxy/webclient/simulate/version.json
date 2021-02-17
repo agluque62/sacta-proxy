@@ -1,0 +1,18 @@
+{
+	"Components": [
+		{
+			"Files": [
+				{
+					"Path": ".\\sacta-proxy.exe",
+					"Date": "20/11/2020",
+					"Size": "111616",
+					"MD5": "8F8B5702D293BC30F4C8AE2EF8D9941B"
+				}
+			],
+			"Name": "Nucleo Sacta Proxy"
+		}
+	],
+	"Server": "DF2444",
+	"Version": "1.0.0",
+	"Fecha": "11-1-2021"
+}

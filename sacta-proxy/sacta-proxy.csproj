@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Helpers\CustomBinaryFormatter.cs" />
     <Compile Include="Helpers\EventQeue.cs" />
+    <Compile Include="Helpers\GenericHelper.cs" />
     <Compile Include="Helpers\IpHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
     <Compile Include="Helpers\Logger.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Managers\ScvManager.cs" />
     <Compile Include="model\Configuration.cs" />
     <Compile Include="model\ProcessStatusControl.cs" />
+    <Compile Include="model\SectorizationModel.cs" />
     <Compile Include="sacta-proxy-installer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -88,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="todo.txt" />
+    <Content Include="webclient\app\controllers\SprxAbout-ctrl.js" />
     <Content Include="webclient\app\controllers\SprxConfig-ctrl.js" />
     <Content Include="webclient\app\controllers\SprxStatus-ctrl.js" />
     <Content Include="webclient\app\controllers\SprxGlobal-ctrl.js" />
@@ -95,6 +98,7 @@
     <Content Include="webclient\app\routes\SprxRoutes.js" />
     <Content Include="webclient\app\services\SprxCommService.js" />
     <Content Include="webclient\app\services\SprxLocalService.js" />
+    <Content Include="webclient\app\views\SprxAbout.html" />
     <Content Include="webclient\app\views\SprxConfig.html" />
     <Content Include="webclient\app\views\SprxStatus.html" />
     <Content Include="webclient\favicon.ico" />
@@ -152,7 +156,6 @@
     <Content Include="webclient\scripts\smart-table.js" />
     <Content Include="webclient\scripts\sprintf\angular-sprintf.min.js" />
     <Content Include="webclient\scripts\sprintf\sprintf.min.js" />
-    <Content Include="webclient\simulate\sacta.js" />
     <Content Include="webclient\styles\alertify\alertify.css" />
     <Content Include="webclient\styles\alertify\alertify.min.css" />
     <Content Include="webclient\styles\alertify\alertify.rtl.css" />
@@ -176,6 +179,7 @@
     <Content Include="webclient\styles\daterangepicker.css" />
     <Content Include="webclient\styles\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="webclient\styles\hojaExterna.css" />
+    <Content Include="webclient\styles\ncc-styles.css" />
     <Content Include="webclient\styles\ng-table.css" />
     <Content Include="webclient\styles\ngDialog-theme-default.min.css" />
     <Content Include="webclient\styles\ngDialog.css" />
@@ -193,6 +197,9 @@
     <None Include="sacta-proxy-config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="versiones.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="webclient\languages\en_US.json" />
     <None Include="webclient\languages\es_ES.json" />
     <None Include="webclient\languages\fr_FR.json" />
@@ -205,31 +212,10 @@
     <None Include="webclient\scripts\linq_3.2.1\util\gpg_keys\mihaifm.asc" />
     <None Include="webclient\scripts\sprintf\angular-sprintf.min.js.map" />
     <None Include="webclient\scripts\sprintf\sprintf.min.js.map" />
-    <None Include="webclient\simulate\cwp.json" />
-    <None Include="webclient\simulate\cwp\PICT01\version.json" />
-    <None Include="webclient\simulate\db\historicos.json" />
-    <None Include="webclient\simulate\db\incidencias.json" />
-    <None Include="webclient\simulate\db\operadores.json" />
-    <None Include="webclient\simulate\db\pasarelas.json" />
-    <None Include="webclient\simulate\extatssest.json" />
-    <None Include="webclient\simulate\exteq.json" />
-    <None Include="webclient\simulate\gestormn.json" />
-    <None Include="webclient\simulate\gws.json" />
-    <None Include="webclient\simulate\gws\TIFX-11.json" />
-    <None Include="webclient\simulate\gws\TIFX-14.json" />
-    <None Include="webclient\simulate\gws\TIFX-18.json" />
-    <None Include="webclient\simulate\listinci.json" />
-    <None Include="webclient\simulate\options.json" />
-    <None Include="webclient\simulate\pbxab.json" />
-    <None Include="webclient\simulate\rddata.json" />
-    <None Include="webclient\simulate\rdhf.json" />
-    <None Include="webclient\simulate\rdhf\Equipo 1.json" />
-    <None Include="webclient\simulate\rdsessions.json" />
-    <None Include="webclient\simulate\sacta.json" />
-    <None Include="webclient\simulate\std - copia.json" />
-    <None Include="webclient\simulate\std.json" />
-    <None Include="webclient\simulate\tifxinfo.json" />
-    <None Include="webclient\simulate\versiones.json" />
+    <None Include="webclient\simulate\alive.json" />
+    <None Include="webclient\simulate\config.json" />
+    <None Include="webclient\simulate\status.json" />
+    <None Include="webclient\simulate\version.json" />
     <None Include="webclient\styles\bootstrap\bootstrap-theme.css.map" />
     <None Include="webclient\styles\bootstrap\bootstrap.css.map" />
     <None Include="webclient\styles\fonts\glyphicons-halflings-regular.eot" />
