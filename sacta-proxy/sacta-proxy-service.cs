@@ -105,16 +105,224 @@ namespace sacta_proxy
         protected override void OnStart(string[] args)
         {
             // Se ejecuta al arrancar el programa.
+#if VERSION0
             EventThread.Start();
             StartService();
-
+#else
+            MainTask = Task.Run(MainProcessing);
+#endif
         }
         protected override void OnStop()
         {
+#if VERSION0
             StopService();
             EventThread.Stop();
+#else
+            MainTaskSync.Set();
+            MainTask.Wait(TimeSpan.FromSeconds(5));
+#endif
         }
 
+        protected void MainProcessing()
+        {
+            Logger.Info<SactaProxy>("Arrancando Servicio.");
+
+            MainTaskSync = new System.Threading.ManualResetEvent(false);
+            EventThread.Start();
+            MainTaskConfigured = ConfigureService();
+            StartWebServer();
+            PS.History.Add(HistoryItems.ServiceStarted);
+            do
+            {
+                EventThread.Enqueue("MainProcessing", () =>
+                {
+                    try
+                    {
+                        if (MainTaskConfigured == false)
+                        {
+                            StopManagers(true);
+                            StopWebServer();
+                            MainTaskConfigured = ConfigureService();
+                            StartWebServer();
+                        }
+                        MainStandbyManager.Check((isDual, isMain) =>
+                        {
+                            if (isDual)
+                            {
+                                // TODO Historico de Conmutaciones
+                                if (isMain && !PS.IsStarted)
+                                {
+                                    Logger.Info<SactaProxy>("Entrando en Modo DUAL-MAIN");
+                                    StartManagers();
+                                }
+                                else if (!isMain && PS.IsStarted)
+                                {
+                                    Logger.Info<SactaProxy>("Entrando en Modo DUAL-STANDBY");
+                                    StopManagers();
+                                }
+                            }
+                            else
+                            {
+                                if (!PS.IsStarted)
+                                {
+                                    Logger.Info<SactaProxy>("Entrando en Modo SINGLE");
+                                    StartManagers();
+                                }
+                            }
+                        });
+                    }
+                    catch
+                    {
+                    }
+                });
+            }
+            while (MainTaskSync.WaitOne(TimeSpan.FromSeconds(2)) == false);
+
+            StopManagers(true);
+            StopWebServer();
+            PS.History.Add(HistoryItems.ServiceEnded);
+            PS.History.Dispose();
+            EventThread.Stop();
+            Logger.Info<SactaProxy>("Servicio Detenido.");
+        }
+        protected bool ConfigureService()
+        {
+            Logger.Info<SactaProxy>("Configurando Servicio");
+            cfgManager.Get((cfg =>
+            {
+                PS.History = new History(cfg.General.HistoryMaxDays, cfg.General.HistoryMaxItems);
+                Managers.Clear();
+                cfg.Psi.Sectorization.Positions = "";
+                cfg.Psi.Sectorization.Sectors = "";
+
+                var manager = new PsiManager(cfg.ProtocolVersion, cfg.Psi);
+                manager.EventActivity += OnPsiEventActivity;
+                manager.EventSectRequest += OnPsiEventSectorizationAsk;
+                Managers.Add(new DependencyControl(cfg.Psi.Id)
+                {
+                    IsMain = true,
+                    Cfg = cfg.Psi,
+                    Manager = manager
+                });
+                cfg.Dependencies.ForEach(dep =>
+                {
+                    var dependency = new ScvManager(cfg.ProtocolVersion, dep);
+                    dependency.EventActivity += OnScvEventActivity;
+                    dependency.EventSectorization += OnScvEventSectorization;
+
+                    /** Construyendo la configuracion de Sectorizacion general */
+                    var sectorsMap = dep.Sectorization.SectorsMap.Split(',')
+                        .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                        .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+                    var positionsMap = dep.Sectorization.PositionsMap.Split(',')
+                        .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                        .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+                    var virtuals = Configuration.ListString2String(
+                            dep.Sectorization.VirtualsList()
+                                .Select(v => sectorsMap.Keys.Contains(v) ? sectorsMap[v].ToString() : v.ToString())
+                                .ToList());
+                    var reals = dep.Sectorization.SectorsList()
+                        .Select(r => sectorsMap.Keys.Contains(r) ? sectorsMap[r].ToString() : r.ToString())
+                        .ToList().Aggregate((i, j) => i + "," + j.ToString());
+                    var positions = dep.Sectorization.PositionsList()
+                        .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p].ToString() : p.ToString())
+                        .ToList().Aggregate((i, j) => i + "," + j.ToString());
+
+                    //cfg.Psi.Sectorization.Positions.AddRange(positions);
+                    cfg.Psi.Sectorization.Positions = Configuration.AgreggateString(cfg.Psi.Sectorization.Positions, positions);
+                    //cfg.Psi.Sectorization.Virtuals.AddRange(virtuals);
+                    cfg.Psi.Sectorization.Virtuals = Configuration.AgreggateString(cfg.Psi.Sectorization.Virtuals, virtuals);
+                    //cfg.Psi.Sectorization.Sectors.AddRange(reals);
+                    cfg.Psi.Sectorization.Sectors = Configuration.AgreggateString(cfg.Psi.Sectorization.Sectors, reals);
+
+                    Managers.Add(new DependencyControl(dep.Id)
+                    {
+                        IsMain = false,
+                        Cfg = dep,
+                        Manager = dependency
+                    });
+                });
+                /** */
+                var ids = cfg.Dependencies.Select(d => d.Id).ToList();
+                ids.Add(cfg.Psi.Id);
+                SectorizationPersistence.Sanitize(ids);
+                Cfg = cfg;
+
+                Logger.Info<SactaProxy>("Servicio Configurado...");
+
+            }));
+            return true;
+        }
+        protected void StartWebServer()
+        {
+            webCallbacks.Clear();
+            webCallbacks.Add("/config", OnWebRequestConfig);
+            webCallbacks.Add("/status", OnWebRequestState);
+            webCallbacks.Add("/version", OnWebRequestVersion);
+            webCallbacks.Add("/history", OnWebRequestHistory);
+#if DEBUG
+            webCallbacks.Add("/testing/*", OnWebRequestTesting);
+#endif
+            SactaProxyWebApp?.Start(Cfg.General.WebPort, Cfg.General.WebActivityMinTimeout, webCallbacks);
+            Logger.Info<SactaProxy>("Servidor WEB Arrancado.");
+        }
+        protected void StopWebServer()
+        {
+            SactaProxyWebApp?.Stop();
+            webCallbacks.Clear();
+            Logger.Info<SactaProxy>("Servidor Web Detenido.");
+        }
+        protected void StartManagers()
+        {
+            /** Chequear que no haya sectores o posiciones repetidas */
+            var duplicatedSec = Cfg.Psi.Sectorization.SectorsList().GroupBy(s => s)
+                .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
+            var duplicatedPos = Cfg.Psi.Sectorization.PositionsList().GroupBy(s => s)
+                .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
+            TestDuplicated(duplicatedPos, duplicatedSec, () =>
+            {
+                Logger.Info<SactaProxy>($"Arrancando Gestores. ProtocolVersion => {Cfg.ProtocolVersion}, InCluster => {Cfg.InCluster}");
+                // Solo arrancan los gestores cuando no hay duplicados.
+                Managers.ForEach(dependency =>
+                {
+                    dependency.Manager.Start();
+                });
+                PS.Set(ProcessStates.Running);
+                Logger.Info<SactaProxy>("Gestores Arrancados.");
+            });
+        }
+        protected void StopManagers(bool forced=false)
+        {
+            Logger.Info<SactaProxy>("Deteniendo Gestores.");
+
+            Managers.ForEach(depEntry =>
+            {
+                if (forced)
+                {
+                    if (depEntry.IsMain)
+                    {
+                        (depEntry.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
+                        (depEntry.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
+                    }
+                    else
+                    {
+                        (depEntry.Manager as ScvManager).EventActivity -= OnScvEventActivity;
+                        (depEntry.Manager as ScvManager).EventSectorization -= OnScvEventSectorization;
+                    }
+                }
+                depEntry.Manager.Stop();
+            });
+            if (forced)
+            {
+                Managers.Clear();
+            }
+
+            PS.Set(ProcessStates.Stopped);
+            Logger.Info<SactaProxy>("Gestores Detenidos.");
+        }
+        /// <summary>
+        /// Obsoleto
+        /// </summary>
         protected void StartService()
         {
             cfgManager.Get((cfg =>
@@ -222,6 +430,9 @@ namespace sacta_proxy
                 Cfg = cfg;
             }));
         }
+        /// <summary>
+        /// Obsoleto.
+        /// </summary>
         protected void StopService() 
         {
             Logger.Info<SactaProxy>("Deteniendo Servicio.");
@@ -250,7 +461,7 @@ namespace sacta_proxy
             Logger.Info<SactaProxy>("Servicio Detenido.");
         }
 
-        #region Callbacks Web
+#region Callbacks Web
         protected void OnWebRequestState(HttpListenerContext context, StringBuilder sb)
         {
             context.Response.ContentType = "application/json";
@@ -353,9 +564,9 @@ namespace sacta_proxy
                 sb.Append(JsonHelper.ToString(new { res = context.Request.HttpMethod + ": Metodo No Permitido" }, false));
             }
         }
-        #endregion Callbacks Web
+#endregion Callbacks Web
 
-        #region EventManagers
+#region EventManagers
         private readonly EventQueue EventThread = new EventQueue();
         protected void OnScvEventActivity(Object sender, ActivityOnLanArgs data)
         {
@@ -476,7 +687,7 @@ namespace sacta_proxy
             });
         }
 
-        #endregion EventManagers
+#endregion EventManagers
 
         void TestDuplicated(List<string> pos, List<string> sec, Action continues)
         {
@@ -499,35 +710,35 @@ namespace sacta_proxy
                 };
             }
         }
-        void Reset()
+        public void Reset()
         {
             EventThread.Enqueue("Reset", () =>
             {
+#if VERSION0
                 Task.Delay(TimeSpan.FromMilliseconds(500)).Wait();
                 StopService();
                 Task.Delay(TimeSpan.FromMilliseconds(1000)).Wait();
                 StartService();
+#else
+                MainTaskConfigured = false;
+#endif
             });
         }
 
-        #region Data
+#region Data
+        private Task MainTask { get; set; }
+        private System.Threading.ManualResetEvent MainTaskSync { get; set; }
+        private bool MainTaskConfigured { get; set; }
         private SactaProxyWebApp SactaProxyWebApp { get; set; }
         private readonly Dictionary<string, wasRestCallBack> webCallbacks = new Dictionary<string, wasRestCallBack>();
 
         private readonly ConfigurationManager cfgManager = new ConfigurationManager();
         private Configuration Cfg { get; set; }
         private readonly ProcessStatusControl PS = new ProcessStatusControl();
-        //class DependencyControlEntry
-        //{
-        //    public string Id { get; set; }
-        //    public DependencyControl Dep { get; set; }
-        //    public bool IsMain { get; set; }
-        //}
-        //private readonly List<DependencyControlEntry> ManagersDescription = new List<DependencyControlEntry>();
         private List<DependencyControl> Managers = new List<DependencyControl>();
         private DependencyControl MainManager => Managers.Where(d => d.IsMain).FirstOrDefault();
         private List<DependencyControl> DepManagers => Managers.Where(d => d.IsMain == false).ToList();
-        #endregion
+#endregion
     }
 
 }

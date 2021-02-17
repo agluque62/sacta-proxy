@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using sacta_proxy.helpers;
+using sacta_proxy.Managers;
 
 namespace sacta_proxy
 {
@@ -53,6 +54,18 @@ namespace sacta_proxy
 #if DEBUG
                     switch (key)
                     {
+                        case 's':
+                            MainStandbyManager.SetMode(false, false);
+                            break;
+                        case 'p':
+                            MainStandbyManager.SetMode(true, true);
+                            break;
+                        case 'r':
+                            MainStandbyManager.SetMode(true, false);
+                            break;
+                        case '0':
+                            app.Reset();
+                            break;
                     }
 #endif
                 }
