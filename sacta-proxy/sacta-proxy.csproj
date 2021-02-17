@@ -70,6 +70,7 @@
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\UdpSocket.cs" />
     <Compile Include="Managers\BaseManager.cs" />
+    <Compile Include="Managers\MainStandbyManager.cs" />
     <Compile Include="Managers\PsiManager.cs" />
     <Compile Include="Managers\SactaMessages.cs" />
     <Compile Include="Managers\ScvManager.cs" />
@@ -78,6 +79,11 @@
     <Compile Include="model\ProcessStatusControl.cs" />
     <Compile Include="model\SectorizationModel.cs" />
     <Compile Include="model\SystemUsers.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="sacta-proxy-installer.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -199,6 +205,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="sacta-proxy-config.json" />
     <None Include="versiones.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
