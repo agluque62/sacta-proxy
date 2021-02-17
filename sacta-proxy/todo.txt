@@ -2,13 +2,8 @@
 [] Guia de Instalacion.
 	[] Modo ULISES (en HOST)
 		[] Configurar un Adaptador de Bucle con las direcciones locales.
-[] Conexion con Base de Datos.
-	[] Usuarios.
-	[] Test de Configuracion de Sectores con datos de Base de Datos.
-	[] Inclusion de Historicos.
 [] Modificaciones en CLUSTER...
 	[] Poner hasta 4 IP's virtuales.
-[x] Instalador del servicio.
 [x] Configuración y gestión mapeado Sectores y Puestos entre dependencias y scv.
 	[x] En fichero de configuracion.
 	[x] En carga de configuracion.
@@ -42,4 +37,12 @@
 	[x] Vista de estado global.
 	[x] Visualizacion del LOG...
 	[x] Configuracion (Listas) => Strings...
-[] Controlar activación / desactivación en los modos PPAL/RSVA...
+	[] Revisar los string de Estado de los Servicios / Managers.
+[x] Controlar activación / desactivación en los modos PPAL/RSVA...
+[] Instalador del servicio.
+	[] Incluir las opciones InCluster e HistServer...
+	[] Incluir las DLL de los paquetes...
+[] Conexion con Base de Datos.
+	[x] Usuarios.
+	[] Test de Configuracion de Sectores con datos de Base de Datos.
+	[] Inclusion de Historicos.
