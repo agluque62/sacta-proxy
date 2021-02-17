@@ -13,9 +13,10 @@ angular.module("sacta_proxy")
             }
             if (page == 1) {
                 ctrl.history = $('#history').DataTable({
-                    "ajax": HistoryData,
-                    "autoWidth": false,
-                    "columns": [
+                    ajax: HistoryData,
+                    autoWidth: false,
+                    searchBuilder: true,
+                    columns: [
                         { "data": "Date", "width": "15%", "render": (data) => ctrl.datestr(data).str },
                         { "data": "Code", "width": "15%", "render": (data) => Enumerable.from(HistoryCodes).where(e => e.code == data).first().descr },
                         { "data": "User", "width": "10%"},
@@ -24,7 +25,19 @@ angular.module("sacta_proxy")
                         { "data": "Map", "width": "20%", "render": (map) => ctrl.normalizeMap(map).str },
                         { "data": "Cause", "width": "20%" }
                     ],
-                    "language": {
+                    dom:"<'row'<'col-md-12'Q>>" +
+                        "<'row'<'col-md-6'l><'col-md-6'f>>" +
+                        "<'row'<'col-md-12 small text-info'tr>>" +
+                        "<'row'<'col-md-5'i><'col-md-7'p>>" +
+                        "<'row historic-info'<'col-md-2'B>>",
+                    buttons: [
+                        {
+                            extend: 'csv',
+                            text: 'Exportar a csv',
+                            className: 'btn btn-info'
+                        }
+                    ],
+                    language: {
                         "decimal": "",
                         "emptyTable": "No hay datos disponibles",
                         "info": "Registros _START_ - _END_ de _TOTAL_",
@@ -32,23 +45,41 @@ angular.module("sacta_proxy")
                         "infoFiltered": "(_MAX_ Registros filtrados)",
                         "infoPostFix": "",
                         "thousands": ".",
-                        "lengthMenu": "Muestra _MENU_ registros",
+                        "lengthMenu": "Mostrar _MENU_ Reg.",
                         "loadingRecords": "Loading...",
                         "processing": "Processing...",
                         "search": "Buscar:",
                         "zeroRecords": "No se han encontrado registros",
                         "paginate": {
-                            "first": "Primera",
-                            "last": "Ultima",
-                            "next": "Siguiente",
-                            "previous": "Anterior"
+                            first: "Primera",
+                            last: "Ultima",
+                            next: "Siguiente",
+                            previous: "Anterior"
                         },
-                        "aria": {
-                            "sortAscending": ": Activar ordenado por conlumna ascendente",
-                            "sortDescending": ": Activar ordenado por columna descendente"
+                        aria: {
+                            sortAscending: ": Activar ordenado por conlumna ascendente",
+                            sortDescending: ": Activar ordenado por columna descendente"
+                        },
+                        searchBuilder: {
+                            add: 'Add Condicion',
+                            condition: 'Condicion',
+                            clearAll: 'Limpiar',
+                            deleteTitle: 'Borrar',
+                            data: 'Columna',
+                            leftTitle: 'Left',
+                            logicAnd: '&',
+                            logicOr: '|',
+                            rightTitle: 'Right',
+                            title: {
+                                0: 'Filtro',
+                                _: 'Filtro (%d)'
+                            },
+                            value: 'Opcion',
+                            valueJoiner: 'y'
                         }
                     }
                 });
+                //ctrl.history.searchBuilder.container().prependTo(ctrl.history.table().container());
             }
             ctrl.pagina = page;
         }
@@ -71,20 +102,23 @@ angular.module("sacta_proxy")
         };
         ctrl.datestr = (date) => {
             var mdate = moment(date);
-            var str = mdate.format('DD-MM-YY, HH:mm:ss');
+            var str = mdate.format('YYYY-MM-DD, HH:mm:ss');
             return {str};
         };
         ctrl.sect = (sect)=>{
             var str = "";
-            sect.forEach(element => {
-                str += (element.Sector + ":" + element.Position + ", ");
-            });
+            if (sect) {
+                sect.forEach(element => {
+                    str += (element.Sector + ":" + element.Position + ", ");
+                });
+            }
             return {str};
         };
         ctrl.seldepindex = undefined;
         ctrl.seldep = () => { return ctrl.deps()[ctrl.seldepindex]; };
         ctrl.deps = () => {
-            return $lserv.GlobalStd().Status.ems;
+            var status = $lserv.GlobalStd().Status;
+            return status ? status.ems : [];
         };
 
         ctrl.logs = function () {
