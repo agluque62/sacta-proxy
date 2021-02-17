@@ -25,7 +25,8 @@ angular.module("sacta_proxy")
                         { "data": "Map", "width": "20%", "render": (map) => ctrl.normalizeMap(map).str },
                         { "data": "Cause", "width": "20%" }
                     ],
-                    dom:"<'row'<'col-md-12'Q>>" +
+                    order: [[0, "desc"]],
+                    dom: "<'row'<'col-md-12'Q>>" +
                         "<'row'<'col-md-6'l><'col-md-6'f>>" +
                         "<'row'<'col-md-12 small text-info'tr>>" +
                         "<'row'<'col-md-5'i><'col-md-7'p>>" +
@@ -131,6 +132,24 @@ angular.module("sacta_proxy")
             return { str: res.replace(/,/g, ', ') };
         };
 
+        ctrl.lanbutton_text = (cfg, lan) => {
+            if (cfg) {
+                var lan_data = lan == 'Lan1' ? cfg.status.act.lan1 : cfg.status.act.lan2;
+                return { str: lan + ' (' + lan_data.listen + ')' };
+            }
+            return lan;
+        }
+
+        ctrl.rx_text = (cfg, lan) => {
+            var lan_data = lan == 'Lan1' ? cfg.status.act.lan1 : cfg.status.act.lan2;
+            return { str: 'Recibe (' + lan_data.listen + ')' };
+        }
+
+        ctrl.tx_text = (cfg, lan) => {
+            var lan_data = lan == 'Lan1' ? cfg.status.act.lan1 : cfg.status.act.lan2;
+            return { str: 'Transmite (' + lan_data.sendto + ')' };
+        }
+    /***/
         $scope.$on('$viewContentLoaded', function () {
             $serv.status((status) => {
                 $lserv.GlobalStd(status);

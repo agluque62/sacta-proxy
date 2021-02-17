@@ -26,22 +26,28 @@ namespace sacta_proxy.Managers
             Cfg = cfg;
             Version = ProtocolVersion;
             History = hist;
+            Locker = new object();
+            TxEnabled = false;
+            ScvActivity = false;
+            Sequence = 0;
+            SectorizationVersion = 0;
+            LastActivityOnLan1 = DateTime.MinValue;
+            LastActivityOnLan2 = DateTime.MinValue;
+            LastPresenceSended = DateTime.MinValue;
+
+            Lan1Listen = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.Ip), Cfg.Comm.ListenPort);
+            Lan1Sendto = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort);
+            Lan2Listen = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If2.Ip), Cfg.Comm.ListenPort);
+            Lan2Sendto = new IPEndPoint(IPAddress.Parse(Version == 0 ? Cfg.Comm.If2.IpTo : Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort);
+
         }
         public override void Start()
         {
             Logger.Info<PsiManager>($"Starting PsiManager...");
             try
             {
-                Locker = new object();
-                TxEnabled = false;
-                ScvActivity = false;
-                Sequence = 0;
-                SectorizationVersion = 0;
-                LastActivityOnLan1 = DateTime.MinValue;
-                LastActivityOnLan2 = DateTime.MinValue;
-                LastPresenceSended = DateTime.MinValue;
 
-                Listener1 = new UdpSocket(Cfg.Comm.If1.Ip, Cfg.Comm.ListenPort);
+                Listener1 = new UdpSocket(Lan1Listen);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 //Listener1.Base.MulticastLoopback = false;
                 Listener1.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If1.McastGroup),
@@ -50,7 +56,7 @@ namespace sacta_proxy.Managers
                 Listener1.NewDataEvent += OnDataReceived;
                 Listener1.BeginReceive();
 
-                Listener2 = new UdpSocket(Cfg.Comm.If2.Ip, Cfg.Comm.ListenPort);
+                Listener2 = new UdpSocket(Lan2Listen);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 //Listener2.Base.MulticastLoopback = false;
                 Listener2.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If2.McastGroup),
@@ -117,12 +123,16 @@ namespace sacta_proxy.Managers
                         lan1 = new
                         {
                             ActivityOnLan1,
-                            LastActivityOnLan1
+                            LastActivityOnLan1,
+                            listen = Lan1Listen.ToString(),
+                            sendto = Lan1Sendto.ToString()
                         },
                         lan2 = new
                         {
                             ActivityOnLan2,
                             LastActivityOnLan2,
+                            listen = Lan2Listen.ToString(),
+                            sendto = Lan2Sendto.ToString()
                         },
                     },
                     tx = TxEnabled,
@@ -284,9 +294,9 @@ namespace sacta_proxy.Managers
             if (TxEnabled)
             {
                 Logger.Trace<PsiManager>("On PSI Sending Data on LAN1 ...");
-                Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort), message);
+                Listener1.Send(Lan1Sendto, message);
                 Logger.Trace<PsiManager>($"On PSI Sending Data on LAN2 ...");
-                Listener2.Send(new IPEndPoint(IPAddress.Parse(Version == 0 ? Cfg.Comm.If2.IpTo : Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort), message);
+                Listener2.Send(Lan2Sendto, message);
                 return true;
             }
             Logger.Trace<PsiManager>($"On PSI Discarding data on LAN1/LAN2 (TxDisabled) ...");
@@ -325,7 +335,7 @@ namespace sacta_proxy.Managers
             }
         }
 
-        #endregion
+       #endregion
 
         #region Private Data
         bool ScvActivity { get; set; }

@@ -16,11 +16,11 @@ namespace sacta_proxy.Managers
 #if !DEBUG
             var dualMode = Properties.Settings.Default.ServerType == 1;
             var virtualIpIsLocal = IpHelper.IsLocalIpV4Address(Properties.Settings.Default.ScvServerIp);
-            notify?.Invoke(dualMode, virtualIpIsLocal);
-            return virtualIpIsLocal;
+            notify?.Invoke(dualMode, dualMode ? virtualIpIsLocal : true);
+            return dualMode ? virtualIpIsLocal : true;
 #else
-            notify?.Invoke(Mode, Master);
-            return Master;
+            notify?.Invoke(Mode, Mode ? Master : true);
+            return Mode ? Master : true;
 #endif
         }
 #if DEBUG
@@ -29,7 +29,7 @@ namespace sacta_proxy.Managers
             Mode = dual;
             Master = master;
         }
-        static bool Mode { get; set; } = false;
+        static bool Mode { get; set; } = Properties.Settings.Default.ServerType == 1;
         static bool Master { get; set; } = false;
 #endif
         static DateTime LastDbCheckTime = DateTime.MinValue;
@@ -52,14 +52,19 @@ namespace sacta_proxy.Managers
             get
             {
                 var settings = Properties.Settings.Default;
-                return new
+                object ret = null;
+                MainStandbyCheck((isdual, main) =>
                 {
-                    server = settings.ServerType == 0 ? "Simple" : "Dual",
-                    scv = settings.ServerType == 0 ? "CD30" : "ULISES",
-                    db = settings.DbConn == 0 ? "NO" : settings.DbConn == 1 ? "MySQL" : "Otra",
-                    main = MainStandbyCheck(),
-                    dbconn = DbIsPresent
-                };
+                    ret = new
+                    {
+                        server = isdual==false ? "Simple" : "Dual",
+                        scv = settings.ServerType == 0 ? "CD30" : "ULISES",
+                        db = settings.DbConn == 0 ? "NO" : settings.DbConn == 1 ? "MySQL" : "Otra",
+                        main,
+                        dbconn = DbIsPresent
+                    };
+                });
+                return ret;
             } 
         }
     }

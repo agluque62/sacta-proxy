@@ -38,6 +38,10 @@ namespace sacta_proxy.Managers
                 return ActivityOnLan1 || ActivityOnLan2;
             }
         }
+        protected IPEndPoint Lan1Listen { get; set; }
+        protected IPEndPoint Lan1Sendto { get; set; }
+        protected IPEndPoint Lan2Listen { get; set; }
+        protected IPEndPoint Lan2Sendto { get; set; }
         #endregion
 
         #region Datos 

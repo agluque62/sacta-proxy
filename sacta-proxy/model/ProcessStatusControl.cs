@@ -26,7 +26,7 @@ namespace sacta_proxy.model
         }
         public override string ToString()
         {
-            return $"State: {State}, LastMessage: {LastError}";
+            return $"{LastError}";
         }
         public void SignalFatal<T>(string cause, History history)
         {

@@ -15,7 +15,8 @@ angular.module("sacta_proxy")
         ctrl.title = "";
 
         ctrl.user = "agl1";
-        ctrl.version="x.x.x";
+        ctrl.version = "x.x.x";
+        ctrl.status = "...";
         ctrl.date = (new Date()).toLocaleDateString();
         ctrl.hora = (new Date()).toLocaleTimeString();
         $location.path("/");
@@ -35,6 +36,12 @@ angular.module("sacta_proxy")
         ctrl.logout = function () {
             $serv.logout();
         }
+        ctrl.general_status = (status) => {
+            var serv = status.server == 'Simple' ? 'SA' : status.main ? 'DA' : 'DS';
+            var scv = status.scv;
+            var db = status.db == 'No' ? 'No' : status.dbconn ? 'Con' : 'Des';
+            return { txt: 'M: ' + serv + ', S: ' + scv + ', D: ' + db };
+        }
 
     /** Funciones  */
         /**
@@ -43,7 +50,8 @@ angular.module("sacta_proxy")
             $serv.status((status) => {
                 $lserv.GlobalStd(status);
                 ctrl.user = status.user;
-                ctrl.version=status.version;
+                ctrl.version = status.version;
+                ctrl.status = ctrl.general_status(status.global).txt;
             });
         }
         function get_inci() {

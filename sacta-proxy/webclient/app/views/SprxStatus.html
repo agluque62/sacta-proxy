@@ -18,14 +18,22 @@
                     <div class="col-md-10">
                         <label for="servstd">Estado Global</label>
                         <table id="servstd" class="table">
+                            <tr>
+                                <td style="width: 15%;" class="text-info"><strong>Modo</strong></td>
+                                <td style="width: 15%;">{{ctrl.std().global.server}}</td>
+                                <td style="width: 20%;" class="text-info"><strong>Estado</strong></td>
+                                <td>{{ctrl.std().global.main ? "Activo" : "Standby"}}</td>
+                            </tr>
                             <tr ng-class="ctrl.stds(ctrl.std().Status.service.std).css">
-                                <td style="width: 20%;" class="text-info"><strong>Servicio</strong></td>
-                                <td style="width: 20%;">{{ctrl.stds(ctrl.std().Status.service.std).txt}}</td>
+                                <td style="width: 15%;" class="text-info"><strong>Servicio</strong></td>
+                                <td style="width: 15%;">{{ctrl.stds(ctrl.std().Status.service.std).txt}}</td>
+                                <td style="width: 20%;" class="text-info"><strong>Ultimo Mensaje</strong></td>
                                 <td>{{ctrl.std().Status.service.str}}</td>
                             </tr>
                             <tr ng-class="ctrl.stds(ctrl.std().Status.web.std).css">
-                                <td style="width: 20%;" class="text-info"><strong>Web</strong></td>
-                                <td style="width: 20%">{{ctrl.stds(ctrl.std().Status.web.std).txt}}</td>
+                                <td style="width: 15%;" class="text-info"><strong>Web</strong></td>
+                                <td style="width: 15%">{{ctrl.stds(ctrl.std().Status.web.std).txt}}</td>
+                                <td style="width: 20%;" class="text-info"><strong>Ultimo Mensaje</strong></td>
                                 <td>{{ctrl.std().Status.web.str}}</td>
                             </tr>
                         </table>
@@ -56,7 +64,8 @@
                             <tr ng-class="ctrl.stds(ctrl.seldep().status.global_state.std).css">
                                 <td class="text-info"><strong>Servicio</strong></td>
                                 <td>{{ctrl.stds(ctrl.seldep().status.global_state.std).txt}}</td>
-                                <td colspan="4">{{ctrl.seldep().status.global_state.str}}</td>
+                                <td class="text-info"><strong>Ultimo Mensaje</strong></td>
+                                <td colspan="3">{{ctrl.seldep().status.global_state.str}}</td>
                             </tr>
                             <tr ng-class="ctrl.isactive(ctrl.seldep().status.act.global).css">
                                 <td><label>Actividad LAN</label></td>
@@ -64,42 +73,46 @@
                                 <td colspan="2">
                                     <button style="width: 100%;" class="btn btn-default" data-toggle="collapse"
                                             data-target="#lan1-data">
-                                        En Lan1
+                                        {{ctrl.lanbutton_text(ctrl.seldep(),"Lan1").str}}
                                     </button>
-                                    <div style="width: 100%;" id="lan1-data" class="collapse collapsable-group"
+                                    <div style="width: 100%; font-size: 80%;" id="lan1-data" class="collapse collapsable-group"
                                          ng-class="ctrl.isactive(ctrl.seldep().status.act.lan1.ActivityOnLan1).css">
                                         <div class="row">
-                                            <div class="col-md-4"><label>Recepcion</label> </div>
-                                            <div class="col-md-8">{{ctrl.isactive(ctrl.seldep().status.act.lan1.ActivityOnLan1).txt}}</div>
+                                            <div class="col-md-3"><label>Recibe</label></div>
+                                            <div class="col-md-6">{{ctrl.seldep().status.act.lan1.listen}}</div>
+                                            <div class="col-md-3">{{ctrl.isactive(ctrl.seldep().status.act.lan1.ActivityOnLan1).txt}}</div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-4"><label>Transmision</label></div>
-                                            <div class="col-md-8">{{ctrl.isactive(ctrl.seldep().status.tx).txt}}</div>
+                                            <div class="col-md-3"><label>Transmite</label></div>
+                                            <div class="col-md-6">{{ctrl.seldep().status.act.lan1.sendto}}</div>
+                                            <div class="col-md-3">{{ctrl.isactive(ctrl.seldep().status.tx).txt}}</div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-4"><label>Ultima</label></div>
-                                            <div class="col-md-8">{{ctrl.datestr(ctrl.seldep().status.act.lan1.LastActivityOnLan1).str}}</div>
+                                            <div class="col-md-3"><label>Ultima</label></div>
+                                            <div class="col-md-9">{{ctrl.datestr(ctrl.seldep().status.act.lan1.LastActivityOnLan1).str}}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td colspan="2">
                                     <button style="width: 100%;" class="btn btn-default" data-toggle="collapse"
                                             data-target="#lan2-data">
-                                        En Lan2
+                                        {{ctrl.lanbutton_text(ctrl.seldep(),"Lan2").str}}
                                     </button>
-                                    <div style="width: 100%;" id="lan2-data" class="collapse collapsable-group"
+                                    <div style="width: 100%; font-size: 80%;" id="lan2-data" class="collapse collapsable-group"
                                          ng-class="ctrl.isactive(ctrl.seldep().status.act.lan2.ActivityOnLan2).css">
                                         <div class="row">
-                                            <div class="col-md-4"><label>Recepcion</label></div>
-                                            <div class="col-md-8">{{ctrl.isactive(ctrl.seldep().status.act.lan2.ActivityOnLan2).txt}}</div>
+                                            <div class="col-md-3"><label>Recibe</label></div>
+                                            <div class="col-md-6">{{ctrl.seldep().status.act.lan2.listen}}</div>
+                                            <div class="col-md-3">{{ctrl.isactive(ctrl.seldep().status.act.lan2.ActivityOnLan1).txt}}</div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-4"><label>Transmision</label></div>
-                                            <div class="col-md-8">{{ctrl.isactive(ctrl.seldep().status.tx).txt}}</div>
+                                            <div class="col-md-3"><label>Transmite</label></div>
+                                            <div class="col-md-6">{{ctrl.seldep().status.act.lan2.sendto}}</div>
+                                            <div class="col-md-3">{{ctrl.isactive(ctrl.seldep().status.tx).txt}}</div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-4"><label>Ultima</label></div>
-                                            <div class="col-md-8">{{ctrl.datestr(ctrl.seldep().status.act.lan2.LastActivityOnLan2).str}}</div>
+                                            <div class="col-md-3"><label>Ultima</label></div>
+                                            <div class="col-md-9">{{ctrl.datestr(ctrl.seldep().status.act.lan2.LastActivityOnLan2).str}}</div>
                                         </div>
                                     </div>
 

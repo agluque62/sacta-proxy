@@ -26,23 +26,33 @@ namespace sacta_proxy.Managers
         #region Public
         public ScvManager(int Protocolversion, Configuration.DependecyConfig cfg, Func<History> hist)
         {
+            Locker = new object();
             Id = cfg.Id;
             Cfg = cfg;
             Version = Protocolversion;
             History = hist;
+            SactaSPSIUsers = Cfg.SactaProtocol.Sacta.PsisList().Select(i => (ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
+            SactaSPVUsers = Cfg.SactaProtocol.Sacta.SpvsList().Select(i => (ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
+            GlobalState = SactaState.Stopped;
+            TxEnabled = false;
+
+            LastActivityOnLan1 = DateTime.MinValue;
+            LastActivityOnLan2 = DateTime.MinValue;
+            LastPresenceSended = DateTime.MinValue;
+            WhenSectorAsked = DateTime.MinValue;
+
+            Lan1Listen = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.Ip), Cfg.Comm.ListenPort);
+            Lan1Sendto = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.McastGroup), Cfg.Comm.SendingPort);
+
+            Lan2Listen = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If2.Ip), Cfg.Comm.ListenPort);
+            Lan2Sendto = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If2.McastGroup), Cfg.Comm.SendingPort);
         }
         public override void Start()
         {
             Logger.Info<ScvManager>($"Starting ScvManager for {Id}...");
             try
             {
-                Locker = new object();
-                SactaSPSIUsers = Cfg.SactaProtocol.Sacta.PsisList().Select(i=>(ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
-                SactaSPVUsers = Cfg.SactaProtocol.Sacta.SpvsList().Select(i=>(ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
-                GlobalState = SactaState.Stopped;
-                TxEnabled = false;
-
-                Listener1 = new UdpSocket(Cfg.Comm.If1.Ip, Cfg.Comm.ListenPort);
+                Listener1 = new UdpSocket(Lan1Listen);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener1.Base.MulticastLoopback = false;
                 Listener1.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If1.McastGroup),
@@ -52,7 +62,7 @@ namespace sacta_proxy.Managers
                 Listener1.NewDataEvent += OnDataReceived;
                 if (Version == 0)
                 {
-                    Listener2 = new UdpSocket(Cfg.Comm.If2.Ip, Cfg.Comm.ListenPort);
+                    Listener2 = new UdpSocket(Lan2Listen);
                     /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                     Listener2.Base.MulticastLoopback = false;
                     Listener2.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If2.McastGroup),
@@ -80,10 +90,6 @@ namespace sacta_proxy.Managers
                 TickTimer.Enabled = true;
 
                 GlobalState = SactaState.WaitingSactaActivity;
-                LastActivityOnLan1 = DateTime.MinValue;
-                LastActivityOnLan2 = DateTime.MinValue;
-                LastPresenceSended = DateTime.MinValue;
-                WhenSectorAsked = DateTime.MinValue;
 
                 if (Version == 0)
                 {
@@ -145,12 +151,16 @@ namespace sacta_proxy.Managers
                         lan1 = new
                         {
                             ActivityOnLan1,
-                            LastActivityOnLan1
+                            LastActivityOnLan1,
+                            listen = Lan1Listen.ToString(),
+                            sendto = Lan1Sendto.ToString()
                         },
                         lan2 = new
                         {
                             ActivityOnLan2,
                             LastActivityOnLan2,
+                            listen = Version==0 ? Lan2Listen.ToString() : Lan1Listen.ToString(),
+                            sendto = Lan2Sendto.ToString()
                         },
                     },
                     tx = TxEnabled,
@@ -335,7 +345,7 @@ namespace sacta_proxy.Managers
                 if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive))
                 {
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN1 ...");
-                    Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.McastGroup), Cfg.Comm.SendingPort), message);
+                    Listener1.Send(Lan1Sendto, message);
                 }
                 else
                 {
@@ -346,11 +356,11 @@ namespace sacta_proxy.Managers
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN2 ...");
                     if (Version == 0)
                     {
-                        Listener2.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.If2.McastGroup), Cfg.Comm.SendingPort), message);
+                        Listener2.Send(Lan2Sendto, message);
                     }
                     else
                     {
-                        Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.If2.McastGroup), Cfg.Comm.SendingPort), message);
+                        Listener1.Send(Lan2Sendto, message);
                     }
                 }
                 else

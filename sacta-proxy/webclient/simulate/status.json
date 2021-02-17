@@ -2,10 +2,17 @@
 	"res": "ok",
 	"user": "root",
 	"version": "1.0.0",
+	"global": {
+		"server": "Simple",
+		"scv": "CD30",
+		"db": "MySQL",
+		"main": false,
+		"dbconn": true
+	},
 	"Status": {
 		"service": {
-			"std": 0,
-			"str": "Error de arranque"
+			"std": 1,
+			"str": "State: Running, LastMessage: "
 		},
 		"web": {
 			"std": 1,
@@ -13,85 +20,60 @@
 		},
 		"ems": [
 			{
-				"id": "SCV",
+				"id": "Scv",
 				"status": {
 					"global_state": {
 						"std": 1,
 						"str": "State: Running, LastMessage: "
 					},
 					"act": {
-						"global": true,
+						"global": false,
 						"lan1": {
 							"ActivityOnLan1": false,
-							"LastActivityOnLan1": "0001-01-01T00:00:00"
+							"LastActivityOnLan1": "0001-01-01T00:00:00",
+							"listen": "10.12.90.1:19205",
+							"sendto": "10.12.60.35:15101"
 						},
 						"lan2": {
-							"ActivityOnLan2": true,
-							"LastActivityOnLan2": "0001-01-01T00:00:00"
+							"ActivityOnLan2": false,
+							"LastActivityOnLan2": "0001-01-01T00:00:00",
+							"listen": "10.12.91.1:19205",
+							"sendto": "10.12.60.35:15101"
 						}
 					},
 					"tx": false,
 					"sacta_protocol": {
 						"seq": 0,
 						"ver": 0,
-						"LastPresenceSended": "2020-12-04T07:46:46.064526+01:00"
+						"LastPresenceSended": "2021-01-19T17:16:27.7173442+01:00"
 					}
 				},
 				"sect": {
-					"LastChange": "2020-12-03T10:33:21.2101807+01:00",
-					"Sectorization": [
-						{
-							"Sector": "0001",
-							"Position": 1
-						},
-						{
-							"Sector": "0002",
-							"Position": 1
-						},
-						{
-							"Sector": "0003",
-							"Position": 2
-						},
-						{
-							"Sector": "0004",
-							"Position": 2
-						},
-						{
-							"Sector": "0011",
-							"Position": 11
-						},
-						{
-							"Sector": "0012",
-							"Position": 11
-						},
-						{
-							"Sector": "0013",
-							"Position": 12
-						},
-						{
-							"Sector": "0014",
-							"Position": 12
-						}
-					]
+					"LastChange": "2021-01-19T17:16:16.5758151+01:00",
+					"Sectorization": []
 				}
 			},
 			{
 				"id": "TWR",
 				"status": {
 					"global_state": {
-						"std": 0,
-						"str": "Error de direcciones..."
+						"std": 1,
+						"str": "State: Running, LastMessage: "
 					},
 					"aut_state": 0,
 					"act": {
 						"global": false,
 						"lan1": {
 							"ActivityOnLan1": false,
-							"LastActivityOnLan1": "0001-01-01T00:00:00"
+							"LastActivityOnLan1": "0001-01-01T00:00:00",
+							"listen": "10.20.94.1:15100",
+							"sendto": "225.12.101.1:19204"
 						},
 						"lan2": {
 							"ActivityOnLan2": false,
-							"LastActivityOnLan2": "0001-01-01T00:00:00"
+							"LastActivityOnLan2": "0001-01-01T00:00:00",
+							"listen": "10.20.94.1:15100",
+							"sendto": "225.212.101.1:19204"
 						}
 					},
 					"tx": false,
@@ -102,23 +84,23 @@
 					}
 				},
 				"sect": {
-					"LastChange": "2020-12-03T10:33:21.1171807+01:00",
+					"LastChange": "2020-12-15T12:53:45.0220299+01:00",
 					"Sectorization": [
 						{
-							"Sector": "0001",
+							"Sector": "1",
 							"Position": 1
 						},
 						{
-							"Sector": "0002",
+							"Sector": "2",
 							"Position": 1
 						},
 						{
-							"Sector": "0003",
-							"Position": 2
+							"Sector": "3",
+							"Position": 1
 						},
 						{
-							"Sector": "0004",
-							"Position": 2
+							"Sector": "4",
+							"Position": 1
 						}
 					]
 				}
@@ -127,19 +109,23 @@
 				"id": "APP",
 				"status": {
 					"global_state": {
-						"std": 2,
-						"str": "Fatal error"
+						"std": 1,
+						"str": "State: Running, LastMessage: "
 					},
 					"aut_state": 0,
 					"act": {
 						"global": false,
 						"lan1": {
 							"ActivityOnLan1": false,
-							"LastActivityOnLan1": "0001-01-01T00:00:00"
+							"LastActivityOnLan1": "0001-01-01T00:00:00",
+							"listen": "10.21.94.1:15100",
+							"sendto": "225.12.101.1:19204"
 						},
 						"lan2": {
 							"ActivityOnLan2": false,
-							"LastActivityOnLan2": "0001-01-01T00:00:00"
+							"LastActivityOnLan2": "0001-01-01T00:00:00",
+							"listen": "10.21.94.1:15100",
+							"sendto": "225.212.101.1:19204"
 						}
 					},
 					"tx": false,
@@ -150,23 +136,19 @@
 					}
 				},
 				"sect": {
-					"LastChange": "2020-12-03T10:33:21.2071807+01:00",
+					"LastChange": "2020-12-14T17:38:05.5720146+01:00",
 					"Sectorization": [
 						{
-							"Sector": "0011",
+							"Sector": "11",
+							"Position": 10
+						},
+						{
+							"Sector": "12",
+							"Position": 10
+						},
+						{
+							"Sector": "10",
 							"Position": 11
-						},
-						{
-							"Sector": "0012",
-							"Position": 11
-						},
-						{
-							"Sector": "0013",
-							"Position": 12
-						},
-						{
-							"Sector": "0014",
-							"Position": 12
 						}
 					]
 				}
