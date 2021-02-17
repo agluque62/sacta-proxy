@@ -70,6 +70,10 @@
 	[x] Manual de Usuario.
 	[] Protocolo de Pruebas.
 [x] Recoger correctamente las excepciones del EventQueue (Como en CLUSTER)
+[] Incidencias Reportadas.
+   [] Controlar los accesos a BDT para que no se prohiba por exceso de errores.
+   [] Rechazar Sectorizaciones correctas si no se puede completar la sectorizacion del SCV...
+
 
 
 
