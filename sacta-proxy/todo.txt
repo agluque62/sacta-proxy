@@ -1,4 +1,7 @@
 ﻿/** */
+[] Guia de Instalacion.
+	[] Modo ULISES (en HOST)
+		[] Configurar un Adaptador de Bucle con las direcciones locales.
 [] Conexion con Base de Datos.
 	[] Usuarios.
 	[] Test de Configuracion de Sectores con datos de Base de Datos.
@@ -21,6 +24,18 @@
 [] Vista de Estado
 	[x] Vista de estado global.
 	[] Visualizacion del LOG...
-[] Adaptar a las dos versiones
-	[] Version 0 => Trafico entrante UCAST a dos IP por Dependencia.
-	[] Version 1 => Trafico entrante MCAST a una IP por Dependencia.
+[x] Adaptar a las dos versiones
+	[x] Emulador PSI
+		[x] Version 0
+			[x] Escucha => IP1-MC1, IP2-MC2. 
+			[x] Envia => (IP1)IpTo1, (IP2)IpTo2
+		[x] Version 1
+			[x] Escucha => IP1-MC1, IP2-MC2.
+			[x] Envio => (IP1)IpTo1, (IP2)IpTo1
+	[x] Emulador SCV
+		[x] Version 0
+			[x] Escucha => IP1, IP2
+			[x] Envio => (IP1)MC1, (IP2)MC2
+		[x] Version 1
+			[x] Escucha => (Msc1, Msc2)IP1
+			[x] Envio => (IP1)MC1, (IP1)MC2

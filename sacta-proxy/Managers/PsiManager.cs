@@ -21,13 +21,14 @@ namespace sacta_proxy.Managers
         #endregion Events
 
         #region Publics
-        public override void Start(Configuration.DependecyConfig cfg)
+        public override void Start(int ProtocolVersion, Configuration.DependecyConfig cfg)
         {
             Logger.Info<PsiManager>($"Starting PsiManager...");
             try
             {
                 Locker = new object();
                 Cfg = cfg;
+                Version = ProtocolVersion;
                 EnableTx = false;
                 ScvActivity = false;
                 Sequence = 0;
@@ -36,20 +37,20 @@ namespace sacta_proxy.Managers
                 LastActivityOnLan2 = DateTime.MinValue;
                 LastPresenceSended = DateTime.MinValue;
 
-                Listener1 = new UdpSocket(Cfg.Comm.Listen.Lan1.McastIf, Cfg.Comm.Listen.Port);
+                Listener1 = new UdpSocket(Cfg.Comm.If1.Ip, Cfg.Comm.ListenPort);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener1.Base.MulticastLoopback = false;
-                Listener1.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.Listen.Lan1.McastGroup),
-                    IPAddress.Parse(Cfg.Comm.Listen.Lan1.McastIf));
+                Listener1.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If1.McastGroup),
+                    IPAddress.Parse(Cfg.Comm.If1.Ip));
                 Listener1.Base.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 16);
                 Listener1.NewDataEvent += OnDataReceived;
                 Listener1.BeginReceive();
 
-                Listener2 = new UdpSocket(Cfg.Comm.Listen.Lan2.McastIf, Cfg.Comm.Listen.Port);
+                Listener2 = new UdpSocket(Cfg.Comm.If2.Ip, Cfg.Comm.ListenPort);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener2.Base.MulticastLoopback = false;
-                Listener2.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.Listen.Lan2.McastGroup),
-                    IPAddress.Parse(Cfg.Comm.Listen.Lan2.McastIf));
+                Listener2.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If2.McastGroup),
+                    IPAddress.Parse(Cfg.Comm.If2.Ip));
                 Listener2.Base.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 16);
                 Listener2.NewDataEvent += OnDataReceived;
                 Listener2.BeginReceive();
@@ -60,7 +61,7 @@ namespace sacta_proxy.Managers
                 TickTimer.Enabled = true;
 
                 SendInitMsg();
-                Logger.Info<PsiManager>($"PsiManager. Waiting for SCV Activity on {Cfg.Comm.Listen.Lan1.McastIf}:{Cfg.Comm.Listen.Port} / {Cfg.Comm.Listen.Lan2.McastIf}:{Cfg.Comm.Listen.Port}");
+                Logger.Info<PsiManager>($"PsiManager. Waiting for SCV Activity on {Cfg.Comm.If1.Ip}:{Cfg.Comm.ListenPort} / {Cfg.Comm.If2.Ip}:{Cfg.Comm.ListenPort}");
                 PS.Set(ProcessStates.Running);
             }
             catch (Exception x)
@@ -268,9 +269,9 @@ namespace sacta_proxy.Managers
             if (EnableTx)
             {
                 Logger.Trace<PsiManager>($"On PSI Sending Data on LAN1 ...");
-                Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip), Cfg.Comm.SendTo.Port), message);
+                Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort), message);
                 Logger.Trace<PsiManager>($"On PSI Sending Data on LAN2 ...");
-                Listener2.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.Ip), Cfg.Comm.SendTo.Port), message);
+                Listener2.Send(new IPEndPoint(IPAddress.Parse(Version == 0 ? Cfg.Comm.If2.IpTo : Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort), message);
                 return true;
             }
             Logger.Trace<PsiManager>($"On PSI Discarding data on LAN1/LAN2 (TxDisabled) ...");
@@ -308,6 +309,7 @@ namespace sacta_proxy.Managers
                 Logger.Info<PsiManager>($"On PSI Sectorization Msg sended. (New Sequence {Sequence}, New Version {SectorizationVersion})");
             }
         }
+
         #endregion
 
         #region Private Data

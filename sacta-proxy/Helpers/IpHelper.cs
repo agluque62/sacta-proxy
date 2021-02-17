@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.NetworkInformation;
+using System.Management;
 
 namespace sacta_proxy.helpers
 {
@@ -84,6 +87,81 @@ namespace sacta_proxy.helpers
         public static bool IsInSubnet(string subnetMask, string ip)
         {
             return IsInSubnet(subnetMask, IPAddress.Parse(ip));
+        }
+
+        public static bool IsIpv4(string ip)
+        {
+            const string pattern = "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+            Regex check = new Regex(pattern);
+            return check.IsMatch(ip);
+        }
+        public static string GhostIp(string ethip)
+        {
+            return "127.0.0.1";
+        }
+
+        public static void EthIfInfIpv4(string ethif, Action<Object, List<Tuple<string,string>>> delivery)
+        {
+            var adapter = (new ManagementClass("Win32_NetworkAdapterConfiguration"))
+                .GetInstances()
+                .Cast<ManagementObject>()
+                .Where(a => (a["IpAddress"] as string[]) != null && (a["IpAddress"] as string[]).ToList().Contains(ethif))
+                .FirstOrDefault();
+            if (adapter != null)
+            {
+                var ips = (adapter["IPAddress"] as string[]).ToList().Where(i => IsIpv4(i)).Select((val,index)=>new { index, val }).ToList();
+                var mscs = (adapter["IpSubnet"] as string[]).ToList().Where(i => IsIpv4(i)).Select((val, index) => new { index, val }).ToList().ToList();
+                var data = ips.Join(mscs, i => i.index, m => m.index, (i, m) => new Tuple<string, string>(i.val, m.val)).ToList();
+                delivery(adapter, data);
+            }
+        }
+        public static void EthIfAddIpv4(string ethif, string newIp, string newMask)
+        {
+            EthIfInfIpv4(ethif, (adapter, ipdata) =>
+            {
+                var exist = ipdata.Where(i => i.Item1 == newIp).FirstOrDefault();
+                if (exist == null)
+                {
+                    var newIps = ipdata.Select(i => i.Item1).Union(new List<string>() { newIp }).ToArray();
+                    var newMcs = ipdata.Select(i => i.Item2).Union(new List<string>() { newMask }).ToArray();
+                    try
+                    {
+                        var newAddress = (adapter as ManagementObject).GetMethodParameters("EnableStatic");
+                        newAddress["IPAddress"] = newIps.ToArray();
+                        newAddress["SubnetMask"] = newMcs.ToArray();
+
+                        var res = (adapter as ManagementObject).InvokeMethod("EnableStatic", newAddress, null);
+                    }
+                    catch (Exception x)
+                    {
+                        // todo.
+                    }
+                }
+            });
+        }
+        public static void EthIfDelIpv4(string ethif, string oldIp)
+        {
+            EthIfInfIpv4(ethif, (adapter, ipdata) =>
+            {
+                var exist = ipdata.Where(i => i.Item1 == oldIp).FirstOrDefault();
+                if (exist != null)
+                {
+                    var newIps = ipdata.Where(i => i.Item1 != oldIp).Select(i => i.Item1).ToList();
+                    var newMcs = ipdata.Where(i => i.Item1 != oldIp).Select(i => i.Item2).ToList();
+                    try
+                    {
+                        var newAddress = (adapter as ManagementObject).GetMethodParameters("EnableStatic");
+                        newAddress["IPAddress"] = newIps.ToArray();
+                        newAddress["SubnetMask"] = newMcs.ToArray();
+
+                        var res = (adapter as ManagementObject).InvokeMethod("EnableStatic", newAddress, null);
+                    }
+                    catch (Exception x)
+                    {
+                        // todo.
+                    }
+                }
+            });
         }
     }
 }
