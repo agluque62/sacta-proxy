@@ -37,7 +37,7 @@
 		[x] Modo de Funcionamiento.
 		[x] Conexion de la base de datos.
 	[] Testear el configuracion de SACTA...
-		[] Que no se introduzcan Sectores/Posiciones repetidos en por dependencia.
+		[] Que no se introduzcan Sectores/Posiciones repetidos en web por dependencia.
 [x] Controlar activación / desactivación en los modos PPAL/RSVA...
 [x] Instalador del servicio.
 	[x] Incluir Opciones de Instalacion
@@ -65,6 +65,16 @@
 	[x] Manual de Usuario.
 	[] Protocolo de Pruebas.
 [] Modificaciones en CLUSTER...
-	[] Poner hasta 4 IP's virtuales.
+	[x] Poner hasta 8 IP's virtuales.
+	[] Desarrollo de una nueva versión sin 'desactivar' la anterior.
+		[] Modelo PLUGIN con 'Reflection'
+			[x] Esquema general.
+			[] Dependencias 'externas' (JSON)
+		[] Servicio WEB
+			[x] Esquema General
+			[] REST
+			[] Páginas Web
+		[] Servicio CLUSTER
+
 
 
