@@ -24,11 +24,14 @@ namespace sacta_proxy.Managers
         #endregion Events
 
         #region Public
-        public override void Start(int Protocolversion, Configuration.DependecyConfig cfg)
+        public ScvManager(int Protocolversion, Configuration.DependecyConfig cfg)
         {
             Id = cfg.Id;
             Cfg = cfg;
             Version = Protocolversion;
+        }
+        public override void Start()
+        {
             Logger.Info<ScvManager>($"Starting ScvManager for {Id}...");
             try
             {

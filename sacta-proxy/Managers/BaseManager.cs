@@ -14,7 +14,7 @@ namespace sacta_proxy.Managers
     public abstract class BaseManager
     {
 
-        public abstract void Start(int ProtocolVersion, Configuration.DependecyConfig cfg);
+        public abstract void Start(/*int ProtocolVersion, Configuration.DependecyConfig cfg*/);
         public abstract void Stop();
         public virtual bool TxEnabled { get; set; }
         public abstract object Status { get; }
