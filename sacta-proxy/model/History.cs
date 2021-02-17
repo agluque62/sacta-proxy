@@ -150,8 +150,8 @@ namespace sacta_proxy.model
         }
         void Sanitize()
         {
-            var Days = TimeSpan.FromDays(MaxItems);
-            history = history.Where(i => (DateTime.Now - i.Date) <= Days).OrderBy(i => i.Date).ToList();
+            var Days = TimeSpan.FromDays(MaxDays);
+            history = history.Where(i => (DateTime.Now - i.Date) <= Days).OrderByDescending(i => i.Date).ToList();
             history = history.Count() > MaxItems ? history.Take(MaxItems).ToList() : history;
         }
         void WriteToDb(HistoryItem item)
