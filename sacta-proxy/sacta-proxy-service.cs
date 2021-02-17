@@ -137,7 +137,7 @@ namespace sacta_proxy
                             MainTaskConfigured = ConfigureService();
                             StartWebServer();
                         }
-                        MainStandbyManager.Check((isDual, isMain) =>
+                        GlobalStateManager.MainStandbyCheck((isDual, isMain) =>
                         {
                             if (isDual)
                             {
@@ -318,7 +318,14 @@ namespace sacta_proxy
             if (context.Request.HttpMethod == "GET")
             {
                 context.Response.StatusCode = 200;
-                sb.Append(JsonHelper.ToString(new { res = "ok", user=SystemUsers.CurrentUserId, version=GenericHelper.VersionManagement.AssemblyVersion, Status }, false));
+                sb.Append(JsonHelper.ToString(new 
+                { 
+                    res = "ok", 
+                    user=SystemUsers.CurrentUserId, 
+                    version=GenericHelper.VersionManagement.AssemblyVersion, 
+                    global = GlobalStateManager.Info,
+                    Status 
+                }, false));
             }
             else
             {

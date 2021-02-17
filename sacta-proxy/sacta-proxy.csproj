@@ -74,11 +74,12 @@
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\UdpSocket.cs" />
     <Compile Include="Managers\BaseManager.cs" />
-    <Compile Include="Managers\MainStandbyManager.cs" />
+    <Compile Include="Managers\GlobalStateManager.cs" />
     <Compile Include="Managers\PsiManager.cs" />
     <Compile Include="Managers\SactaMessages.cs" />
     <Compile Include="Managers\ScvManager.cs" />
     <Compile Include="model\Configuration.cs" />
+    <Compile Include="model\DbControl.cs" />
     <Compile Include="model\History.cs" />
     <Compile Include="model\ProcessStatusControl.cs" />
     <Compile Include="model\SectorizationModel.cs" />
