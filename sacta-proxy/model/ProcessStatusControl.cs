@@ -28,10 +28,10 @@ namespace sacta_proxy.model
         {
             return $"State: {State}, LastMessage: {LastError}";
         }
-        public void SignalFatal<T>(string cause)
+        public void SignalFatal<T>(string cause, History history)
         {
             Set(ProcessStates.Error, cause);
-            History?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
+            history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
             Logger.Fatal<T>(cause);
         }
         public object Status
@@ -41,7 +41,7 @@ namespace sacta_proxy.model
                 return new { std = State, str = ToString() };
             }
         }
-        public History History { get; set; }
+        //public History History { get; set; }
         public bool IsStarted { get => State != ProcessStates.Stopped; }
     }
 }

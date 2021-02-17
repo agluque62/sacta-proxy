@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 
 using sacta_proxy;
@@ -50,6 +51,18 @@ namespace sacta_proxy_tests
                     .Where(i => Configuration.MapOfSectorsEntryValid(i))
                     .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
             });
+        }
+
+        [TestMethod]
+        public void EventQueueTest()
+        {
+            var eq = new EventQueue();
+            eq.Start();
+            eq.Enqueue("1", () => { Debug.WriteLine("Evento 1"); });
+            eq.Enqueue("2", () => { Debug.WriteLine("Evento 2"); });
+            eq.Enqueue("3", () => { Debug.WriteLine("Evento 3"); });
+            eq.Enqueue("4", () => { Debug.WriteLine("Evento 4"); });
+            eq.ControlledStop();
         }
     }
 }

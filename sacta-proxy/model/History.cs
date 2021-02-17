@@ -26,7 +26,6 @@ namespace sacta_proxy.model
         DepSectorizationReceivedEvent = 22,     // USER = "", DEP = "dep", STATE = "", MAP="map", CAUSE=""
         DepSectorizationRejectedEvent = 23,     // USER = "", DEP = "dep", STATE = "", MAP="map", CAUSE="cause"
         ScvSectorizationSendedEvent = 25,       // USER = "", DEP = "scv", STATE = "", MAP="map", CAUSE=""
-
     };
     public class History : IDisposable
     {
@@ -54,7 +53,7 @@ namespace sacta_proxy.model
         }
         public void Dispose()
         {
-            WorkingThread.Stop();
+            WorkingThread.ControlledStop();
         }
         public void Add(HistoryItems item, string user="", string dep="", string state="", string map="", string cause = "")
         {
@@ -74,12 +73,21 @@ namespace sacta_proxy.model
             });
         }
         public Object Get { get => history; }
-
+        public void Configure(int maxDays, int maxItems)
+        {
+            MaxDays = maxDays;
+            MaxItems = maxItems;
+            Sanitize();
+            Write();
+        }
         void AddItem(HistoryItem item)
         {
+            // Salvandolo en el Historico Local...
             history.Add(item);
             Sanitize();
             Write();
+            // Enviandolo a la Base de datos.
+            SendToDb(item);
         }
 
         void Write()
@@ -105,6 +113,10 @@ namespace sacta_proxy.model
             var Days = TimeSpan.FromDays(MaxItems);
             history = history.Where(i => (DateTime.Now - i.Date) <= Days).OrderBy(i => i.Date).ToList();
             history = history.Count() > MaxItems ? history.Take(MaxItems).ToList() : history;
+        }
+        void SendToDb(HistoryItem item)
+        {
+
         }
 
 

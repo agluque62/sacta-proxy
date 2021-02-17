@@ -21,10 +21,11 @@ namespace sacta_proxy.Managers
         #endregion Events
 
         #region Publics
-        public PsiManager(int ProtocolVersion, Configuration.DependecyConfig cfg)
+        public PsiManager(int ProtocolVersion, Configuration.DependecyConfig cfg, Func<History> hist)
         {
             Cfg = cfg;
             Version = ProtocolVersion;
+            History = hist;
         }
         public override void Start()
         {
@@ -72,7 +73,7 @@ namespace sacta_proxy.Managers
             {
                 Logger.Exception<PsiManager>(x, $"On PSI");
                 Dispose();
-                PS.SignalFatal<PsiManager>($"Exception on Starting => {x}");
+                PS.SignalFatal<PsiManager>($"Exception on Starting => {x}", History());
             }
         }
         public override void Stop()
@@ -332,6 +333,7 @@ namespace sacta_proxy.Managers
         UdpSocket Listener1, Listener2;
 
         PsiOrScvInfo ScvInfo = new PsiOrScvInfo();
+        Func<History> History { get; set; }
         #endregion
     }
 }

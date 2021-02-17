@@ -60,6 +60,20 @@ namespace sacta_proxy.helpers
 			_StopEvent.Close();
 		}
 
+		public void ControlledStop()
+        {
+			int pendientes = 0;
+			do
+			{
+                lock (_Queue)
+                {
+					pendientes = _Queue.Count();
+                }
+				Task.Delay(10).Wait();
+			} while (pendientes > 0);
+			Stop();
+        }
+
 		/// <summary>
 		/// 
 		/// </summary>
