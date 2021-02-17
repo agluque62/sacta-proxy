@@ -11,7 +11,7 @@ using Utilities;
 
 namespace SimulSACTA
 {
-    class Sacta : IDisposable
+    class SimulSacta : IDisposable
     {
         /// <summary>
         /// 
@@ -24,7 +24,7 @@ namespace SimulSACTA
         /// <summary>
         /// 
         /// </summary>
-        public Sacta()
+        public SimulSacta()
         {
             Settings stts = Settings.Default;
 
@@ -55,7 +55,7 @@ namespace SimulSACTA
         /// <summary>
         /// 
         /// </summary>
-        ~Sacta()
+        ~SimulSacta()
         {
             Dispose(false);
         }
