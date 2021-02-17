@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using MySql.Data.MySqlClient;
+using sacta_proxy.helpers;
 
 namespace sacta_proxy.model
 {
@@ -37,8 +38,9 @@ namespace sacta_proxy.model
                         profile = res ? founds.First().Perfil : 0;
                     });
                 }
-                catch 
+                catch (Exception x)
                 {
+                    Logger.Error<SystemUsers>(x.Message);
                 }
             }
             SetCurrentUser(res, user, profile);
@@ -55,31 +57,29 @@ namespace sacta_proxy.model
             var settings = Properties.Settings.Default;
             if (settings.DbConn == 1)
             {
-                if (settings.ScvType == 0)
+                // Solo efectuamos el acceso para MySql
+                using (var connection = new MySqlConnection(DbControl.StrConn))
                 {
-                    // TODO. Acceso a los usuarios CD30
-                }
-                else
-                {
-                    using (var connection = new MySqlConnection($"Server={settings.ScvServerIp};User ID=root;Password=cd40;Database=new_cd40;;Connect Timeout={settings.DbConnTimeout}"))
-                    {
-                        connection.Open();
+                    connection.Open();
+                    var query = settings.ScvType == 0 ?
+                        $"SELECT idusuario, clave, perfil FROM opeusu;" :
+                        $"SELECT IdOperador, Clave, NivelAcceso FROM operadores WHERE IdSistema = 'departamento';";
 
-                        using (var command = new MySqlCommand("SELECT IdOperador,Clave,NivelAcceso FROM operadores WHERE IdSistema='departamento';", connection))
-                        using (var reader = command.ExecuteReader())
+                    using (var command = new MySqlCommand(query, connection))
+                    using (var reader = command.ExecuteReader())
+                    {
+                        var users = new List<SystemUserInfo>();
+                        while (reader.Read())
                         {
-                            var users = new List<SystemUserInfo>();
-                            while (reader.Read())
+                            var perfil = settings.ScvType == 0 ? (uint)(long)reader[2] : (uint)reader[2];
+                            users.Add(new SystemUserInfo()
                             {
-                                users.Add(new SystemUserInfo()
-                                {
-                                    Id = reader[0] as string,
-                                    Clave = reader[1] as string,
-                                    Perfil = (uint)reader[2]
-                                });
-                            }
-                            delivery(users);
+                                Id = reader[0] as string,
+                                Clave = reader[1] as string,
+                                Perfil = perfil
+                            });
                         }
+                        delivery(users);
                     }
                 }
             }

@@ -55,13 +55,13 @@ namespace sacta_proxy
                     switch (key)
                     {
                         case 's':
-                            MainStandbyManager.SetMode(false, false);
+                            GlobalStateManager.DebugMainStandbyModeSet(false, false);
                             break;
                         case 'p':
-                            MainStandbyManager.SetMode(true, true);
+                            GlobalStateManager.DebugMainStandbyModeSet(true, true);
                             break;
                         case 'r':
-                            MainStandbyManager.SetMode(true, false);
+                            GlobalStateManager.DebugMainStandbyModeSet(true, false);
                             break;
                         case '0':
                             app.Reset();
