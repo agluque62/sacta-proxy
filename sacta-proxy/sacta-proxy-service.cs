@@ -105,6 +105,7 @@ namespace sacta_proxy
         protected override void OnStart(string[] args)
         {
             // Se ejecuta al arrancar el programa.
+            EventThread = new EventQueue((sender, x) => Logger.Exception<SactaProxy>(x));
             History = new History();
             MainTask = Task.Run(MainProcessing);
         }
@@ -118,7 +119,7 @@ namespace sacta_proxy
         protected void MainProcessing()
         {
             Logger.Info<SactaProxy>("Arrancando Servicio.");
-
+            
             MainTaskSync = new System.Threading.ManualResetEvent(false);
             EventThread.Start();
             MainTaskConfigured = ConfigureService();
@@ -434,7 +435,7 @@ namespace sacta_proxy
 #endregion Callbacks Web
 
 #region EventManagers
-        private readonly EventQueue EventThread = new EventQueue();
+        private EventQueue EventThread { get; set; }
         protected void OnScvEventActivity(Object sender, ActivityOnLanArgs data)
         {
             EventThread.Enqueue("OnScvEventActivity", () =>
