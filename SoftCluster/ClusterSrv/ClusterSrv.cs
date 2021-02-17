@@ -8,6 +8,7 @@ using System.Data;
 using System.Diagnostics;
 using System.ServiceProcess;
 using System.Text;
+using System.Threading.Tasks;
 using NLog;
 
 using Utilities;
@@ -133,6 +134,7 @@ namespace ClusterSrv
                 _Cluster?.Dispose();
             }
             _Cluster = null;
+            Task.Delay(TimeSpan.FromSeconds(2)).Wait();
         }
 
         private static ClusterSettings GetClusterSettings()
@@ -154,9 +156,9 @@ namespace ClusterSrv
             //cst.ClusterMask2 = st.ClusterMask2;
             cst.VirtualIps = new List<ClusterIpSetting>()
             {
-                new ClusterIpSetting(){ AdapterIp = st.AdapterIp1, ClusterIp = st.ClusterIp1, ClusterMsk = st.ClusterMask1, AdapterMask=1 },
-                new ClusterIpSetting(){ AdapterIp = st.AdapterIp2, ClusterIp = st.ClusterIp2, ClusterMsk = st.ClusterMask2, AdapterMask=2 },
-                new ClusterIpSetting(){ AdapterIp = st.AdapterIp3, ClusterIp = st.ClusterIp3, ClusterMsk = st.ClusterMask3, AdapterMask=4 },
+                new ClusterIpSetting(){ AdapterIp = st.AdapterIp1, ClusterIp = st.ClusterIp1, ClusterMsk = st.ClusterMask1, AdapterMask=1, AdapterIndex=-1, VirtualIpContext=-1 },
+                new ClusterIpSetting(){ AdapterIp = st.AdapterIp2, ClusterIp = st.ClusterIp2, ClusterMsk = st.ClusterMask2, AdapterMask=2, AdapterIndex=-1, VirtualIpContext=-1 },
+                new ClusterIpSetting(){ AdapterIp = st.AdapterIp3, ClusterIp = st.ClusterIp3, ClusterMsk = st.ClusterMask3, AdapterMask=4, AdapterIndex=-1, VirtualIpContext=-1 },
             };
             cst.TimeToStart = st.TimeToStart;
             cst.MaintenanceServerForTraps = st.MaintenanceServerForTraps;
