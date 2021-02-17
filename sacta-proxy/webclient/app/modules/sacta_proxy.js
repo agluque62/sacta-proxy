@@ -246,36 +246,37 @@ var regx_urival = /^sip:(.+)@(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.
 var regx_fid = /^(1|2|3)[0-9]{2}\.[0-9]{2}(0|5)$/;
 var regx_fid_vhf = /^(1)(1|2|3)([0-9]{1})\.([0-9])(0|2|5|7)(0|5)$/;   /** 118.000 137.000 */
 var regx_fid_uhf = /^(2|3|4)([0-9]{2})\.([0-9])(0|2|5|7)(0|5)$/;      /** 225.000 400.000 */
-var regx_int = /^d+$/;
+var regx_int = /^\d+$/;
+var regx_list_int = /^\d+(?:[ \t]*,[ \t]*\d+)*$/;
+var regx_mkip = /^.+$/; // todo.
 
-/** Validacion por directivas Angular */
-/** Lista de Sectores o Puestos */
-sacta_proxy.directive('sectorPosition', function () {
+/** Validacion por directivas Angular y expresiones regulares */
+function regx_get(id) {
+    if (id == "ip") return regx_ipval;
+    if (id == "lnum") return regx_list_int;
+    if (id == "mkip") return regx_mkip;
+
+    return undefined;
+}
+sacta_proxy.directive('nuValidate', function () {
     return {
         require: 'ngModel',
         link: function (scope, element, attr, mCtrl) {
             function Validation(value) {
-                if (value && typeof value == "string") {
-                    var valid = true;
-                    var items = value.split(",");
-                    items.forEach((item, index) => {
-                        var itemint = parseInt(item);
-                        if (itemint === NaN) {
-                            valid=false;
-                        }
-                    });
-                    mCtrl.$setValidity('sectorOrpos', false);
+                var valid = false;
+                var regex = regx_get(attr.nuValidate);
+                if (regex != undefined && typeof value == "string") {
+                    valid = value == "" ? true : value.match(regex) != null;
                 }
-                else {
-                    mCtrl.$setValidity('sectorOrpos', false);
-                }
-
+                console.log('nuValidate', attr.nuValidate, value, valid);
+                mCtrl.$setValidity('nuValidate', valid);
                 return value;
             }
             mCtrl.$parsers.push(Validation);
         }
     };
 });
+
 
 /** MOCK Backend*/
 if (Simulate) {

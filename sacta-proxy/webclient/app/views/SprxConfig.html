@@ -4,13 +4,13 @@
         <section id="_tabs">
             <ul class="nav nav-tabs">
                 <li data-ng-class="{'active': ctrl.pagina==0}">
-                    <a href="" data-ng-click="ctrl.topage(0)" translate>Parametros Generales</a>
+                    <a href="" data-ng-click="ctrl.topage(0)">Parametros Generales</a>
                 </li>
                 <li data-ng-class="{'active': ctrl.pagina==1}">
-                    <a href="" data-ng-click="ctrl.topage(1)" translate>Interfaz SCV</a>
+                    <a href="" data-ng-click="ctrl.topage(1)">Interfaz SCV</a>
                 </li>
                 <li data-ng-class="{'active': ctrl.pagina==2}">
-                    <a href="" data-ng-click="ctrl.topage(2)" translate>Interfaz SACTA</a>
+                    <a href="" data-ng-click="ctrl.topage(2)">Interfaz SACTA</a>
                 </li>
             </ul>
         </section>
@@ -58,7 +58,6 @@
                 </div>
 
                 <div id="cfgScv" data-ng-show="ctrl.pagina==1 || ctrl.pagina==2" class="form-group">
-                    <!-- Seleccion de Dependencia  -->
                     <div class="row form-group">
                         <div class="col-md-1"></div>
                         <div class="col-md-3" ng-show="ctrl.dep.isdep">
@@ -67,155 +66,351 @@
                                 <option ng-repeat="dep in ctrl.config.Dependencies" value="{{$index}}">{{dep.Id}}</option>
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label for="tic">Tic Presencia</label>
-                            <input id="tic" name="tic" type="number" min="1" max="10" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TickAlive" required />
-                            <span style="color:red" ng-show="cfgform.tic.$dirty && cfgform.tic.$invalid">
-                                <span ng-show="cfgform.tic.$error.required">Este campo debe rellenarse</span>
-                                <span ng-show="cfgform.tic.$error.min || cfgform.tic.$error.max">Este campo debe estar en rango 1, 10</span>
-                            </span>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="toc">Timeout Presencia</label>
-                            <input id="toc" name="toc" type="number" min="20" max="60" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TimeoutAlive" required />
-                            <span style="color:red" ng-show="cfgform.toc.$dirty && cfgform.toc.$invalid">
-                                <span ng-show="cfgform.toc.$error.required">Este campo debe rellenarse</span>
-                                <span ng-show="cfgform.toc.$error.min || cfgform.toc.$error.max">Este campo debe estar en rango 20, 60</span>
-                            </span>
+                    </div>
+                    <hr class="linea" ng-show="ctrl.dep.isdep" />
+                    <div id="comm" class="row form-group">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <button class="btn col-md-12" data-toggle="collapse" data-target="#comm-data">Comunicaciones</button>
+                            <div id="comm-data" class="col-md-12 collapse collapsable-group in">
+                                <table id="comm-table" class="table col-md-12">
+                                    <thead>
+                                        <tr>
+                                            <th>Listening</th>
+                                            <th>Sending</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:50%">
+                                                <table id="comm-listening-table" class="table">
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="lport">Puerto</label>
+                                                            <input id="lport" name="lport" type="number" min="1025" max="49999" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Port" required />
+                                                            <span style="color:red" ng-show="cfgform.lport.$dirty && cfgform.lport.$invalid">
+                                                                <span ng-show="cfgform.lport.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lport.$error.min || cfgform.lport.$error.max">Este campo debe estar en rango 1025, 49999</span>
+                                                            </span>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="lip1">Ip</label>
+                                                            <input id="lip1" name="lip1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.Ip" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.lip1.$dirty && cfgform.lip1.$invalid">
+                                                                <span ng-show="cfgform.lip1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lip1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="lip2">Ip2</label>
+                                                            <input id="lip2" name="lip2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.Ip" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.lip2.$dirty && cfgform.lip2.$invalid">
+                                                                <span ng-show="cfgform.lip2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lip2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="lmc1">Grupo Multicast</label>
+                                                            <input id="lmc1" name="lmc1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.McastGroup" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.lmc1.$dirty && cfgform.lmc1.$invalid">
+                                                                <span ng-show="cfgform.lmc1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lmc1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="lmc2">Grupo Multicast 2</label>
+                                                            <input id="lmc2" name="lmc2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.McastGroup" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.lmc2.$dirty && cfgform.lmc2.$invalid">
+                                                                <span ng-show="cfgform.lmc2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lmc2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="lif1">Interfaz de Red</label>
+                                                            <input id="lif1" name="lif1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.McastIf" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.lif1.$dirty && cfgform.lif1.$invalid">
+                                                                <span ng-show="cfgform.lif1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lif1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="lif2">Interfaz de Red 2</label>
+                                                            <input id="lif2" name="lif2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.McastIf" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.lif2.$dirty && cfgform.lif2.$invalid">
+                                                                <span ng-show="cfgform.lif2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lif2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="lmk1">Mascara Lan1</label>
+                                                            <input id="lmk1" name="lmk1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan1.FromMask" required nu-validate="mkip" />
+                                                            <span style="color:red" ng-show="cfgform.lmk1.$dirty && cfgform.lmk1.$invalid">
+                                                                <span ng-show="cfgform.lmk1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lmk1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="lmk2">Mascara Lan2</label>
+                                                            <input id="lmk2" name="lmk2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.Listen.Lan2.FromMask" required nu-validate="mkip" />
+                                                            <span style="color:red" ng-show="cfgform.lmk2.$dirty && cfgform.lmk2.$invalid">
+                                                                <span ng-show="cfgform.lmk2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.lmk2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table id="comm-sending-table" class="table">
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="sport">Puerto</label>
+                                                            <input id="sport" name="sport" type="number" min="1025" max="49999" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Port" required />
+                                                            <span style="color:red" ng-show="cfgform.sport.$dirty && cfgform.sport.$invalid">
+                                                                <span ng-show="cfgform.sport.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.sport.$error.min || cfgform.sport.$error.max">Este campo debe estar en rango 1025, 49999</span>
+                                                            </span>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="sip1">Ip</label>
+                                                            <input id="sip1" name="sip1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.Ip" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.sip1.$dirty && cfgform.sip1.$invalid">
+                                                                <span ng-show="cfgform.sip1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.sip1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="sip2">Ip2</label>
+                                                            <input id="sip2" name="sip2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.Ip" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.sip2.$dirty && cfgform.sip2.$invalid">
+                                                                <span ng-show="cfgform.sip2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.sip2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="smc1">Grupo Multicast</label>
+                                                            <input id="smc1" name="smc1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.McastGroup" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.smc1.$dirty && cfgform.smc1.$invalid">
+                                                                <span ng-show="cfgform.smc1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.smc1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="smc2">Grupo Multicast 2</label>
+                                                            <input id="smc2" name="smc2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.McastGroup" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.smc2.$dirty && cfgform.smc2.$invalid">
+                                                                <span ng-show="cfgform.smc2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.smc2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="sif1">Interfaz de Red</label>
+                                                            <input id="sif1" name="sif1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.McastIf" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.sif1.$dirty && cfgform.sif1.$invalid">
+                                                                <span ng-show="cfgform.sif1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.sif1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="sif2">Interfaz de Red 2</label>
+                                                            <input id="sif2" name="sif2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.McastIf" required nu-validate="ip" />
+                                                            <span style="color:red" ng-show="cfgform.sif2.$dirty && cfgform.sif2.$invalid">
+                                                                <span ng-show="cfgform.sif2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.sif2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width:50%;">
+                                                            <label for="smk1">Mascara Lan1</label>
+                                                            <input id="smk1" name="smk1" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan1.FromMask" required nu-validate="mkip" />
+                                                            <span style="color:red" ng-show="cfgform.smk1.$dirty && cfgform.smk1.$invalid">
+                                                                <span ng-show="cfgform.smk1.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.smk1.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                        <td ng-show="true">
+                                                            <label for="smk2">Mascara Lan2</label>
+                                                            <input id="smk2" name="smk2" type="text" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendTo.Lan2.FromMask" required nu-validate="mkip" />
+                                                            <span style="color:red" ng-show="cfgform.smk2.$dirty && cfgform.smk2.$invalid">
+                                                                <span ng-show="cfgform.smk2.$error.required">Este campo debe rellenarse</span>
+                                                                <span ng-show="cfgform.smk2.$error.nuValidate">Error Formato. Debe ser Ip V4</span>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <hr class="linea"/>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>{{ctrl.dep.isdep ? "Dependencia" : "Proxy"}}</th>
-                                <th>{{ctrl.dep.isdep ? "Proxy" : "Scv"}}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="row form-group">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-3">
-                                            <label for="sdom">Dominio</label>
-                                            <input id="sdom" name="sdom" type="number" min="1" max="1" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Domain" required />
-                                            <span style="color:red" ng-show="cfgform.sdom.$dirty && cfgform.sdom.$invalid">
-                                                <span ng-show="cfgform.sdom.$error.required">Este campo debe rellenarse</span>
-                                                <span ng-show="cfgform.sdom.$error.min || cfgform.sdom.$error.max">Este campo debe estar en rango 1, 1</span>
-                                            </span>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="scen">Centro</label>
-                                            <input id="scen" name="scen" type="number" min="100" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Center" required />
-                                            <span style="color:red" ng-show="cfgform.scen.$dirty && cfgform.scen.$invalid">
-                                                <span ng-show="cfgform.scen.$error.required">Este campo debe rellenarse</span>
-                                                <span ng-show="cfgform.scen.$error.min || cfgform.scen.$error.max">Este campo debe estar en rango 100, 120</span>
-                                            </span>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="sgrp">Grupo</label>
-                                            <input id="sgrp" name="sgrp" type="number" min="1" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.PsiGroup" required />
-                                            <span style="color:red" ng-show="cfgform.sgrp.$dirty && cfgform.sgrp.$invalid">
-                                                <span ng-show="cfgform.sgrp.$error.required">Este campo debe rellenarse</span>
-                                                <span ng-show="cfgform.sgrp.$error.min || cfgform.sgrp.$error.max">Este campo debe estar en rango 1, 120</span>
-                                            </span>
-                                        </div>
+                    <div id="protocol" class="row form-group">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <button class="btn col-md-12" data-toggle="collapse" data-target="#protocol-data">Protocolo Sacta</button>
+                            <div id="protocol-data" class="col-md-12 collapse collapsable-group">
+                                <div class="row form-group">
+                                    <div class="col-md-3">
+                                        <label for="tic">Tic Presencia</label>
+                                        <input id="tic" name="tic" type="number" min="1" max="10" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TickAlive" required />
+                                        <span style="color:red" ng-show="cfgform.tic.$dirty && cfgform.tic.$invalid">
+                                            <span ng-show="cfgform.tic.$error.required">Este campo debe rellenarse</span>
+                                            <span ng-show="cfgform.tic.$error.min || cfgform.tic.$error.max">Este campo debe estar en rango 1, 10</span>
+                                        </span>
                                     </div>
-                                    <div class="row form-group">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-11">
-                                            <label for="spsi">SPSI</label>
-                                            <input id="spsi" name="spsi" type="text" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Psis" ng-disabled="true" required />
-                                            <span style="color:red" ng-show="cfgform.spsi.$dirty && cfgform.spsi.$invalid">
-                                                <span ng-show="cfgform.spsi.$error.required">Este campo debe rellenarse</span>
-                                            </span>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <label for="toc">Timeout Presencia</label>
+                                        <input id="toc" name="toc" type="number" min="20" max="60" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TimeoutAlive" required />
+                                        <span style="color:red" ng-show="cfgform.toc.$dirty && cfgform.toc.$invalid">
+                                            <span ng-show="cfgform.toc.$error.required">Este campo debe rellenarse</span>
+                                            <span ng-show="cfgform.toc.$error.min || cfgform.toc.$error.max">Este campo debe estar en rango 20, 60</span>
+                                        </span>
                                     </div>
-                                    <div class="row form-group">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-11">
-                                            <label for="sspv">SSPV</label>
-                                            <input id="sspv" name="sspv" type="text" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Spvs" ng-disabled="true" required />
-                                            <span style="color:red" ng-show="cfgform.sspv.$dirty && cfgform.sspv.$invalid">
-                                                <span ng-show="cfgform.sspv.$error.required">Este campo debe rellenarse</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td style="width:50%;">
-                                    <div class="row form-group">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-3">
-                                            <label for="vdom">Dominio</label>
-                                            <input id="vdom" name="vdom" type="number" min="1" max="1" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Domain" required />
-                                            <span style="color:red" ng-show="cfgform.vdom.$dirty && cfgform.vdom.$invalid">
-                                                <span ng-show="cfgform.vdom.$error.required">Este campo debe rellenarse</span>
-                                                <span ng-show="cfgform.vdom.$error.min || cfgform.vdom.$error.max">Este campo debe estar en rango 1, 1</span>
-                                            </span>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="vcen">Centro</label>
-                                            <input id="vcen" name="vcen" type="number" min="100" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Center" required />
-                                            <span style="color:red" ng-show="cfgform.vcen.$dirty && cfgform.vcen.$invalid">
-                                                <span ng-show="cfgform.vcen.$error.required">Este campo debe rellenarse</span>
-                                                <span ng-show="cfgform.vcen.$error.min || cfgform.vcen.$error.max">Este campo debe estar en rango 100, 120</span>
-                                            </span>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="vusu">Usuario</label>
-                                            <input id="vusu" name="vusu" type="number" min="1" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Scv" required />
-                                            <span style="color:red" ng-show="cfgform.vusu.$dirty && cfgform.vusu.$invalid">
-                                                <span ng-show="cfgform.vusu.$error.required">Este campo debe rellenarse</span>
-                                                <span ng-show="cfgform.vusu.$error.min || cfgform.vusu.$error.max">Este campo debe estar en rango 1, 120</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group" ng-show="ctrl.dep.isdep">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-11">
-                                            <label for="vsec">Sectores</label>
-                                            <input id="vsec" name="vsec" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Sectors" required />
-                                            <span style="color:red" ng-show="cfgform.vsec.$dirty && cfgform.vsec.$invalid">
-                                                <span ng-show="cfgform.vsec.$error.required">Este campo debe rellenarse</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group" ng-show="ctrl.dep.isdep">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-11">
-                                            <label for="vpos">Posiciones</label>
-                                            <input id="vpos" name="vpos" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Positions" required />
-                                            <span style="color:red" ng-show="cfgform.vpos.$dirty && cfgform.vpos.$invalid">
-                                                <span ng-show="cfgform.vpos.$error.required">Este campo debe rellenarse</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row form-group" ng-show="ctrl.dep.isdep">
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-11">
-                                            <label for="vvir">Sectores Virtuales</label>
-                                            <input id="vvir" name="vpos" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Virtuals" sector-position />
-                                            <span style="color:red" ng-show="cfgform.vvir.$dirty && cfgform.vvir.$invalid">
-                                                <span ng-show="{{cfgform.vvir.$valid==false}}">Error de formato</span>
-                                            </span>
-                                            <p>{{cfgform.vvir.$valid}}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><label>LAN</label></td>
-                                <td><label>LAN</label></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </div>
+                                <table id="sactaprotocol" class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ctrl.dep.isdep ? "Dependencia" : "Proxy"}}</th>
+                                            <th>{{ctrl.dep.isdep ? "Proxy" : "Scv"}}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="row form-group">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-3">
+                                                        <label for="sdom">Dominio</label>
+                                                        <input id="sdom" name="sdom" type="number" min="1" max="1" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Domain" required />
+                                                        <span style="color:red" ng-show="cfgform.sdom.$dirty && cfgform.sdom.$invalid">
+                                                            <span ng-show="cfgform.sdom.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.sdom.$error.min || cfgform.sdom.$error.max">Este campo debe estar en rango 1, 1</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="scen">Centro</label>
+                                                        <input id="scen" name="scen" type="number" min="100" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Center" required />
+                                                        <span style="color:red" ng-show="cfgform.scen.$dirty && cfgform.scen.$invalid">
+                                                            <span ng-show="cfgform.scen.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.scen.$error.min || cfgform.scen.$error.max">Este campo debe estar en rango 100, 120</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="sgrp">Grupo</label>
+                                                        <input id="sgrp" name="sgrp" type="number" min="1" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.PsiGroup" required />
+                                                        <span style="color:red" ng-show="cfgform.sgrp.$dirty && cfgform.sgrp.$invalid">
+                                                            <span ng-show="cfgform.sgrp.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.sgrp.$error.min || cfgform.sgrp.$error.max">Este campo debe estar en rango 1, 120</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-11">
+                                                        <label for="spsi">SPSI</label>
+                                                        <input id="spsi" name="spsi" type="text" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Psis" ng-disabled="true" required />
+                                                        <span style="color:red" ng-show="cfgform.spsi.$dirty && cfgform.spsi.$invalid">
+                                                            <span ng-show="cfgform.spsi.$error.required">Este campo debe rellenarse</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-11">
+                                                        <label for="sspv">SSPV</label>
+                                                        <input id="sspv" name="sspv" type="text" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Spvs" ng-disabled="true" required />
+                                                        <span style="color:red" ng-show="cfgform.sspv.$dirty && cfgform.sspv.$invalid">
+                                                            <span ng-show="cfgform.sspv.$error.required">Este campo debe rellenarse</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="width:50%;">
+                                                <div class="row form-group">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-3">
+                                                        <label for="vdom">Dominio</label>
+                                                        <input id="vdom" name="vdom" type="number" min="1" max="1" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Domain" required />
+                                                        <span style="color:red" ng-show="cfgform.vdom.$dirty && cfgform.vdom.$invalid">
+                                                            <span ng-show="cfgform.vdom.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.vdom.$error.min || cfgform.vdom.$error.max">Este campo debe estar en rango 1, 1</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="vcen">Centro</label>
+                                                        <input id="vcen" name="vcen" type="number" min="100" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Center" required />
+                                                        <span style="color:red" ng-show="cfgform.vcen.$dirty && cfgform.vcen.$invalid">
+                                                            <span ng-show="cfgform.vcen.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.vcen.$error.min || cfgform.vcen.$error.max">Este campo debe estar en rango 100, 120</span>
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label for="vusu">Usuario</label>
+                                                        <input id="vusu" name="vusu" type="number" min="1" max="120" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Scv" required />
+                                                        <span style="color:red" ng-show="cfgform.vusu.$dirty && cfgform.vusu.$invalid">
+                                                            <span ng-show="cfgform.vusu.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.vusu.$error.min || cfgform.vusu.$error.max">Este campo debe estar en rango 1, 120</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group" ng-show="ctrl.dep.isdep">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-11">
+                                                        <label for="vsec">Sectores</label>
+                                                        <input id="vsec" name="vsec" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Sectors" required nu-validate="lnum" />
+                                                        <span style="color:red" ng-show="cfgform.vsec.$dirty && cfgform.vsec.$invalid">
+                                                            <span ng-show="cfgform.vsec.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.vsec.$error.nuValidate">Error de formato (pos1, pos2, ... posn)</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group" ng-show="ctrl.dep.isdep">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-11">
+                                                        <label for="vpos">Posiciones</label>
+                                                        <input id="vpos" name="vpos" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Positions" required nu-validate="lnum" />
+                                                        <span style="color:red" ng-show="cfgform.vpos.$dirty && cfgform.vpos.$invalid">
+                                                            <span ng-show="cfgform.vpos.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.vpos.$error.nuValidate">Error de formato (pos1, pos2, ... posn)</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group" ng-show="ctrl.dep.isdep">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-11">
+                                                        <label for="vvir">Sectores Virtuales</label>
+                                                        <input id="vvir" name="vvir" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Virtuals" nu-validate="lnum" />
+                                                        <span style="color:red" ng-show="cfgform.vvir.$dirty && cfgform.vvir.$invalid">
+                                                            <span ng-show="cfgform.vvir.$error.nuValidate">Error de formato (pos1, pos2, ... posn)</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <div id="cfgBotones" class="form-group" style="float:right;margin-right:15px;">
                     <input type="submit" class="btn btn-primary" ng-click="ctrl.update()" value="Save" ng-disabled="cfgform.$dirty==false" />
