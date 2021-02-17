@@ -56,5 +56,9 @@ namespace sacta_proxy.model
         }
         //public History History { get; set; }
         public bool IsStarted { get => State != ProcessStates.Stopped; }
+        public void ClearMessages()
+        {
+            LastErrors.Clear();
+        }
     }
 }

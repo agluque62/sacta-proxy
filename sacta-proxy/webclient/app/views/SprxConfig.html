@@ -209,10 +209,10 @@
                                                 <label for="ipt1">Envio a</label>
                                                 <input id="ipt1" name="ipt1" type="text" class="form-control"
                                                        ng-model="ctrl.dep.cfg.Comm.If1.IpTo"
-                                                       required nu-validate="mkip" />
+                                                       required nu-validate="ip" />
                                                 <span style="color:red" ng-show="cfgform.ipt1.$dirty && cfgform.ipt1.$invalid">
                                                     <span ng-show="cfgform.ipt1.$error.required">Este campo debe rellenarse</span>
-                                                    <span ng-show="cfgform.ipt1.$error.nuValidate">Error Formato. Debe ser formato CIDR</span>
+                                                    <span ng-show="cfgform.ipt1.$error.nuValidate">Error Formato. Debe ser formato IP</span>
                                                 </span>
                                             </div>
                                         </td>
@@ -221,10 +221,10 @@
                                             <div class="col-md-10" ng-show="ctrl.elementState('ipt2').show">
                                                 <label for="ipt2">Envio a</label>
                                                 <input id="ipt2" name="ipt2" type="text" class="form-control"
-                                                       ng-model="ctrl.dep.cfg.Comm.If2.IpTo" required nu-validate="mkip" />
+                                                       ng-model="ctrl.dep.cfg.Comm.If2.IpTo" required nu-validate="ip" />
                                                 <span style="color:red" ng-show="cfgform.ipt2.$dirty && cfgform.ipt2.$invalid">
                                                     <span ng-show="cfgform.ipt2.$error.required">Este campo debe rellenarse</span>
-                                                    <span ng-show="cfgform.ipt2.$error.nuValidate">Error Formato. Debe ser formato CIDR</span>
+                                                    <span ng-show="cfgform.ipt2.$error.nuValidate">Error Formato. Debe ser formato IP</span>
                                                 </span>
                                             </div>
                                         </td>
@@ -343,17 +343,41 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div class="row form-group" ng-show="ctrl.dep.isdep">
+                                                <div class="row form-group">
                                                     <div class="col-md-1"></div>
-                                                    <div class="col-md-5">
+                                                    <div class="col-md-10">
                                                         <label for="vpos">Posiciones</label>
-                                                        <input id="vpos" name="vpos" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Positions" required nu-validate="lnum" />
+                                                        <input id="vpos" name="vpos" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Positions" required nu-validate="lnum" ng-disabled="!ctrl.dep.isdep" />
                                                         <span style="color:red" ng-show="cfgform.vpos.$dirty && cfgform.vpos.$invalid">
                                                             <span ng-show="cfgform.vpos.$error.required">Este campo debe rellenarse</span>
                                                             <span ng-show="cfgform.vpos.$error.nuValidate">Error de formato (pos1, pos2, ... posn)</span>
                                                         </span>
                                                     </div>
-                                                    <div class="col-md-5">
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-10">
+                                                        <label for="vsec">Sectores</label>
+                                                        <input id="vsec" name="vsec" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Sectors" required nu-validate="lnum" ng-disabled="!ctrl.dep.isdep" />
+                                                        <span style="color:red" ng-show="cfgform.vsec.$dirty && cfgform.vsec.$invalid">
+                                                            <span ng-show="cfgform.vsec.$error.required">Este campo debe rellenarse</span>
+                                                            <span ng-show="cfgform.vsec.$error.nuValidate">Error de formato (se1, se2, ... sen)</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-10">
+                                                        <label for="vvir">Sectores Virtuales</label>
+                                                        <input id="vvir" name="vvir" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Virtuals" nu-validate="lnum" ng-disabled="!ctrl.dep.isdep" />
+                                                        <span style="color:red" ng-show="cfgform.vvir.$dirty && cfgform.vvir.$invalid">
+                                                            <span ng-show="cfgform.vvir.$error.nuValidate">Error de formato (se1, se2, ... sen)</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-10" ng-show="ctrl.dep.isdep">
                                                         <label for="vmpo">Mapa de Posiciones</label>
                                                         <input id="vmpo" name="vmpo" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.PositionsMap" nu-validate="smap" />
                                                         <span style="color:red" ng-show="cfgform.vmpo.$dirty && cfgform.vmpo.$invalid">
@@ -361,31 +385,13 @@
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div class="row form-group" ng-show="ctrl.dep.isdep">
+                                                <div class="row form-group">
                                                     <div class="col-md-1"></div>
-                                                    <div class="col-md-5">
-                                                        <label for="vsec">Sectores</label>
-                                                        <input id="vsec" name="vsec" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Sectors" required nu-validate="lnum" />
-                                                        <span style="color:red" ng-show="cfgform.vsec.$dirty && cfgform.vsec.$invalid">
-                                                            <span ng-show="cfgform.vsec.$error.required">Este campo debe rellenarse</span>
-                                                            <span ng-show="cfgform.vsec.$error.nuValidate">Error de formato (se1, se2, ... sen)</span>
-                                                        </span>
-                                                    </div>
-                                                    <div class="col-md-5">
+                                                    <div class="col-md-10" ng-show="ctrl.dep.isdep">
                                                         <label for="vmse">Mapa de Sectores</label>
                                                         <input id="vmse" name="vmse" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.SectorsMap" nu-validate="smap" />
                                                         <span style="color:red" ng-show="cfgform.vmse.$dirty && cfgform.vmse.$invalid">
                                                             <span ng-show="cfgform.vmse.$error.nuValidate">Error de formato (sd1:ss1, ... sdn:ssn)</span>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <div class="row form-group" ng-show="ctrl.dep.isdep">
-                                                    <div class="col-md-1"></div>
-                                                    <div class="col-md-5">
-                                                        <label for="vvir">Sectores Virtuales</label>
-                                                        <input id="vvir" name="vvir" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.Virtuals" nu-validate="lnum" />
-                                                        <span style="color:red" ng-show="cfgform.vvir.$dirty && cfgform.vvir.$invalid">
-                                                            <span ng-show="cfgform.vvir.$error.nuValidate">Error de formato (se1, se2, ... sen)</span>
                                                         </span>
                                                     </div>
                                                 </div>
