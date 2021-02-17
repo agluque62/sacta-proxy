@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace sacta_proxy.Helpers
+namespace sacta_proxy.helpers
 {
     public delegate void QEventHandler();
 	public class EventQueue

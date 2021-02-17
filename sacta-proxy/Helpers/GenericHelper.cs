@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Diagnostics;
 
 
-namespace sacta_proxy.Helpers
+namespace sacta_proxy.helpers
 {
     public class GenericHelper
     {

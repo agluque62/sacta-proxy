@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 
 
-namespace sacta_proxy.Helpers
+namespace sacta_proxy.helpers
 {
 
 	[AttributeUsage(AttributeTargets.Field, Inherited = false)]
