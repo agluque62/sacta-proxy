@@ -251,5 +251,14 @@ namespace SimulSACTA.Properties {
                 return ((string)(this["SactaMcastB"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("TWR")]
+        public string Title {
+            get {
+                return ((string)(this["Title"]));
+            }
+        }
     }
 }
