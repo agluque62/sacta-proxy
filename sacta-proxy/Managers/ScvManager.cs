@@ -183,7 +183,7 @@ namespace sacta_proxy.Managers
             {
                 SactaMsg.Deserialize(dg.Data, (msg) =>
                 {
-                    ManageOnLan(dg.Client.Address, (lan) => 
+                    ManageOnLan(sender as UdpSocket, dg.Client.Address, (lan) => 
                     {
                         try
                         {
@@ -505,23 +505,35 @@ namespace sacta_proxy.Managers
                 }); 
             }
         }
-        protected void ManageOnLan(IPAddress from, Action<int> deliver)
+        protected void ManageOnLan(UdpSocket Listener, IPAddress from, Action<int> deliver)
         {
             try
             {
-                if (IpHelper.IsInSubnet(Cfg.Comm.If1.FromMask, from))
+                if (Version == 0)
                 {
-                    deliver(0);
-                    LastActivityOnLan1 = DateTime.Now;
-                }
-                else if (IpHelper.IsInSubnet(Cfg.Comm.If2.FromMask, from))
-                {
-                    deliver(1);
-                    LastActivityOnLan2 = DateTime.Now;
+                    var Lan = Listener == Listener1 ? 0 : 1;
+                    deliver(Lan);
+                    if (Lan==0)
+                        LastActivityOnLan1 = DateTime.Now;                
+                    else
+                        LastActivityOnLan2 = DateTime.Now;
                 }
                 else
                 {
-                    Logger.Error<ScvManager>($"On {Cfg.Id} Recibida Trama no identificada de {from}");
+                    if (IpHelper.IsInSubnet(Cfg.Comm.If1.FromMask, from))
+                    {
+                        deliver(0);
+                        LastActivityOnLan1 = DateTime.Now;
+                    }
+                    else if (IpHelper.IsInSubnet(Cfg.Comm.If2.FromMask, from))
+                    {
+                        deliver(1);
+                        LastActivityOnLan2 = DateTime.Now;
+                    }
+                    else
+                    {
+                        Logger.Error<ScvManager>($"On {Cfg.Id} Recibida Trama no identificada de {from}");
+                    }
                 }
             }
             catch (Exception x)
