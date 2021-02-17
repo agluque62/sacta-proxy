@@ -106,7 +106,7 @@ namespace sacta_proxy.Managers
             {
                 Logger.Exception<ScvManager>(x, $"On {Cfg.Id}");
                 Dispose();
-                PS.SignalFatal<ScvManager>($"Exception on Starting {x}", History());
+                PS.SignalFatal<ScvManager>($"Excepcion en el Arranque {x}", History());
             }
         }
         public override void Stop()
@@ -481,10 +481,10 @@ namespace sacta_proxy.Managers
             {
                 var message = "";
                 
-                message += SectorsNotFound.Count() > 0 ? $"Sectors not Found: {String.Join(", ",SectorsNotFound)}. " : "";
-                message += UnknowUcs.Count() > 0 ? $"Unknow Ucs: {String.Join(", ", UnknowUcs)}. " : "";
-                message += UnknowSectors.Count() > 0 ? $"Unknow Sectors: {String.Join(", ", UnknowSectors)}. " : "";
-                message += duplicatedSect.Count() > 0 ? $"Duplicated Sectors: {String.Join(", ", duplicatedSect)}. " : "";
+                message += SectorsNotFound.Count() > 0 ? $"Sectores no Encontrados: {String.Join(", ",SectorsNotFound)}. " : "";
+                message += UnknowUcs.Count() > 0 ? $"Posiciones Desconocidas: {String.Join(", ", UnknowUcs)}. " : "";
+                message += UnknowSectors.Count() > 0 ? $"Sectores Desconocidos: {String.Join(", ", UnknowSectors)}. " : "";
+                message += duplicatedSect.Count() > 0 ? $"Sectores Duplicados: {String.Join(", ", duplicatedSect)}. " : "";
 
                 // deliver(false, message);
                 // Evento para el Historico.

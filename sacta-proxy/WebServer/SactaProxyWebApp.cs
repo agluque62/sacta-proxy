@@ -93,7 +93,7 @@ namespace sacta_proxy.WebServer
             catch (Exception x)
             {
                 Logger.Exception<SactaProxyWebApp>(x);
-                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on starting => {x.Message}", History());
+                stdcontrol.SignalFatal<SactaProxyWebApp>($"Excepcion en el arranque => {x.Message}", History());
             }
         }
         public new void Stop()
@@ -106,7 +106,7 @@ namespace sacta_proxy.WebServer
             catch (Exception x)
             {
                 Logger.Exception<SactaProxyWebApp>(x);
-                stdcontrol.SignalFatal<SactaProxyWebApp>($"Exception on ending => {x.Message}", History());
+                stdcontrol.SignalFatal<SactaProxyWebApp>($"Excepcion al finalizar => {x.Message}", History());
             }
         }
 

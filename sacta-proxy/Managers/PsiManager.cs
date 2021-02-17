@@ -79,7 +79,7 @@ namespace sacta_proxy.Managers
             {
                 Logger.Exception<PsiManager>(x, $"On PSI");
                 Dispose();
-                PS.SignalFatal<PsiManager>($"Exception on Starting => {x}", History());
+                PS.SignalFatal<PsiManager>($"Excepcion en el Arranque => {x}", History());
             }
         }
         public override void Stop()
