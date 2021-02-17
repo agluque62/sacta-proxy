@@ -7,10 +7,6 @@ html, body {
     color: #4A7729;
 }
 
-html
-{
-}
-
 body
 {
     text-align: left;
@@ -21,7 +17,7 @@ body
 
 .cabecera {
     /*    border: 1px solid #4A7729;*/
-    background-color: #C1E1A2;
+    background-color: #B1DCB4;
     color: #4A7729;
 }
 .logo {
@@ -56,8 +52,10 @@ body
 .pie {
     height: 30px;
     padding-top: 5px;
+    text-align: center;
 }
 
+/* Estilos antiguos. Para borrar */
 div#agrupar {
     margin-left: 2%;
     width: 96%;
