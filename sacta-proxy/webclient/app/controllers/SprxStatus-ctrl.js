@@ -79,7 +79,18 @@ angular.module("sacta_proxy")
                                 _: 'Filtro (%d)'
                             },
                             value: 'Opcion',
-                            valueJoiner: 'y'
+                            valueJoiner: 'y',
+                            conditions: {
+                                string: {
+                                    contains: 'Contiene',
+                                    empty: 'Vacio',
+                                    endsWith: 'Acaba en ',
+                                    equals: 'Igual a',
+                                    not: 'Distinto de ',
+                                    notEmpty: 'No Vacio',
+                                    startsWith: 'Comienza con'
+                                }
+                            }
                         }
                     }
                 });
