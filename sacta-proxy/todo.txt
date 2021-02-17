@@ -1,0 +1,23 @@
+﻿/** */
+Configuracion actual de SACTA
+
+  <SactaUsuarioSection>
+    <settings Origen="10" Grupo="110" />
+    <listaPSI idSpsi="111,112,113,114,7286,7287,7288,7289,15000" idSpv="86,87,88,89,7266,7267,7268,7269,34000" />
+    <sectores idSectores="" />
+  </SactaUsuarioSection>
+
+  <SactaCentroSection>
+    <settings Origen="107" Destino="107" />
+  </SactaCentroSection>
+
+  <SactaDominioSection>
+    <settings Origen="1" Destino="1" />
+  </SactaDominioSection>
+
+  <SactaUdpSection>
+    <PuertosMulticast PuertoOrigen="15100" PuertoDestino="19204" />
+    <IpMulticast RedA="225.12.101.1" RedB="225.212.101.1" Interfaz="192.168.0.212" />
+    <IpAddress IpRedA="192.168.0.211" IpRedB="10.35.70.1" />
+  </SactaUdpSection>
+  <SactaTimeOuts>

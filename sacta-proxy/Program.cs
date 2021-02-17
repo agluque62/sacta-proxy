@@ -51,6 +51,9 @@ namespace sacta_proxy
                 {
                     // Por si se quieren simular acciones mediante el teclado...
 #if DEBUG
+                    switch (key)
+                    {
+                    }
 #endif
                 }
 
