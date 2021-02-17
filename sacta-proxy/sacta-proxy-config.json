@@ -4,7 +4,7 @@
   "General": {
     "WebPort": 8091,
     "WebActivityMinTimeout": 30,
-    "ActivateSactaLogic": "AND",
+    "ActivateSactaLogic": "OR",
     "HistoryMaxDays": 7,
     "HistoryMaxItems": 1000
   },
@@ -14,14 +14,14 @@
       "ListenPort": 19205,
       "SendingPort": 15101,
       "If1": {
-        "Ip": "10.12.60.35",
-        "IpTo": "127.0.0.1",
+        "Ip": "10.12.90.1",
+        "IpTo": "10.12.60.35",
         "FromMask": "127.0.0.1/24",
         "McastGroup": "225.12.101.1"
       },
       "If2": {
-        "Ip": "127.0.0.1",
-        "IpTo": "127.0.0.1",
+        "Ip": "10.12.91.1",
+        "IpTo": "10.12.61.35",
         "FromMask": "127.0.0.1/24",
         "McastGroup": "225.212.101.1"
       }
@@ -78,13 +78,13 @@
         "SendingPort": 19204,
         "If1": {
           "Ip": "10.20.94.1",
-          "IpTo": "10.90.70.1",
+          "IpTo": "10.20.90.1",
           "FromMask": "10.20.90.0/25",
           "McastGroup": "225.12.101.1"
         },
         "If2": {
           "Ip": "10.20.94.2",
-          "IpTo": "10.91.70.1",
+          "IpTo": "10.20.91.1",
           "FromMask": "10.20.91.0/25",
           "McastGroup": "225.212.101.1"
         }
@@ -126,8 +126,8 @@
         }
       },
       "Sectorization": {
-        "Sectors": [1],
-        "Positions": [1],
+        "Sectors": [1,2,3,4],
+        "Positions": [1,2,3,4],
         "Virtuals": [],
         "SectorsMap": "",
         "PositionsMap": ""
@@ -188,8 +188,8 @@
         }
       },
       "Sectorization": {
-        "Sectors": [10],
-        "Positions": [10],
+        "Sectors": [10,11,12],
+        "Positions": [10,11],
         "Virtuals": [],
         "SectorsMap": "",
         "PositionsMap": ""

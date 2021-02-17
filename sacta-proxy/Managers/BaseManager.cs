@@ -16,13 +16,12 @@ namespace sacta_proxy.Managers
 
         public abstract void Start(int ProtocolVersion, Configuration.DependecyConfig cfg);
         public abstract void Stop();
-        public abstract bool EnableTx { get; set; }
+        public virtual bool TxEnabled { get; set; }
         public abstract object Status { get; }
         public virtual void SafeLaunchEvent<T>(EventHandler<T> handler, T args)
         {
             handler?.Invoke(this, args);
         }
-
         #region Rutinas comunes
         protected bool ActivityOnLan1
         {
@@ -65,9 +64,12 @@ namespace sacta_proxy.Managers
     public class SectorizationReceivedArgs : ManagerEventArgs
     {
         public bool Accepted { get; set; }
+        public string ReceivedMap { get; set; }
         public Dictionary<string, int> SectorMap { get; set; }
         public string RejectCause { get; set; }
     }
-    public class SectorizationRequestArgs : ManagerEventArgs { }
+    public class SectorizationRequestArgs : ManagerEventArgs 
+    { 
+    }
     
 }

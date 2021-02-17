@@ -69,21 +69,8 @@ namespace sacta_proxy.model
                     Map = map,
                     Cause = cause
                 });
+                Logger.Info<History>($"HIST {item}, user: {user}, dep: {dep}, state:{state}, map: {map}, cause: {cause}");
             });
-            //lock (Locker)
-            //{
-            //    AddItem(new HistoryItem()
-            //    {
-            //        Date = DateTime.Now,
-            //        Code = item,
-            //        User = user,
-            //        Dep = dep,
-            //        State = state,
-            //        Map = map,
-            //        Cause = cause
-            //    });
-            //}
-            //Logger.Info<History>($"CODE::{item}##USER::{user}##DEP::{dep}##STATE::{state}##MAP::{map}##CAUSE::{cause}");
         }
         public Object Get { get => history; }
 

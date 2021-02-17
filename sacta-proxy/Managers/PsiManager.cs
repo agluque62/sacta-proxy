@@ -29,7 +29,7 @@ namespace sacta_proxy.Managers
                 Locker = new object();
                 Cfg = cfg;
                 Version = ProtocolVersion;
-                EnableTx = false;
+                TxEnabled = false;
                 ScvActivity = false;
                 Sequence = 0;
                 SectorizationVersion = 0;
@@ -39,7 +39,7 @@ namespace sacta_proxy.Managers
 
                 Listener1 = new UdpSocket(Cfg.Comm.If1.Ip, Cfg.Comm.ListenPort);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
-                Listener1.Base.MulticastLoopback = false;
+                //Listener1.Base.MulticastLoopback = false;
                 Listener1.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If1.McastGroup),
                     IPAddress.Parse(Cfg.Comm.If1.Ip));
                 Listener1.Base.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 16);
@@ -48,7 +48,7 @@ namespace sacta_proxy.Managers
 
                 Listener2 = new UdpSocket(Cfg.Comm.If2.Ip, Cfg.Comm.ListenPort);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
-                Listener2.Base.MulticastLoopback = false;
+                //Listener2.Base.MulticastLoopback = false;
                 Listener2.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.If2.McastGroup),
                     IPAddress.Parse(Cfg.Comm.If2.Ip));
                 Listener2.Base.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 16);
@@ -120,7 +120,7 @@ namespace sacta_proxy.Managers
                             LastActivityOnLan2,
                         },
                     },
-                    tx = EnableTx,
+                    tx = TxEnabled,
                     sacta_protocol = new 
                     { 
                         seq = Sequence, 
@@ -130,7 +130,6 @@ namespace sacta_proxy.Managers
                 };
             }
         }
-        public override bool EnableTx { get; set; }
         public void SendSectorization(Dictionary<string, int> sectorMap)
         {
             lock (Locker)
@@ -147,7 +146,7 @@ namespace sacta_proxy.Managers
             {
                 SactaMsg.Deserialize(dg.Data, (msg) =>
                 {
-                    ManageOnLan(sender as UdpSocket, (lan, LastActivityFlag) =>
+                    ManageOnLan(sender as UdpSocket, (lan) =>
                     {
                         try
                         {
@@ -159,9 +158,10 @@ namespace sacta_proxy.Managers
                                     case SactaMsg.MsgType.Presence:
                                     case SactaMsg.MsgType.SectAsk:
                                     case SactaMsg.MsgType.SectAnswer:
-                                        Logger.Debug<PsiManager>($"On PSI from Scv Lan {lan} Valid message {msg.Type} received");
+                                        Logger.Debug<PsiManager>($"On PSI from Scv Lan {lan} Valid message {msg.Type} received.  Id = {msg.Id}");
                                         if (msg.Type == SactaMsg.MsgType.Init)
                                         {
+                                                ScvInfo.LastSectMsgId = -1;
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.Presence)
                                         { 
@@ -169,14 +169,18 @@ namespace sacta_proxy.Managers
                                         else if (msg.Type == SactaMsg.MsgType.SectAsk)
                                         {
                                             Logger.Info<PsiManager>($"On PSI from Scv Lan {lan} Sectorization Sectoriztion Request Received");
-                                            SafeLaunchEvent<SectorizationRequestArgs>(EventSectRequest, new SectorizationRequestArgs());
+                                            if (ScvInfo.LastSectMsgId != msg.Id)
+                                            {
+                                                // Si el mensaje llega por las dos redes solo respondo una vez...
+                                                SafeLaunchEvent<SectorizationRequestArgs>(EventSectRequest, new SectorizationRequestArgs());
+                                                ScvInfo.LastSectMsgId = msg.Id;
+                                            }
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.SectAnswer)
                                         {
                                             SactaMsg.SectAnswerInfo info = (SactaMsg.SectAnswerInfo)(msg.Info);
                                             Logger.Info<PsiManager>($"On PSI from Scv Lan {lan} Sectorization {info.Version} {(info.Result == 1 ? "Accepted" : "Rejected")}.");
                                         }
-                                        LastActivityFlag = DateTime.Now;
                                         break;
                                     default:
                                         Logger.Warn<PsiManager>($"On PSI from SCV Lan {lan} Invalid message {msg.Type} received");
@@ -244,12 +248,18 @@ namespace sacta_proxy.Managers
                 }
             }
         }
-        protected void ManageOnLan(UdpSocket ListenerFrom, Action<int, DateTime> deliver)
+        protected void ManageOnLan(UdpSocket ListenerFrom, Action<int> deliver)
         {
             if (ListenerFrom == Listener1)
-                deliver(0, LastActivityOnLan1);
+            {
+                deliver(0);
+                LastActivityOnLan1 = DateTime.Now;
+            }
             else if (ListenerFrom == Listener2)
-                deliver(1, LastActivityOnLan2);
+            {
+                deliver(1);
+                LastActivityOnLan2 = DateTime.Now;
+            }
             else
             {
                 Logger.Warn<PsiManager>($"On PSI Recibida Trama no identificada...");
@@ -266,9 +276,9 @@ namespace sacta_proxy.Managers
         }
         protected bool BroadMessage(byte[] message)
         {
-            if (EnableTx)
+            if (TxEnabled)
             {
-                Logger.Trace<PsiManager>($"On PSI Sending Data on LAN1 ...");
+                Logger.Trace<PsiManager>("On PSI Sending Data on LAN1 ...");
                 Listener1.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort), message);
                 Logger.Trace<PsiManager>($"On PSI Sending Data on LAN2 ...");
                 Listener2.Send(new IPEndPoint(IPAddress.Parse(Version == 0 ? Cfg.Comm.If2.IpTo : Cfg.Comm.If1.IpTo), Cfg.Comm.SendingPort), message);
@@ -279,7 +289,7 @@ namespace sacta_proxy.Managers
         }
         protected void SendInitMsg()
         {
-            Logger.Trace<PsiManager>($"On PSI Sending Init Msg ...");
+            Logger.Info<PsiManager>($"On PSI (TXE {TxEnabled}) Sending Init Msg ...");
             var msg = SactaMsg.MsgToScv(Cfg, SactaMsg.MsgType.Init, SactaMsg.InitId, 0).Serialize();
             if (BroadMessage(msg))
             {
@@ -289,7 +299,7 @@ namespace sacta_proxy.Managers
         }
         protected void SendPresenceMsg()
         {
-            Logger.Trace<PsiManager>($"On PSI Sending Presence Msg (Sequence {Sequence}...");
+            Logger.Info<PsiManager>($"On PSI (TXE {TxEnabled}) Sending Presence Msg (Sequence {Sequence}...");
             var msg = SactaMsg.MsgToScv(Cfg, SactaMsg.MsgType.Presence, 0, Sequence).Serialize();
             if (BroadMessage(msg))
             {
@@ -300,7 +310,7 @@ namespace sacta_proxy.Managers
         }
         protected void SendSectorizationMsg(Dictionary<string,int> sectorUcs)
         {
-            Logger.Trace<PsiManager>($"On PSI Sending Sectorization Msg (Sequence {Sequence}...");
+            Logger.Info<PsiManager>($"On PSI (TXE {TxEnabled}) Sending Sectorization Msg (Sequence {Sequence}...");
             var msg = SactaMsg.MsgToScv(Cfg, SactaMsg.MsgType.Sectorization, 0, Sequence, SectorizationVersion, sectorUcs).Serialize();
             if (BroadMessage(msg))
             {
@@ -316,6 +326,8 @@ namespace sacta_proxy.Managers
         bool ScvActivity { get; set; }
         int SectorizationVersion { get; set; }
         UdpSocket Listener1, Listener2;
+
+        PsiOrScvInfo ScvInfo = new PsiOrScvInfo();
         #endregion
     }
 }

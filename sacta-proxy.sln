@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sacta-proxy-tests", "sacta-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulSACTA", "SimulSacta\SimulSACTA.csproj", "{66E1165B-77A6-4A49-8270-EA43C816D1C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulScv", "SimulScv\SimulScv.csproj", "{7E85644B-00D5-41D7-A23A-836CC8BBB00A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{66E1165B-77A6-4A49-8270-EA43C816D1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66E1165B-77A6-4A49-8270-EA43C816D1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66E1165B-77A6-4A49-8270-EA43C816D1C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E85644B-00D5-41D7-A23A-836CC8BBB00A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E85644B-00D5-41D7-A23A-836CC8BBB00A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E85644B-00D5-41D7-A23A-836CC8BBB00A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E85644B-00D5-41D7-A23A-836CC8BBB00A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
