@@ -55,7 +55,7 @@ body
     margin-top: 10px;
     margin-bottom: 10px;
     border: 1px solid #4A7729 /*#C1022C*/;
-    padding: 20px 0 0 0;
+    padding: 10px 0 0 0;
 }
 .linea{
     margin: 2px 4px 2px 4px;
@@ -83,7 +83,15 @@ input.ng-valid.ng-dirty {
 }
 
 .historic {
-    padding: 25px;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.historic-info{
+    margin-bottom: 10px;
+}
+
+.historic-ctrl {
 }
 
 /* Estilos antiguos. Para borrar */
