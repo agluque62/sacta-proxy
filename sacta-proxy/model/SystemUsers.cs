@@ -53,30 +53,33 @@ namespace sacta_proxy.model
         static void UsersInDb(Action<List<SystemUserInfo>> delivery)
         {
             var settings = Properties.Settings.Default;
-            if (settings.ScvType==0)
+            if (settings.DbConn == 1)
             {
-                // TODO. Acceso a los usuarios CD30
-            }
-            else
-            {
-                using (var connection = new MySqlConnection($"Server={settings.ScvServerIp};User ID=root;Password=cd40;Database=new_cd40;;Connect Timeout={settings.DbConnTimeout}"))
+                if (settings.ScvType == 0)
                 {
-                    connection.Open();
-
-                    using (var command = new MySqlCommand("SELECT IdOperador,Clave,NivelAcceso FROM operadores WHERE IdSistema='departamento';", connection))
-                    using (var reader = command.ExecuteReader())
+                    // TODO. Acceso a los usuarios CD30
+                }
+                else
+                {
+                    using (var connection = new MySqlConnection($"Server={settings.ScvServerIp};User ID=root;Password=cd40;Database=new_cd40;;Connect Timeout={settings.DbConnTimeout}"))
                     {
-                        var users = new List<SystemUserInfo>();
-                        while (reader.Read())
+                        connection.Open();
+
+                        using (var command = new MySqlCommand("SELECT IdOperador,Clave,NivelAcceso FROM operadores WHERE IdSistema='departamento';", connection))
+                        using (var reader = command.ExecuteReader())
                         {
-                            users.Add(new SystemUserInfo()
+                            var users = new List<SystemUserInfo>();
+                            while (reader.Read())
                             {
-                                Id = reader[0] as string,
-                                Clave = reader[1] as string,
-                                Perfil = (uint)reader[2]
-                            });
+                                users.Add(new SystemUserInfo()
+                                {
+                                    Id = reader[0] as string,
+                                    Clave = reader[1] as string,
+                                    Perfil = (uint)reader[2]
+                                });
+                            }
+                            delivery(users);
                         }
-                        delivery(users);
                     }
                 }
             }
