@@ -53,7 +53,9 @@ namespace sacta_proxy_tests
                 his.Add(HistoryItems.UserConfigChange, "root");
                 his.Add(HistoryItems.UserLogout);
                 his.Add(HistoryItems.DepActivityEvent, "", "TWR", "ON");
+                his.Add(HistoryItems.DepActivityEvent, "", "APP", "ON");
             }
+            his.Dispose();
         }
     }
 }
