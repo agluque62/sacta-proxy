@@ -1,0 +1,16 @@
+Tareas en CLUSTER
+------------------
+[x] Gestionar 3 IP's virtuales.
+   [x] Cambios en el Servicio
+   [x] Cambios en la Coonfgiruacion.
+
+[] Simulador del Colateral para Pruebas.
+	[] Funciones de COLATERAL
+		[] Pasivo o Activo
+			[] Gestion de número de Adapters disponibles.
+			[] Envio Pollings
+	[] Funciones de Página WEB.
+		[] Activa / Desactiva.
+			[] Peticion de Estado
+		[] Conmutacion manual.
+

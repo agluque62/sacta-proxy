@@ -525,7 +525,6 @@ namespace Sacta
         CfgBaseDatos cfgBasedatos = new CfgBaseDatos();
 #endif
         /**************************************************/
-
         public event GenericEventHandler<Dictionary<string, object>> SactaActivityChanged;
 
         #region Declaración de atributos

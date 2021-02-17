@@ -66,7 +66,7 @@ namespace SimulScv
             Console.WriteLine("SimulSactaOnScv. Nucleo 2020...2021.");
             Console.WriteLine();
             Console.WriteLine("\t A => Arrancar, P => Parar.");
-            Console.WriteLine("\t 1 => LAN1 on/off. 2 => LAN2 on/off.");
+            //Console.WriteLine("\t 1 => LAN1 on/off. 2 => LAN2 on/off.");
             Console.WriteLine();
             Console.WriteLine("\tESC. Exit");
         }
