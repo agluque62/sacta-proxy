@@ -341,3 +341,6 @@ healthchecksdb
 /Setup/NuSactaProxySetup/wixedit-0.7.5-bin
 /SoftCluster/SoftCluster.sln
 /SoftCluster/Instalar
+/Entorno de Pruebas/APP/logs
+/Entorno de Pruebas/SCV/logs
+/Entorno de Pruebas/TWR/logs
