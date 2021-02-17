@@ -5,42 +5,19 @@ using System.Timers;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 
-using NLog;
-
 using ClusterLib.Properties;
 using Utilities;
+using helpers;
 
 namespace ClusterLib
 {
     public class Cluster : IDisposable
     {
-        /** 20171019. Para complementar el LOG... */
-        public static class LogHelper
-        {
-            static Logger nlog = LogManager.GetLogger("ClusterLib");
-            public static string Log(LogLevel level, string message,
-                [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0, [System.Runtime.CompilerServices.CallerMemberName] string caller = null)
-            {
-                String msg = String.Format("[{0},{1}]: {2}", caller, lineNumber, message);
-                nlog.Log(level, msg);
-                return msg;
-            }
-            public static void Trace([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0, [System.Runtime.CompilerServices.CallerMemberName] string caller = null)
-            {
-                String msg = String.Format("LogHelper TRACE: {0} line {1}", caller, lineNumber);
-                nlog.Trace(msg);
-            }
-            public static void LogTick(ClusterState cluster, [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0,
-                [System.Runtime.CompilerServices.CallerMemberName] string caller = null)
-            {
-                String msg = String.Format("ClusterInfo: [ L: {0,-12} R: {1,-12} ]", cluster.LocalNode.State, cluster.RemoteNode.State);
-                Log(LogLevel.Debug, msg, lineNumber, caller);
-            }
-        }
 
         /// <summary>
         /// 
@@ -66,7 +43,7 @@ namespace ClusterLib
 
             _EndPoint = new IPEndPoint(IPAddress.Parse(_Settings.EpIp), _Settings.EpPort);
 
-            _PeriodicTasks = new Timer(_PeriodicTasksInterval);
+            _PeriodicTasks = new Timer(_Settings.Tick);
             _PeriodicTasks.AutoReset = false;
             _PeriodicTasks.Elapsed += PeriodicTasks;
 
@@ -74,13 +51,12 @@ namespace ClusterLib
             _ToStart.AutoReset = false;
             _ToStart.Elapsed += ToStart;
 
-            _Ping1 = new Ping();
-            _Ping1.PingCompleted += OnPingCompleted;
-            _Ping2 = new Ping();
-            _Ping2.PingCompleted += OnPingCompleted;
+            //_Ping1 = new Ping();
+            //_Ping1.PingCompleted += OnPingCompleted;
+            //_Ping2 = new Ping();
+            //_Ping2.PingCompleted += OnPingCompleted;
 
-            // 20171020. Para intentar sincronizar las recuperaciones de red....
-            _FromInvalidInterval = _Settings.TimeToStart;
+            //_FromInvalidInterval = _Settings.TimeToStart;
         }
 
         /// <summary>
@@ -107,54 +83,21 @@ namespace ClusterLib
         /// <param name="e"></param>
         private void ToStart(object sender, ElapsedEventArgs e)
         {
-#if _VERSION_00_
-            try
-            {
-                _Comm = new UdpSocket(_Settings.Ip, _Settings.Port);
-                _Comm.NewDataEvent += OnNewData;
-            }
-            catch (System.Net.Sockets.SocketException ex)
-            {
-                _Logger.DebugException(ex.Message, ex);
-            }
-
-            _State.LocalNode.ValidAdapters = GetAdaptersState();
-            if (_State.LocalNode.ValidAdapters > 0)
-            {
-                if (!ExistClusterAddresses(false))
-                {
-                    _State.LocalNode.SetState(NodeState.Activating, Resources.LocalActivateAsk);
-                }
-                else
-                {
-                    _State.LocalNode.SetState(NodeState.NoActive, Resources.FoundClusterIps);
-                }
-            }
-            else
-            {
-                _State.LocalNode.SetState(NodeState.NoActive, Resources.DeactivateByNotAdapters);
-            }
-
-            if (_Comm != null)
-                _Comm.BeginReceive();
-
-            _PeriodicTasks.Enabled = true;
-#else
             // 20170925. No arranca hasta que no consigue que se active la LAN Interna.
             // Se considera que hay red si se completa favorablemente toda la inicializacion ...
 
             // 20171019. Este parte del timer se ejecutará periodicamente hasta que se inicie la red interna...
-            LogHelper.Log(LogLevel.Info, "ToStart TICK");
+            Logger.Info<Cluster>("Starting... (ToStart TICK)");
             try
             {
                 _Comm = new UdpSocket(_Settings.Ip, _Settings.Port);
                 _Comm.NewDataEvent += OnNewData;
                 _Comm.BeginReceive();
-                LogHelper.Log(LogLevel.Info, "Red Interna Disponible...");
+                Logger.Info<Cluster>("Red Interna Disponible...");
             }
             catch (Exception x)
             {
-                LogHelper.Log(LogLevel.Error, x.Message);
+                Logger.Exception<Cluster>(x);
                 // Rearranco este timer...
                 _ToStart.Enabled = true;
             }
@@ -167,10 +110,10 @@ namespace ClusterLib
                     // 20171019. Fuerzo el borrado de la IP virtual...
                     ForceDeleteVirtualAddress();
                     /////////////////////////////////////////////////
-                    _State.LocalNode.ValidAdapters = GetAdaptersState();
-                    if (_State.LocalNode.ValidAdapters > 0)
+                    _State.LocalNode.ValidAdaptersMask = GetAdaptersState();
+                    if (_State.LocalNode.ValidAdaptersMask > 0)
                     {
-                        if (!ExistClusterAddresses(false))
+                        if (!ExistClusterAddresses())
                         {
                             _State.LocalNode.SetState(NodeState.Activating, Resources.LocalActivateAsk);
                         }
@@ -189,12 +132,10 @@ namespace ClusterLib
             }
             catch (Exception x)
             {
-                LogHelper.Log(LogLevel.Error, x.Message);
-
+                Logger.Exception<Cluster>(x);
                 // Rearranco este timer...
                 _ToStart.Enabled = true;
             }
-#endif
         }
 
         /// <summary>
@@ -202,7 +143,7 @@ namespace ClusterLib
         /// </summary>
         public void Activate()
         {
-            LogHelper.Trace();
+            Logger.Trace<Cluster>("Activate");
             Activate(false);
         }
 
@@ -213,10 +154,10 @@ namespace ClusterLib
         {
             lock (_Sync)
             {
-                LogHelper.Trace();
+                Logger.Trace<Cluster>("Deactivate");
                 if (_State.LocalNode.State == NodeState.NoActive)
                 {
-                    LogHelper.Log(LogLevel.Info, String.Format(Resources.AlreadyDeactivate, _State.LocalNode.StateBegin));
+                    Logger.Info<Cluster>(String.Format(Resources.AlreadyDeactivate, _State.LocalNode.StateBegin));
                     return;
                 }
 
@@ -225,7 +166,7 @@ namespace ClusterLib
                     throw new InvalidOperationException(Resources.DeactivateValidRemoteNodeError);
                 }
 
-                if ((NumValidAdapters(_State.RemoteNode.ValidAdapters) < NumValidAdapters(_State.LocalNode.ValidAdapters)))
+                if ((NumValidAdapters(_State.RemoteNode.ValidAdaptersMask) < NumValidAdapters(_State.LocalNode.ValidAdaptersMask)))
                 {
                     throw new InvalidOperationException(Resources.DeactivateNumAdaptersError);
                 }
@@ -246,7 +187,7 @@ namespace ClusterLib
         /// </summary>
         public void Dispose()
         {
-            LogHelper.Trace();
+            Logger.Trace<Cluster>("Dispose");
             if (_State.LocalNode.State == NodeState.Active)
             {
                 DeleteVirtualAddresses();
@@ -262,17 +203,15 @@ namespace ClusterLib
 
         #region Private Members
 
-        const int _PeriodicTasksInterval = 1000;
-        const int _ActivityTimeOut = 5000;
-        int _FromInvalidInterval = 10000;
-
-        // static Logger _Logger = LogManager.GetCurrentClassLogger();
+        // (en config)
+        //const int _PeriodicTasksInterval = 1000;
+        //const int _ActivityTimeOut = 5000;
+        //int _FromInvalidInterval = 10000;
 
         ClusterSettings _Settings;
         ClusterState _State;
 
         /** */
-        int[] VirtualIpContext = new int[2] { -1, -1 };
 
         object _Sync = new object();
         UdpSocket _Comm = null;
@@ -280,15 +219,17 @@ namespace ClusterLib
         Timer _PeriodicTasks = null;
         Timer _ToStart = null;
         DateTime _RemoteStateTime;
-        DateTime _PingReceivedTime;
-        Ping _Ping1 = null;
-        Ping _Ping2 = null;
-        ClusterIpState _ClusterIp1State;
-        ClusterIpState _ClusterIp2State;
-        int _Adapter1Index = -1;
-        int _Adapter2Index = -1;
         bool _Disposed = false;
-        static bool esperar = true;
+
+        //DateTime _PingReceivedTime;
+        //int[] VirtualIpContext = new int[2] { -1, -1 };
+        //ClusterIpState _ClusterIp1State;
+        //ClusterIpState _ClusterIp2State;
+        //int _Adapter1Index = -1;
+        //int _Adapter2Index = -1;
+        //static bool esperar = true;
+        //Ping _Ping1 = null;
+        //Ping _Ping2 = null;
 
 
         /// <summary>
@@ -301,7 +242,7 @@ namespace ClusterLib
             {
                 try
                 {
-                    LogHelper.Log(LogLevel.Info, "Borrando Tabla ARP");
+                    Logger.Info<Cluster>("Borrando Tabla ARP...");
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
                     startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
@@ -311,11 +252,11 @@ namespace ClusterLib
                     process.Start();
                     process.WaitForExit();
                     System.Threading.Thread.Sleep(1000);
-                    LogHelper.Log(LogLevel.Info, "Tabla ARP Borrada");
+                    Logger.Info<Cluster>("Tabla ARP borrada.");
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Log(LogLevel.Error, String.Format("Excepcion Borrando Tabla ARP: {0}", ex.Message));
+                    Logger.Exception<Cluster>(ex);
                 }
             });
         }
@@ -327,7 +268,7 @@ namespace ClusterLib
         {
             try
             {
-                LogHelper.Trace();
+                Logger.Trace<Cluster>("ResetInternalLan");
                 if (_Comm != null)
                 {
                     _Comm.Dispose();
@@ -337,7 +278,7 @@ namespace ClusterLib
             }
             catch (Exception x)
             {
-                LogHelper.Log(LogLevel.Error, x.Message);
+                Logger.Exception<Cluster>(x);
             }
         }
 
@@ -347,10 +288,10 @@ namespace ClusterLib
         /// <param name="bDispose"></param>
         void Dispose(bool bDispose)
         {
-            LogHelper.Trace();
+            Logger.Trace<Cluster>("Dispose");
             if (!_Disposed)
             {
-                LogHelper.Trace();
+                Logger.Trace<Cluster>("Dispose-1");
                 _Disposed = true;
 
                 if (bDispose)
@@ -368,16 +309,16 @@ namespace ClusterLib
                     lock (_Sync)
                     {
                         //if (_State.LocalNode.State == NodeState.Active)
-                        {
+                        //{
                             /** 20170803. AGL. En este caso hay que forzar el borrado */
                             DeleteVirtualAddresses();
-                        }
+                        //}
                     }
 
-                    _Ping1.Dispose();
-                    _Ping2.Dispose();
-                    _Ping1 = null;
-                    _Ping2 = null;
+                    //_Ping1.Dispose();
+                    //_Ping2.Dispose();
+                    //_Ping1 = null;
+                    //_Ping2 = null;
 
                     _Settings = null;
                     _State = null;
@@ -390,22 +331,31 @@ namespace ClusterLib
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="adapters"></param>
+        /// <param name="globalAdaptersMask"></param>
         /// <returns></returns>
-        int NumValidAdapters(int adapters)
+        int NumValidAdapters(int globalAdaptersMask)
         {
-            switch (adapters)
-            {
-                case 0:
-                    return 0;
-                case 1:
-                case 2:
-                    return 1;
-                case 3:
-                    return 2;
-            }
+            //switch (globalAdaptersMask)
+            //{
+            //    case 0:
+            //        return 0;
+            //    case 1:
+            //    case 2:
+            //        return 1;
+            //    case 3:
+            //        return 2;
+            //}
 
-            return 0;
+            //return 0;
+            int nAdapters = 0;
+            int mask = 0x01;
+            for (int i=0; i<8; i++)
+            {
+                var bit = globalAdaptersMask & mask;
+                nAdapters = bit != 0 ? nAdapters + 1 : nAdapters;
+                mask <<= 1;
+            }
+            return nAdapters;
         }
 
         /// <summary>
@@ -413,9 +363,10 @@ namespace ClusterLib
         /// </summary>
         /// <param name="adapterIndex"></param>
         /// <returns></returns>
-        bool IsValidAdapter(int adapterIndex)
+        bool IsValidAdapter(ClusterIpSetting ips/*int adapterIndex*/)
         {
-            return ((_State.LocalNode.ValidAdapters & adapterIndex) != 0);
+            // Comprobar ValidAdapters,
+            return ((_State.LocalNode.ValidAdaptersMask & ips.AdapterMask/* adapterIndex*/) != 0);
         }
 
         /// <summary>
@@ -426,14 +377,55 @@ namespace ClusterLib
         // Simular la desconexion de las redes principales.
         public bool WorkingNetworkSimulOff { get; set; }
 #endif
+//        int GetAdaptersState_old()
+//        {
+//#if DEBUG
+//            if (WorkingNetworkSimulOff)
+//                return 0;
+//#endif
+//            NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
+//            int adapters = 0;
+
+//            foreach (NetworkInterface adapter in nics)
+//            {
+//                if ((adapter.OperationalStatus == OperationalStatus.Up) && (adapter.NetworkInterfaceType != NetworkInterfaceType.Loopback))
+//                {
+//                    UnicastIPAddressInformationCollection ips = adapter.GetIPProperties().UnicastAddresses;
+
+//                    foreach (UnicastIPAddressInformation ip in ips)
+//                    {
+//                        string strIp = ip.Address.ToString();
+
+//                        if (strIp == _Settings.AdapterIp1)
+//                        {
+//                            adapters |= 1;
+//                            _Adapter1Index = adapter.GetIPProperties().GetIPv4Properties().Index;
+//                        }
+//                        if (strIp == _Settings.AdapterIp2)
+//                        {
+//                            adapters |= 2;
+//                            _Adapter2Index = adapter.GetIPProperties().GetIPv4Properties().Index;
+//                        }
+//                        if (adapters == 3)
+//                        {
+//                            return adapters;
+//                        }
+//                    }
+//                }
+//            }
+
+//            return adapters;
+//        }
+
         int GetAdaptersState()
         {
+            // AGL. 3ª IP
 #if DEBUG
             if (WorkingNetworkSimulOff)
                 return 0;
 #endif
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
-            int adapters = 0;
+            int GlobalAdaptersMaks = 0;
 
             foreach (NetworkInterface adapter in nics)
             {
@@ -444,123 +436,71 @@ namespace ClusterLib
                     foreach (UnicastIPAddressInformation ip in ips)
                     {
                         string strIp = ip.Address.ToString();
-
-                        if (strIp == _Settings.AdapterIp1)
+                        var cfgItemIp = _Settings.VirtualIps.Where(i => i.AdapterIp == strIp).FirstOrDefault();
+                        if (cfgItemIp != null)
                         {
-                            adapters |= 1;
-                            _Adapter1Index = adapter.GetIPProperties().GetIPv4Properties().Index;
-                        }
-                        if (strIp == _Settings.AdapterIp2)
-                        {
-                            adapters |= 2;
-                            _Adapter2Index = adapter.GetIPProperties().GetIPv4Properties().Index;
-                        }
-                        if (adapters == 3)
-                        {
-                            return adapters;
+                            GlobalAdaptersMaks |= cfgItemIp.AdapterMask;
+                            cfgItemIp.AdapterIndex = adapter.GetIPProperties().GetIPv4Properties().Index;
                         }
                     }
                 }
             }
-
-            return adapters;
+            return GlobalAdaptersMaks;
         }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="async"></param>
         /// <returns></returns>
-        bool ExistClusterAddresses_old(bool async)
-        {
-            LogHelper.Trace();
+        //bool ExistClusterAddresses_old(bool async = false)
+        //{
+        //    LogHelper.Trace();
 
-            if (((DateTime.Now - _PingReceivedTime).TotalMilliseconds > 2000) &&
-               (_ClusterIp1State != ClusterIpState.Finding) && (_ClusterIp2State != ClusterIpState.Finding))
-            {
-                _ClusterIp1State = ClusterIpState.Finding;
-                _ClusterIp2State = ClusterIpState.Finding;
+        //    PingReply reply1 = null;
+        //    PingReply reply2 = null;
+        //    try
+        //    {
+        //        reply1 = (new Ping()).Send(_Settings.ClusterIp1, 500);
+        //        LogHelper.Log(LogLevel.Debug, String.Format("PingReply {1,8} From {0,15}, {2,6} ms",
+        //            reply1.Address != null ? reply1.Address.ToString() : _Settings.ClusterIp1, reply1.Status.ToString(), reply1.RoundtripTime));
 
-                _Ping1.SendAsync(_Settings.ClusterIp1, 2000, null);
-                _Ping2.SendAsync(_Settings.ClusterIp2, 2000, null);
-            }
-
-            if (!async)
-            {
-                while ((_ClusterIp1State == ClusterIpState.Finding) || (_ClusterIp2State == ClusterIpState.Finding))
-                {
-                    System.Threading.Thread.Sleep(500);
-                }
-            }
-
-            //return ((_ClusterIp1State != ClusterIpState.NotFound) || (_ClusterIp2State != ClusterIpState.NotFound));
-            return ((_ClusterIp1State == ClusterIpState.Found) || (_ClusterIp2State == ClusterIpState.Found));
-        }
-
+        //        reply2 = (new Ping()).Send(_Settings.ClusterIp2, 500);
+        //        LogHelper.Log(LogLevel.Debug, String.Format("PingReply {1,8} From {0,15}, {2,6} ms",
+        //            reply2.Address != null ? reply2.Address.ToString() : _Settings.ClusterIp2, reply2.Status.ToString(), reply2.RoundtripTime));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogHelper.Log(LogLevel.Error, String.Format("Excepcion en PING: {0}", ex.Message));
+        //    }
+        //    return (reply1 != null && reply1.Status == IPStatus.Success) || (reply2 != null && reply2.Status == IPStatus.Success);
+        //}
         /// <summary>
-        /// 
+        /// Chequea el ESTADO de las IP Virtuales en las redes y DEVUELVE si alguna esta activa en la RED
         /// </summary>
         /// <param name="async"></param>
         /// <returns></returns>
-        bool ExistClusterAddresses(bool async = false)
+        bool ExistClusterAddresses()
         {
-            LogHelper.Trace();
-
-            PingReply reply1 = null;
-            PingReply reply2 = null;
-            try
+            bool retorno = false;
+            // AGL. 3ª IP
+            _Settings.VirtualIps.ForEach(ipc =>
             {
-                reply1 = (new Ping()).Send(_Settings.ClusterIp1, 500);
-                LogHelper.Log(LogLevel.Debug, String.Format("PingReply {1,8} From {0,15}, {2,6} ms",
-                    reply1.Address != null ? reply1.Address.ToString() : _Settings.ClusterIp1, reply1.Status.ToString(), reply1.RoundtripTime));
-
-                reply2 = (new Ping()).Send(_Settings.ClusterIp2, 500);
-                LogHelper.Log(LogLevel.Debug, String.Format("PingReply {1,8} From {0,15}, {2,6} ms",
-                    reply2.Address != null ? reply2.Address.ToString() : _Settings.ClusterIp2, reply2.Status.ToString(), reply2.RoundtripTime));
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Log(LogLevel.Error, String.Format("Excepcion en PING: {0}", ex.Message));
-            }
-            return (reply1 != null && reply1.Status == IPStatus.Success) || (reply2 != null && reply2.Status == IPStatus.Success);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void OnPingCompleted(object sender, PingCompletedEventArgs e)
-        {
-            LogHelper.Trace();
-
-            ClusterIpState state;
-
-            switch (e.Reply.Status)
-            {
-                case IPStatus.TimedOut:
-                case IPStatus.TimeExceeded:
-                case IPStatus.TtlExpired:
-                    state = ClusterIpState.NotFound;
-                    break;
-                default:
-                    state = ClusterIpState.Found;
-                    break;
-            }
-
-            lock (_Sync)
-            {
-                if (sender == _Ping1)
+                try
                 {
-                    _ClusterIp1State = state;
-                }
-                else
-                {
-                    _ClusterIp2State = state;
-                }
+                    var reply = (new Ping()).Send(ipc.ClusterIp, 500);
+                    Logger.Debug<Cluster>(String.Format("PingReply {1,8} From {0,15}, {2,6} ms",
+                        reply.Address != null ? reply.Address.ToString() : ipc.ClusterIp, reply.Status.ToString(), reply.RoundtripTime));
 
-                _PingReceivedTime = DateTime.Now;
-            }
+                    if (reply != null && reply.Status == IPStatus.Success)
+                        retorno = true;
+                }
+                catch(Exception ex)
+                {
+                    Logger.Exception<Cluster>(ex, $"Excepcion en PING a {ipc.ClusterIp}");
+                }
+            });
+
+            return retorno;
         }
 
         /// <summary>
@@ -569,26 +509,35 @@ namespace ClusterLib
         /// <returns></returns>
         bool CreateVirtualAddresses()
         {
-            LogHelper.Trace();
-            // if (ExistClusterAddresses(true))               
-            if (ExistClusterAddresses(false))
+            // 
+            Logger.Trace<Cluster>("CreateVirtualAdd");
+            if (ExistClusterAddresses())
             {
-                LogHelper.Log(LogLevel.Error, "Cluster IP Address exist...Creating Virtual Address...");
+                Logger.Error<Cluster>("Cluster IP Address exist...Creating Virtual Address...");
                 return true;
             }
 
             bool error1 = false, error2 = false;
 
-            if (IsValidAdapter(1))
-            {
-                Task.Factory.StartNew(() => CreateVirtualAddressesTask(0, out error1)).Wait();
-            }
-            if (IsValidAdapter(2))
-            {
-                Task.Factory.StartNew(() => CreateVirtualAddressesTask(1, out error2)).Wait();
-            }
+            //if (IsValidAdapter(1))
+            //{
+            //    Task.Factory.StartNew(() => CreateVirtualAddressesTask(0, out error1)).Wait();
+            //}
+            //if (IsValidAdapter(2))
+            //{
+            //    Task.Factory.StartNew(() => CreateVirtualAddressesTask(1, out error2)).Wait();
+            //}
 
-            if (error1 || error2)
+            _Settings.VirtualIps.ForEach(ips =>
+            {
+                if (IsValidAdapter(ips))
+                {
+                    Task.Factory.StartNew(() => CreateVirtualAddressesTask(ips, out error2)).Wait();
+                    if (error2) error1 = true;
+                }
+            });
+
+            if (error1 /*|| error2*/)
             {
                 _State.LocalNode.SetState(NodeState.NoActive, Resources.CreateIpError);
                 ForceDeleteVirtualAddress();
@@ -600,21 +549,35 @@ namespace ClusterLib
 
             return false;
         }
-        void CreateVirtualAddressesTask(int vipIndex, out bool error)
+        //void CreateVirtualAddressesTask_old(int vipIndex, out bool error)
+        //{
+        //    vipIndex = vipIndex == 0 ? 0 : 1;
+        //    string ip = vipIndex == 0 ? _Settings.ClusterIp1 : _Settings.ClusterIp2;
+        //    string ms = vipIndex == 0 ? _Settings.ClusterMask1 : _Settings.ClusterMask2;
+        //    int adapterIndex = vipIndex == 0 ? _Adapter1Index : _Adapter2Index;
+        //    try
+        //    {
+        //        VirtualIpContext[vipIndex] = Native.IpHlpApi.AddIPAddress(ip, ms, adapterIndex);
+        //        LogHelper.Log(LogLevel.Info, String.Format("Virtual IP {0} Creada...", ip));
+        //        error = false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogHelper.Log(LogLevel.Error, String.Format("Excepcion en {0}, IP {1}: {2}", Resources.CreateIpError, ip, ex.Message));
+        //        error = true;
+        //    }
+        //}
+        void CreateVirtualAddressesTask(ClusterIpSetting ips, out bool error)
         {
-            vipIndex = vipIndex == 0 ? 0 : 1;
-            string ip = vipIndex == 0 ? _Settings.ClusterIp1 : _Settings.ClusterIp2;
-            string ms = vipIndex == 0 ? _Settings.ClusterMask1 : _Settings.ClusterMask2;
-            int adapterIndex = vipIndex == 0 ? _Adapter1Index : _Adapter2Index;
             try
             {
-                VirtualIpContext[vipIndex] = Native.IpHlpApi.AddIPAddress(ip, ms, adapterIndex);
-                LogHelper.Log(LogLevel.Info, String.Format("Virtual IP {0} Creada...", ip));
+                ips.VirtualIpContext = Native.IpHlpApi.AddIPAddress(ips.ClusterIp, ips.ClusterMsk, ips.AdapterIndex);
+                Logger.Info<Cluster>(String.Format("Virtual IP {0} Creada...", ips.ClusterIp));
                 error = false;
             }
             catch (Exception ex)
             {
-                LogHelper.Log(LogLevel.Error, String.Format("Excepcion en {0}, IP {1}: {2}", Resources.CreateIpError, ip, ex.Message));
+                Logger.Exception<Cluster>(ex, ips.ClusterIp);
                 error = true;
             }
         }
@@ -624,15 +587,22 @@ namespace ClusterLib
         /// </summary>
         void DeleteVirtualAddresses()
         {
-            LogHelper.Trace();
-            if (IsValidAdapter(1))
+            Logger.Trace<Cluster>("DeleteVirtualAdd");
+            //if (IsValidAdapter(1))
+            //{
+            //    Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(0)).Wait();
+            //}
+            //if (IsValidAdapter(2))
+            //{
+            //    Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(1)).Wait();
+            //}
+            _Settings.VirtualIps.ForEach(ips =>
             {
-                Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(0)).Wait();
-            }
-            if (IsValidAdapter(2))
-            {
-                Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(1)).Wait();
-            }
+                if (IsValidAdapter(ips))
+                {
+                    Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(ips)).Wait();
+                }
+            });
         }
 
         /// <summary>
@@ -640,29 +610,54 @@ namespace ClusterLib
         /// </summary>
         void ForceDeleteVirtualAddress()
         {
-            Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(0)).Wait();
-            Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(1)).Wait();
+            // 
+            //Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(0)).Wait();
+            //Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(1)).Wait();
+            _Settings.VirtualIps.ForEach(ips =>
+            {
+                Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(ips)).Wait();
+            });
         }
-        private void ForceDeleteVirtualAddressTask(int vipIndex)
+        //private void ForceDeleteVirtualAddressTask_old(int vipIndex)
+        //{
+        //    string ip = vipIndex == 0 ? _Settings.ClusterIp1 : _Settings.ClusterIp2;
+        //    //int context = VirtualIpContext[vipIndex];
+        //    try
+        //    {
+        //        if (VirtualIpContext[vipIndex] >= 0)
+        //        {
+        //            Native.IpHlpApi.DeleteIPAddressOnContext(VirtualIpContext[vipIndex]);
+        //            VirtualIpContext[vipIndex] = -1;
+        //        }
+        //        else
+        //        {
+        //            Native.IpHlpApi.DeleteIPAddress(ip);
+        //        }
+        //        LogHelper.Log(LogLevel.Info, String.Format("Virtual IP {0} Eliminada...", ip));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogHelper.Log(LogLevel.Error, String.Format("Excepcion en {0}, IP {1}: {2}", Resources.DeleteIpError, ip, ex.Message));
+        //    }
+        //}
+        private void ForceDeleteVirtualAddressTask(ClusterIpSetting ips)
         {
-            string ip = vipIndex == 0 ? _Settings.ClusterIp1 : _Settings.ClusterIp2;
-            //int context = VirtualIpContext[vipIndex];
             try
             {
-                if (VirtualIpContext[vipIndex] >= 0)
+                if (ips.VirtualIpContext >= 0)
                 {
-                    Native.IpHlpApi.DeleteIPAddressOnContext(VirtualIpContext[vipIndex]);
-                    VirtualIpContext[vipIndex] = -1;
+                    Native.IpHlpApi.DeleteIPAddressOnContext(ips.VirtualIpContext);
+                    ips.VirtualIpContext = -1;
                 }
                 else
                 {
-                    Native.IpHlpApi.DeleteIPAddress(ip);
+                    Native.IpHlpApi.DeleteIPAddress(ips.ClusterIp);
                 }
-                LogHelper.Log(LogLevel.Info, String.Format("Virtual IP {0} Eliminada...", ip));
+                Logger.Info<Cluster>(String.Format("Virtual IP {0} Eliminada...", ips.ClusterIp));
             }
             catch (Exception ex)
             {
-                LogHelper.Log(LogLevel.Error, String.Format("Excepcion en {0}, IP {1}: {2}", Resources.DeleteIpError, ip, ex.Message));
+                    Logger.Exception<Cluster>(ex, String.Format("Excepcion en {0}, IP {1}", Resources.DeleteIpError, ips.ClusterIp));
             }
         }
 
@@ -703,7 +698,7 @@ namespace ClusterLib
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Log(LogLevel.Error, String.Format("Excepcion en {0}: {1}", Resources.DeleteIpError, ex.Message));
+                    Logger.Exception<Cluster>(ex);
                     /** 20171019. Si hay una excepcion aqui entiendo que se ha perdido la LAN interna... */
                     ResetInternalLan();
                 }
@@ -719,19 +714,18 @@ namespace ClusterLib
             NodeState state;
             string changeCause;
 
-            LogHelper.Trace();
+            Logger.Trace<Cluster>("Activate");
             lock (_Sync)
             {
                 if (_State.LocalNode.State == NodeState.Active)
-                {
-                    LogHelper.Log(LogLevel.Info, String.Format(Resources.AlreadyActivate, _State.LocalNode.StateBegin));
+                {Logger.Info<Cluster>(String.Format(Resources.AlreadyActivate, _State.LocalNode.StateBegin));
                     return;
                 }
 
                 if (_State.LocalNode.State == NodeState.NoActive)
                 {
                     if ((_State.RemoteNode.State != NodeState.NoValid) &&
-                       (NumValidAdapters(_State.LocalNode.ValidAdapters) < NumValidAdapters(_State.RemoteNode.ValidAdapters)))
+                       (NumValidAdapters(_State.LocalNode.ValidAdaptersMask) < NumValidAdapters(_State.RemoteNode.ValidAdaptersMask)))
                     {
                         throw new InvalidOperationException(Resources.ActivateNumAdaptersError);
                     }
@@ -781,11 +775,11 @@ namespace ClusterLib
                         switch ((MsgType)msg)
                         {
                             case MsgType.Activate:
-                                LogHelper.Log(LogLevel.Info, Resources.RemoteActivateAsk);
+                                Logger.Info<Cluster>(Resources.RemoteActivateAsk);
                                 Activate(true);
                                 break;
                             case MsgType.Deactivate:
-                                LogHelper.Log(LogLevel.Info, Resources.RemoteDeactivateAsk);
+                                Logger.Info<Cluster>(Resources.RemoteDeactivateAsk);
                                 Deactivate();
                                 break;
                             case MsgType.GetState:
@@ -800,11 +794,10 @@ namespace ClusterLib
                     }
                     else if (msg is NodeInfo)
                     {
-                        //_Logger.Log((_State.RemoteNode.State == NodeState.NoValid) ? LogLevel.Info : LogLevel.Trace, 
-                        //    Resources.ReceivedRemoteNodeState.Replace("\\n", Environment.NewLine), msg);
-
-                        LogHelper.Log(_State.RemoteNode.State == NodeState.NoValid ? LogLevel.Info : LogLevel.Trace,
-                            String.Format(Resources.ReceivedRemoteNodeState.Replace("\\n", Environment.NewLine), msg));
+                        if (_State.RemoteNode.State == NodeState.NoValid)
+                            Logger.Info<Cluster>(String.Format(Resources.ReceivedRemoteNodeState.Replace("\\n", Environment.NewLine), msg));
+                        else
+                            Logger.Trace<Cluster>(String.Format(Resources.ReceivedRemoteNodeState.Replace("\\n", Environment.NewLine), msg));
                         _State.RemoteNode.UpdateInfo((NodeInfo)msg);
                         _RemoteStateTime = DateTime.Now;
                     }
@@ -816,7 +809,8 @@ namespace ClusterLib
             }
             catch (Exception ex)
             {
-                LogHelper.Log(LogLevel.Error, String.Format("Excepcion en {0}: {1}", Resources.DeleteIpError, ex.Message));
+                Logger.Exception<Cluster>(ex);
+
                 //if (!_Disposed)
                 //{
                 //    _Logger.ErrorException(Resources.NewDataError, ex);
@@ -836,20 +830,20 @@ namespace ClusterLib
             {
                 lock (_Sync)
                 {
-                    LogHelper.LogTick(_State);
+                    Logger.Trace<Cluster>($"Periodic Task. ClusterState => {_State.ToString()}");
 
                     if ((_State.RemoteNode.State != NodeState.NoValid) &&
-                       ((DateTime.Now - _RemoteStateTime).TotalMilliseconds > _ActivityTimeOut))
+                       ((DateTime.Now - _RemoteStateTime).TotalMilliseconds > _Settings.RemoteTimeout))
                     {
-                        LogHelper.Log(LogLevel.Warn, Resources.RemoteNodeNotOperational);
+                        Logger.Warn<Cluster>(Resources.RemoteNodeNotOperational);
                         _State.RemoteNode.SetState(NodeState.NoValid, null);
                     }
 
-                    _State.LocalNode.ValidAdapters = GetAdaptersState();
-                    int numLocalValidAdapters = NumValidAdapters(_State.LocalNode.ValidAdapters);
-                    int numRemoteValidAdapters = (_State.RemoteNode.State != NodeState.NoValid ? NumValidAdapters(_State.RemoteNode.ValidAdapters) : 0);
+                    _State.LocalNode.ValidAdaptersMask = GetAdaptersState();
+                    int numLocalValidAdapters = NumValidAdapters(_State.LocalNode.ValidAdaptersMask);
+                    int numRemoteValidAdapters = (_State.RemoteNode.State != NodeState.NoValid ? NumValidAdapters(_State.RemoteNode.ValidAdaptersMask) : 0);
 
-                    if (_State.LocalNode.ValidAdapters > 0)
+                    if (_State.LocalNode.ValidAdaptersMask > 0)
                     {
                         if (_State.LocalNode.State == NodeState.NoValid)
                         {
@@ -887,7 +881,7 @@ namespace ClusterLib
                         }
                         else if (_State.LocalNode.State == NodeState.Activating)
                         {
-                            if ((DateTime.Now - _State.LocalNode.StateBegin).TotalMilliseconds > (2 * _ActivityTimeOut))
+                            if ((DateTime.Now - _State.LocalNode.StateBegin).TotalMilliseconds > (2 * _Settings.RemoteTimeout))
                             {
                                 _State.LocalNode.SetState(NodeState.NoActive, Resources.ActivateTimeout);
                             }
@@ -916,7 +910,7 @@ namespace ClusterLib
                                     }
                                     else
                                     {
-                                        LogHelper.Log(LogLevel.Info, "IP Virtual asignada al nodo");
+                                        Logger.Info<Cluster>("IP Virtual asignada al nodo");
                                         DeleteArpTable();
                                     }
                                 }
@@ -961,7 +955,7 @@ namespace ClusterLib
                                 //   ((numRemoteValidAdapters == numLocalValidAdapters) &&
                                 //   (_State.RemoteNode.StateBegin.Ticks < _State.LocalNode.StateBegin.Ticks)))
                                 {
-                                    LogHelper.Log(LogLevel.Warn, Resources.DetectedTwoActiveNodesError);
+                                    Logger.Warn<Cluster>(Resources.DetectedTwoActiveNodesError);
                                     DeleteVirtualAddresses();
                                     _State.LocalNode.SetState(NodeState.NoActive, Resources.LocalDeactivateAsk);
                                 }
@@ -985,7 +979,8 @@ namespace ClusterLib
             }
             catch (Exception ex)
             {
-                LogHelper.Log(LogLevel.Error, String.Format("Excepcion en {0}: {1}", Resources.PeriodicTaskError, ex.Message));
+                Logger.Exception<Cluster>(ex);
+
                 //if (!_Disposed)
                 //{
                 //    _Logger.ErrorException(Resources.PeriodicTaskError, ex);
@@ -995,7 +990,8 @@ namespace ClusterLib
             {
                 if (!_Disposed)
                 {
-                    _PeriodicTasks.Interval = FromLocalInvalid ? _FromInvalidInterval : _PeriodicTasksInterval;
+                    // 20171020. Para intentar sincronizar las recuperaciones de red....
+                    _PeriodicTasks.Interval = FromLocalInvalid ? _Settings.TimeToStart : _Settings.Tick;
                     _PeriodicTasks.Enabled = true;
                 }
             }
