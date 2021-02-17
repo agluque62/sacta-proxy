@@ -78,6 +78,7 @@
     <Compile Include="GenericUnitTest.cs" />
     <Compile Include="ModelTest.cs" />
     <Compile Include="DbTest.cs" />
+    <Compile Include="ClusterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -87,6 +88,14 @@
     <ProjectReference Include="..\sacta-proxy\sacta-proxy.csproj">
       <Project>{850b95cf-b8d0-4565-a6ea-c37d869a5266}</Project>
       <Name>sacta-proxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftCluster\ClusterLib\ClusterLib.csproj">
+      <Project>{f4a852f5-4da4-4b99-a1d3-c881d12e8488}</Project>
+      <Name>ClusterLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SoftCluster\Utilities\Utilities.csproj">
+      <Project>{822f500d-adb8-4bb1-8a1c-e9feaff369b0}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
