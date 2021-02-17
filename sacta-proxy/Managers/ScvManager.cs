@@ -41,9 +41,9 @@ namespace sacta_proxy.Managers
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener.Base.MulticastLoopback = false;
                 Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.McastGroup),
-                    IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip));
+                    IPAddress.Parse(Cfg.Comm.SendTo.Lan1.McastIf));
                 Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.McastGroup),
-                    IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip));
+                    IPAddress.Parse(Cfg.Comm.SendTo.Lan2.McastIf));
                 /** 20180731. Para poder pasar por una red de ROUTERS */
                 Listener.Base.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 16);
                 Listener.NewDataEvent += OnDataReceived;
