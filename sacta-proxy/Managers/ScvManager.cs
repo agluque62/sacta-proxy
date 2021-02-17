@@ -36,8 +36,8 @@ namespace sacta_proxy.Managers
             try
             {
                 Locker = new object();
-                SactaSPSIUsers = Cfg.SactaProtocol.Sacta.Psis.Select(i=>(ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
-                SactaSPVUsers = Cfg.SactaProtocol.Sacta.Spvs.Select(i=>(ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
+                SactaSPSIUsers = Cfg.SactaProtocol.Sacta.PsisList().Select(i=>(ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
+                SactaSPVUsers = Cfg.SactaProtocol.Sacta.SpvsList().Select(i=>(ushort)i).ToDictionary(i => i, i => new PsiOrScvInfo());
                 GlobalState = SactaState.Stopped;
                 TxEnabled = false;
 
@@ -92,6 +92,7 @@ namespace sacta_proxy.Managers
                 {
                     Logger.Info<ScvManager>($"ScvManager for {Id}. Waiting for Sacta Activity on {Cfg.Comm.If1.Ip}:{Cfg.Comm.ListenPort} ...");
                 }
+                Logger.Info<PsiManager>($"ScvManager for {Id}. Sectores {Cfg.Sectorization.Sectors} Posiciones {Cfg.Sectorization.Positions}");
                 PS.Set(ProcessStates.Running);
             }
             catch (Exception x)
@@ -439,20 +440,20 @@ namespace sacta_proxy.Managers
         {
             var sectorsReceived = ((SactaMsg.SectInfo)(msg.Info)).Sectors.ToList();
             var sectorsToProcess = sectorsReceived
-                .Where(s => Cfg.Sectorization.Virtuals.Contains(int.Parse(s.SectorCode)) == false)
+                .Where(s => Cfg.Sectorization.VirtualsList().Contains(int.Parse(s.SectorCode)) == false)
                 .ToList();
             var idSectorsToProcess = sectorsToProcess
                 .Select(s => int.Parse(s.SectorCode)).ToList();
-            var SectorsNotFound = Cfg.Sectorization.Sectors
+            var SectorsNotFound = Cfg.Sectorization.SectorsList()
                 .Where(s => idSectorsToProcess.Contains(s) == false)
                 .Select(s => s.ToString())
                 .ToList();
             var UnknowUcs = sectorsToProcess
-                .Where(s => Cfg.Sectorization.Positions.Contains((int)s.Ucs) == false)
+                .Where(s => Cfg.Sectorization.PositionsList().Contains((int)s.Ucs) == false)
                 .Select(s => s.Ucs.ToString())
                 .ToList();
             var UnknowSectors= sectorsToProcess
-                .Where(s => Cfg.Sectorization.Sectors.Contains(int.Parse(s.SectorCode)) == false)
+                .Where(s => Cfg.Sectorization.SectorsList().Contains(int.Parse(s.SectorCode)) == false)
                 .Select(s => s.SectorCode)
                 .ToList();
             var duplicatedSect = sectorsToProcess
