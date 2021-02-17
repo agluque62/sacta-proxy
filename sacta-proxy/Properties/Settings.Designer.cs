@@ -49,5 +49,14 @@ namespace sacta_proxy.Properties {
                 return ((int)(this["DbConnTimeout"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsCD30 {
+            get {
+                return ((bool)(this["IsCD30"]));
+            }
+        }
     }
 }
