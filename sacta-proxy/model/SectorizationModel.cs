@@ -117,7 +117,7 @@ namespace sacta_proxy.model
                 var VirEquals = VirInCfg.Except(VirInDb).Count() == 0 && VirInDb.Except(VirInCfg).Count() == 0;
                 if (VirEquals == false)
                 {
-                    notifyError($"Conjunto Posiciones Diferente: CFG: {VirtualSectorsList}; DB: {String.Join(",", VirInDb)}");
+                    notifyError($"Conjunto Sectores Virtuales Diferente: CFG: {VirtualSectorsList}; DB: {String.Join(",", VirInDb)}");
                 }
             });
         }
