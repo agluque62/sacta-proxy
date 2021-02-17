@@ -1,41 +1,82 @@
 ﻿{
   "General": {
     "WebPort": 8091,
-    "public" "string",
     "ActivateSactaLogic": "AND"
   },
-  "Proxy": {
+  "Psi": {
+    "Id": "IdDep",
     "Comm": {
       "Listen": {
-        "Port": 15101,
-        "Ip1": "",
-        "Ip2": "",
-        "FromMask1": "",
-        "FromMask2": "",
-        "NetworkIf": ""
+        "Port": 15001,
+        "Lan1": {
+          "Ip": "192.168.90.50",
+          "FromMask": "127.0.0.1/24",
+          "McastGroup": "225.12.101.1",
+          "McastIf": "127.0.0.1"
+        },
+        "Lan2": {
+          "Ip": "127.0.0.1",
+          "FromMask": "127.0.0.1/24",
+          "McastGroup": "225.212.101.1",
+          "McastIf": "127.0.0.1"
+        }
       },
       "SendTo": {
         "Port": 19205,
-        "Ip1": "",
-        "Ip2": ""
+        "Lan1": {
+          "Ip": "192.168.90.50",
+          "FromMask": "127.0.0.1/24",
+          "McastGroup": "225.12.101.1",
+          "McastIf": "127.0.0.1"
+        },
+        "Lan2": {
+          "Ip": "127.0.0.1",
+          "FromMask": "127.0.0.1/24",
+          "McastGroup": "225.212.101.1",
+          "McastIf": "127.0.0.1"
+        }
       }
     },
     "SactaProtocol": {
       "TickAlive": 5,
       "TimeoutAlive": 30,
+      "SectorizationTimeout": 60,
       "Sacta": {
         "Domain": 1,
         "Center": 107,
         "PsiGroup": 110,
-        "SpvGroup": 85,
-        "Psis": [ 111, 112, 113, 114, 7286, 7287, 7288, 7289 ],
-        "Spvs": [ 86, 87, 88, 89, 7266, 7267, 7268, 7269 ]
+        "SpvGrup": 85,
+        "Psis": [
+          111,
+          112,
+          113,
+          114,
+          7286,
+          7287,
+          7288,
+          7289
+        ],
+        "Spvs": [
+          86,
+          87,
+          88,
+          89,
+          7266,
+          7267,
+          7268,
+          7269
+        ]
       },
       "Scv": {
         "Domain": 1,
         "Center": 107,
-        "User": 10
+        "Scv": 10
       }
+    },
+    "Sectorization": {
+      "Sectors": [],
+      "Positions": [],
+      "Virtuals": []
     }
   },
   "Dependencies": [
@@ -43,59 +84,34 @@
       "Id": "TWR",
       "Comm": {
         "Listen": {
-          "Port": 15100,
-          "Ip1": "192.168.90.50",
-          "Ip2": "",
-          "FromMask1": "",
-          "FromMask2": "",
-          "NetworkIf": ""
+          "Port": 19204,
+          "Lan1": {
+            "Ip": "192.168.90.50",
+            "FromMask": "192.168.90.0/24",
+            "McastGroup": "225.12.101.1",
+            "McastIf": "127.0.0.1"
+          },
+          "Lan2": {
+            "Ip": "127.0.0.1",
+            "FromMask": "127.0.0.1/24",
+            "McastGroup": "225.12.101.1",
+            "McastIf": "127.0.0.1"
+          }
         },
         "SendTo": {
-          "Port": 19204,
-          "Ip1": "225.12.101.1",
-          "Ip2": "225.212.101.1",
-          "NetworkIf": "127.0.0.1"
-        }
-      },
-      "SactaProtocol": {
-        "TickAlive": 5,
-        "TimeoutAlive": 30,
-        "Sacta": {
-          "Domain": 1,
-          "Center": 107,
-          "PsiGroup": 110,
-          "SpvGroup": 85,
-          "Psis": [ 111, 112, 113, 114, 7286, 7287, 7288, 7289 ],
-          "Spvs": [ 86, 87, 88, 89, 7266, 7267, 7268, 7269 ]
-        },
-        "Scv": {
-          "Domain": 1,
-          "Center": 107,
-          "User": 10
-        }
-      },
-      "SectorizationData": {
-        "Sectors": [],
-        "Positions": [],
-        "Virtuals": []
-      }
-    },
-    {
-      "Id": "APP",
-      "Comm": {
-        "Listen": {
           "Port": 15100,
-          "Ip1": "192.168.1.41",
-          "Ip2": "",
-          "FromMask1": "",
-          "FromMask2": "",
-          "NetworkIf": ""
-        },
-        "SendTo": {
-          "Port": 19204,
-          "Ip1": "225.12.101.1",
-          "Ip2": "225.212.101.1",
-          "NetworkIf": "127.0.0.1"
+          "Lan1": {
+            "Ip": "127.0.0.1",
+            "FromMask": "127.0.0.1/24",
+            "McastGroup": "225.12.101.1",
+            "McastIf": "127.0.0.1"
+          },
+          "Lan2": {
+            "Ip": "127.0.0.1",
+            "FromMask": "127.0.0.1/24",
+            "McastGroup": "225.212.101.1",
+            "McastIf": "127.0.0.1"
+          }
         }
       },
       "SactaProtocol": {
@@ -106,17 +122,111 @@
           "Domain": 1,
           "Center": 107,
           "PsiGroup": 110,
-          "SpvGroup": 85,
-          "Psis": [ 111, 112, 113, 114, 7286, 7287, 7288, 7289 ],
-          "Spvs": [ 86, 87, 88, 89, 7266, 7267, 7268, 7269 ]
+          "SpvGrup": 85,
+          "Psis": [
+            111,
+            112,
+            113,
+            114,
+            7286,
+            7287,
+            7288,
+            7289
+          ],
+          "Spvs": [
+            86,
+            87,
+            88,
+            89,
+            7266,
+            7267,
+            7268,
+            7269
+          ]
         },
         "Scv": {
           "Domain": 1,
           "Center": 107,
-          "User": 10
+          "Scv": 10
         }
       },
-      "SectorizationData": {
+      "Sectorization": {
+        "Sectors": [],
+        "Positions": [],
+        "Virtuals": []
+      }
+    },
+    {
+      "Id": "APP",
+      "Comm": {
+        "Listen": {
+          "Port": 19204,
+          "Lan1": {
+            "Ip": "127.0.0.1",
+            "FromMask": "127.0.0.1/24",
+            "McastGroup": "225.12.101.1",
+            "McastIf": "127.0.0.1"
+          },
+          "Lan2": {
+            "Ip": "127.0.0.1",
+            "FromMask": "127.0.0.1/24",
+            "McastGroup": "225.212.101.1",
+            "McastIf": "127.0.0.1"
+          }
+        },
+        "SendTo": {
+          "Port": 15100,
+          "Lan1": {
+            "Ip": "127.0.0.1",
+            "FromMask": "127.0.0.1/24",
+            "McastGroup": "225.12.101.1",
+            "McastIf": "127.0.0.1"
+          },
+          "Lan2": {
+            "Ip": "127.0.0.1",
+            "FromMask": "127.0.0.1/24",
+            "McastGroup": "225.212.101.1",
+            "McastIf": "127.0.0.1"
+          }
+        }
+      },
+      "SactaProtocol": {
+        "TickAlive": 5,
+        "TimeoutAlive": 30,
+        "SectorizationTimeout": 60,
+        "Sacta": {
+          "Domain": 1,
+          "Center": 107,
+          "PsiGroup": 110,
+          "SpvGrup": 85,
+          "Psis": [
+            111,
+            112,
+            113,
+            114,
+            7286,
+            7287,
+            7288,
+            7289
+          ],
+          "Spvs": [
+            86,
+            87,
+            88,
+            89,
+            7266,
+            7267,
+            7268,
+            7269
+          ]
+        },
+        "Scv": {
+          "Domain": 1,
+          "Center": 107,
+          "Scv": 10
+        }
+      },
+      "Sectorization": {
         "Sectors": [],
         "Positions": [],
         "Virtuals": []

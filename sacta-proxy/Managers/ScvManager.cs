@@ -20,8 +20,8 @@ namespace sacta_proxy.Managers
     {
         enum SactaState { WaitingSactaActivity, WaitingSectorization, SendingPresences, Stopped }
         
-        public EventHandler<ScvManagerActivityArgs> EventActivity;
-        public EventHandler<ScvManagerSectorizationArgs> EventSectorization;
+        public EventHandler<ActivityOnLanArgs> EventActivity;
+        public EventHandler<SectorizationArgs> EventSectorization;
 
         #region Public
         public override void Start(Configuration.DependecyConfig cfg)
@@ -37,13 +37,13 @@ namespace sacta_proxy.Managers
                 GlobalState = SactaState.Stopped;
                 EnableTx = false;
 
-                Listener = new UdpSocket(Cfg.Comm.Listen.Ip1, Cfg.Comm.Listen.Port);
+                Listener = new UdpSocket(Cfg.Comm.Listen.Lan1.Ip, Cfg.Comm.Listen.Port);
                 /** Para seleccionar correctamente la Interfaz de salida de las tramas MCAST */
                 Listener.Base.MulticastLoopback = false;
-                Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Ip1),
-                    IPAddress.Parse(Cfg.Comm.SendTo.NetworkIf));
-                Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Ip2),
-                    IPAddress.Parse(Cfg.Comm.SendTo.NetworkIf));
+                Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.McastGroup),
+                    IPAddress.Parse(Cfg.Comm.SendTo.Lan1.McastIf));
+                Listener.Base.JoinMulticastGroup(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.McastGroup),
+                    IPAddress.Parse(Cfg.Comm.SendTo.Lan2.McastIf));
                 /** 20180731. Para poder pasar por una red de ROUTERS */
                 Listener.Base.Client.SetSocketOption(SocketOptionLevel.IP, SocketOptionName.MulticastTimeToLive, 16);
                 Listener.NewDataEvent += OnDataReceived;
@@ -60,7 +60,7 @@ namespace sacta_proxy.Managers
                 LastPresenceSended = DateTime.MinValue;
                 WhenSectorAsked = DateTime.MinValue;
 
-                Logger.Info<ScvManager>($"ScvManager for {Id}. Waiting for Sacta Activity...");
+                Logger.Info<ScvManager>($"ScvManager for {Id}. Waiting for Sacta Activity on {Cfg.Comm.Listen.Lan1.Ip}:{Cfg.Comm.Listen.Port} ...");
             }
             catch (Exception x)
             {
@@ -86,7 +86,8 @@ namespace sacta_proxy.Managers
                 TickTimer.Dispose();
                 TickTimer.Elapsed -= OnTick;
             }
-
+            Listener = null;
+            TickTimer = null;
         }
         public override object Status
         {
@@ -99,14 +100,14 @@ namespace sacta_proxy.Managers
 
         #endregion Public
 
-        #region Protected
+        #region Protected Methods
         protected void OnDataReceived(object sender, DataGram dg)
         {
             lock (Locker)
             {
                 SactaMsg.Deserialize(dg.Data, (msg) =>
                 {
-                    ManageOnLan(dg.Client.Address, (lan, LastActivityFlag) => 
+                    ManageOnLan(dg.Client.Address, (lan) => 
                     {
                         try
                         {
@@ -150,7 +151,8 @@ namespace sacta_proxy.Managers
                                         {
                                             // todo
                                         }
-                                        LastActivityFlag = DateTime.Now;
+                                        LastActivityOnLan1 = lan==0 ? DateTime.Now : LastActivityOnLan1;
+                                        LastActivityOnLan2 = lan==1 ? DateTime.Now : LastActivityOnLan2;
                                         break;
                                     default:
                                         Logger.Warn<ScvManager>($"On {Cfg.Id} from Sacta Lan {lan} Invalid message {msg.Type} received");                                
@@ -192,10 +194,10 @@ namespace sacta_proxy.Managers
                                 SendSectAsk();
                                 GlobalState = SactaState.WaitingSectorization;
                                 // Evento de Conexion con SACTA.
-                                SafeLaunchEvent<ScvManagerActivityArgs>(EventActivity, new ScvManagerActivityArgs()
+                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
                                 {
                                      ScvId=Cfg.Id,
-                                     Activity = true
+                                     ActivityOnLan = true
                                 });
                             }
                             break;
@@ -205,10 +207,10 @@ namespace sacta_proxy.Managers
                                 GlobalState = SactaState.WaitingSactaActivity;
                                 SactaSPSIUsers.Values.ToList().ForEach(u => u.LastSectMsgId = -1);
                                 // Evento de Desconexion con SACTA.
-                                SafeLaunchEvent<ScvManagerActivityArgs>(EventActivity, new ScvManagerActivityArgs()
+                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
                                 {
                                     ScvId = Cfg.Id,
-                                    Activity = false
+                                    ActivityOnLan = false
                                 });
                             }
                             else
@@ -226,10 +228,10 @@ namespace sacta_proxy.Managers
                                 GlobalState = SactaState.WaitingSactaActivity;
                                 SactaSPSIUsers.Values.ToList().ForEach(u => u.LastSectMsgId = -1);
                                 // Evento de Desconexion con SACTA.
-                                SafeLaunchEvent<ScvManagerActivityArgs>(EventActivity, new ScvManagerActivityArgs()
+                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
                                 {
                                     ScvId = Cfg.Id,
-                                    Activity = false
+                                    ActivityOnLan = false
                                 });
                             }
                             else
@@ -244,7 +246,6 @@ namespace sacta_proxy.Managers
                             }
                             break;
                     }
-                    
                 }
                 catch (Exception x)
                 {
@@ -256,33 +257,32 @@ namespace sacta_proxy.Managers
                 }
             }
         }
-        protected void SendInit()
+        protected bool BroadMessage(byte [] message)
         {
             if (EnableTx)
             {
                 if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip1), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.Init, SactaMsg.InitId, 0).Serialize());
-
+                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan1.Ip), Cfg.Comm.SendTo.Port), message);
                 if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip2), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.Init, SactaMsg.InitId, 0).Serialize());
-
+                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Lan2.Ip), Cfg.Comm.SendTo.Port), message);
+                return true;
+            }
+            return false;
+        }
+        protected void SendInit()
+        {
+            var msg = SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.Init, SactaMsg.InitId, 0).Serialize();
+            if (BroadMessage(msg))
+            {
                 Sequence = 0;
                 Logger.Info<ScvManager>($"On {Cfg.Id} Init Msg sended.");
             }
         }
         protected void SendPresence()
         {
-            if (EnableTx)
+            var msg = SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.Presence, 0, Sequence).Serialize();
+            if (BroadMessage(msg))
             {
-                if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip1), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.Presence, 0, Sequence).Serialize());
-
-                if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip2), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.Presence, 0, Sequence).Serialize());
                 Sequence = Sequence >= 287 ? 0 : Sequence + 1;
                 LastPresenceSended = DateTime.Now;
                 Logger.Info<ScvManager>($"On {Cfg.Id} Presence Msg sended.");
@@ -290,15 +290,9 @@ namespace sacta_proxy.Managers
         }
         protected void SendSectAsk()
         {
-            if (EnableTx)
+            var msg = SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.SectAsk, 0, Sequence).Serialize();
+            if (BroadMessage(msg))
             {
-                if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip1), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.SectAsk, 0, Sequence).Serialize());
-
-                if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip2), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.SectAsk, 0, Sequence).Serialize());
                 Sequence = Sequence >= 287 ? 0 : Sequence + 1;
                 WhenSectorAsked = DateTime.Now;
                 Logger.Info<ScvManager>($"On {Cfg.Id} SectAsk Msg sended.");
@@ -306,15 +300,9 @@ namespace sacta_proxy.Managers
         }
         protected void SendSectAnsw(int version, int result)
         {
-            if (EnableTx)
+            var msg = SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.SectAnswer, 0, Sequence, version, result).Serialize();
+            if (BroadMessage(msg))
             {
-                if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip1), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.SectAnswer, 0, Sequence, version, result).Serialize());
-
-                if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromMilliseconds(Cfg.SactaProtocol.TimeoutAlive))
-                    Listener.Send(new IPEndPoint(IPAddress.Parse(Cfg.Comm.SendTo.Ip2), Cfg.Comm.SendTo.Port),
-                        SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.SectAnswer, 0, Sequence, version, result).Serialize());
                 Sequence = Sequence >= 287 ? 0 : Sequence + 1;
                 Logger.Info<ScvManager>($"On {Cfg.Id} SectAnswer Msg sended.");
             }
@@ -352,24 +340,6 @@ namespace sacta_proxy.Managers
             psi.LastSectVersion = ((SactaMsg.SectInfo)(msg.Info)).Version;
             return false;
         }
-        protected void ManageOnLan(IPAddress from, Action<int, DateTime> deliver)
-        {
-            try
-            {
-                if (IpHelper.IsInSubnet(Cfg.Comm.Listen.FromMask1, from))
-                    deliver(0,LastActivityOnLan1);
-                else if (IpHelper.IsInSubnet(Cfg.Comm.Listen.FromMask2, from))
-                    deliver(1,LastActivityOnLan2);
-                else
-                {
-                    Logger.Error<ScvManager>($"On {Cfg.Id} Recibida Trama no identificada de {from}");
-                }
-            }
-            catch (Exception x)
-            {
-                Logger.Exception<ScvManager>(x, $"On {Cfg.Id}");
-            }
-        }
         protected void ProccessSectorization(SactaMsg msg, Action<bool,string> deliver)
         {
             var sectorsReceived = ((SactaMsg.SectInfo)(msg.Info)).Sectors.ToList();
@@ -402,7 +372,7 @@ namespace sacta_proxy.Managers
             else
             {
                 // Actulizar con los datos recibidos la sectorizacion global...
-                SafeLaunchEvent<ScvManagerSectorizationArgs>(EventSectorization, new ScvManagerSectorizationArgs()
+                SafeLaunchEvent<SectorizationArgs>(EventSectorization, new SectorizationArgs()
                 {
                     ScvId = Cfg.Id,
                     SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs)
@@ -410,31 +380,37 @@ namespace sacta_proxy.Managers
                 deliver(true, "");
             }
         }
-        protected bool IsThereLanActivity
+        protected void ManageOnLan(IPAddress from, Action<int> deliver)
         {
-            get
+            try
             {
-                return DateTime.Now - LastActivityOnLan1 < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive) ||
-                    DateTime.Now - LastActivityOnLan2 < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive);
+                if (IpHelper.IsInSubnet(Cfg.Comm.Listen.Lan1.FromMask, from))
+                {
+                    deliver(0);
+                }
+                else if (IpHelper.IsInSubnet(Cfg.Comm.Listen.Lan2.FromMask, from))
+                {
+                    deliver(1);
+                }
+                else
+                {
+                    Logger.Error<ScvManager>($"On {Cfg.Id} Recibida Trama no identificada de {from}");
+                }
+            }
+            catch (Exception x)
+            {
+                Logger.Exception<ScvManager>(x, $"On {Cfg.Id}");
             }
         }
-        
+
         #endregion Protected
 
         #region Datos
-        string Id { get; set; }
-        Configuration.DependecyConfig Cfg { get; set; }
+        protected UdpSocket Listener { get; set; }
         Dictionary<ushort, PSIInfo> SactaSPSIUsers { get; set; }
         Dictionary<ushort, PSIInfo> SactaSPVUsers { get; set; }
-        UdpSocket Listener { get; set; }
-        System.Timers.Timer TickTimer { get; set; }
         SactaState GlobalState { get; set; }
-        DateTime LastActivityOnLan1 { get; set; }
-        DateTime LastActivityOnLan2 { get; set; }
-        DateTime LastPresenceSended { get; set; }
         DateTime WhenSectorAsked { get; set; }
-        object Locker { get; set; }
-        int Sequence { get; set; }
         #endregion Datos
 
 #if DEBUG

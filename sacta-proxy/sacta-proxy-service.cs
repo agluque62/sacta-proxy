@@ -33,10 +33,17 @@ namespace sacta_proxy
     }
     public partial class SactaProxy : ServiceBase
     {
-        public SactaProxy()
+        public SactaProxy(bool WebEnabled=true)
         {
             InitializeComponent();
-            SactaProxyWebApp = new SactaProxyWebApp();
+            if (WebEnabled)
+            {
+                SactaProxyWebApp = new SactaProxyWebApp();
+            }
+            else
+            {
+                SactaProxyWebApp = null;
+            }
         }
         public void StartOnConsole(string[] args)
         {
@@ -45,6 +52,7 @@ namespace sacta_proxy
         public void StopOnConsole()
         {
             OnStop();
+            Task.Delay(TimeSpan.FromSeconds(2)).Wait();
         }
         protected override void OnStart(string[] args)
         {
@@ -52,15 +60,15 @@ namespace sacta_proxy
             cfgManager.Get((cfg =>
             {
                 DepManager.Clear();
-                cfg.Proxy.Sectorization.Positions.Clear();
-                cfg.Proxy.Sectorization.Sectors.Clear();
+                cfg.Psi.Sectorization.Positions.Clear();
+                cfg.Psi.Sectorization.Sectors.Clear();
 
                 var manager = new PsiManager();
                 manager.EventActivity += OnPsiEventActivity;
 
                 MainManager = new DependencyControl()
                 {
-                    Cfg = cfg.Proxy,
+                    Cfg = cfg.Psi,
                     Manager = manager
                 }; 
 
@@ -71,8 +79,8 @@ namespace sacta_proxy
                     dependency.EventSectorization += OnScvEventSectorization;
 
                     /** Construyendo la configuracion de Sectorizacion general */
-                    cfg.Proxy.Sectorization.Positions.AddRange(dep.Sectorization.Positions);
-                    cfg.Proxy.Sectorization.Sectors.AddRange(dep.Sectorization.Sectors);
+                    cfg.Psi.Sectorization.Positions.AddRange(dep.Sectorization.Positions);
+                    cfg.Psi.Sectorization.Sectors.AddRange(dep.Sectorization.Sectors);
 
                     //dependency.Start(dep);
                     DepManager[dep.Id] = new DependencyControl()
@@ -82,16 +90,16 @@ namespace sacta_proxy
                     };
                 });
                 /** Chequear que no haya sectores o posiciones repetidas */
-                var duplicatedSec = cfg.Proxy.Sectorization.Sectors.GroupBy(s => s)
+                var duplicatedSec = cfg.Psi.Sectorization.Sectors.GroupBy(s => s)
                     .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
-                var duplicatedPos = cfg.Proxy.Sectorization.Positions.GroupBy(s => s)
+                var duplicatedPos = cfg.Psi.Sectorization.Positions.GroupBy(s => s)
                     .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
                 TestDuplicated(duplicatedPos, duplicatedSec, () =>
                 {
                     // Solo arranca el programa cuando no hay duplicados.
                     EventThread.Start();
 
-                    MainManager.Manager.Start(cfg.Proxy);
+                    MainManager.Manager.Start(cfg.Psi);
 
                     DepManager.Values.ToList().ForEach(dependency =>
                     {
@@ -100,7 +108,7 @@ namespace sacta_proxy
 
                     webCallbacks.Add("/config", OnConfig);
                     webCallbacks.Add("/status", OnState);
-                    SactaProxyWebApp.Start(cfg.General.WebPort, webCallbacks);
+                    SactaProxyWebApp?.Start(cfg.General.WebPort, webCallbacks);
                     Cfg = cfg;
                 });
             }));
@@ -108,7 +116,7 @@ namespace sacta_proxy
         protected override void OnStop()
         {
             // Se ejecuta al finalizar el programa.
-            SactaProxyWebApp.Stop();
+            SactaProxyWebApp?.Stop();
             DepManager.Values.ToList().ForEach(dependency =>
             {
                 (dependency.Manager as ScvManager).EventActivity -= OnScvEventActivity;
@@ -181,16 +189,16 @@ namespace sacta_proxy
 
         #region EventManagers
         private readonly EventQueue EventThread = new EventQueue();
-        protected void OnScvEventActivity(Object sender, ScvManagerActivityArgs data)
+        protected void OnScvEventActivity(Object sender, ActivityOnLanArgs data)
         {
             EventThread.Enqueue("OnScvEventActivity", () =>
             {
                 var controlDep = DepManager.Where(d => d.Key == data.ScvId).Select(d => d.Value).ToList();
                 if (controlDep.Count == 1)
                 {
-                    if (controlDep[0].Activity != data.Activity)
+                    if (controlDep[0].Activity != data.ActivityOnLan)
                     {
-                        controlDep[0].Activity = data.Activity;
+                        controlDep[0].Activity = data.ActivityOnLan;
                     }
                     var actives = DepManager.Select(s => s.Value).Where(d => d.Activity == true).ToList();
                     MainManager.Manager.EnableTx =
@@ -204,21 +212,22 @@ namespace sacta_proxy
                 }
             });
         }
-        protected void OnScvEventSectorization(Object sender, ScvManagerSectorizationArgs data)
+        protected void OnScvEventSectorization(Object sender, SectorizationArgs data)
         {
+            /** Se ha recibido una sectorizacion correcta de una dependencia */ 
             EventThread.Enqueue("OnScvEventSectorization", () =>
             {
                 // TODO
 
             });
         }
-        protected void OnPsiEventActivity(Object sender, PsiManagerActivityArgs data)
+        protected void OnPsiEventActivity(Object sender, ActivityOnLanArgs data)
         {
             EventThread.Enqueue("OnPsiEventActivity", () =>
             {
-                if (data.Activity != MainManager.Activity)
+                if (data.ActivityOnLan != MainManager.Activity)
                 {
-                    MainManager.Activity = data.Activity;
+                    MainManager.Activity = data.ActivityOnLan;
                     // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
                     DepManager.Values.ToList().ForEach(dependency =>
                     {
