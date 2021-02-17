@@ -49,6 +49,18 @@ body
     text-align: left;
     font-size: 110%;
 }
+.contenido {
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #4A7729 /*#C1022C*/;
+    padding: 20px 0 0 0;
+}
+.linea{
+    margin: 2px 4px 2px 4px;
+    border-top: 2px solid #4a7729
+}
 .pie {
     height: 30px;
     padding-top: 5px;
