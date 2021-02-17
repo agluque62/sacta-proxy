@@ -38,6 +38,10 @@
 		[x] Conexion de la base de datos.
 	[] Testear el configuracion de SACTA...
 		[] Que no se introduzcan Sectores/Posiciones repetidos en web por dependencia.
+	[] Mejorar la presentacion de Mensajes
+		[] ¿Modo Lista?
+		[] Mensajes Vacios.
+	[] Modo AND/OR.
 [x] Controlar activación / desactivación en los modos PPAL/RSVA...
 [x] Instalador del servicio.
 	[x] Incluir Opciones de Instalacion
@@ -58,7 +62,8 @@
 		[x] Para CD30.
 		[x] Para ULISES.
 	[x] Supervisión de Presencia de la conexión a la base de datos.
-[x] Relacionar el Tipo de SCV con la versión del protocolo.
+[] Relacionar el Tipo de SCV con la versión del protocolo.
+	[] Grabarlo en el Fichero JSON para que lo identifique las páginas.
 [] Documentacion
 	[x] Descripcion General
 	[x] Guia de Instalación y Configuración.
