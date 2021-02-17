@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -35,5 +36,20 @@ namespace sacta_proxy_tests
             });
         }
 
+        [TestMethod]
+        public void StringSplitTest()
+        {
+            var inputs = new List<string>()
+            {
+                "",",","120:","1:1,kkk,32:0","1:1,kk:mm,2:kk"
+            };
+
+            inputs.ForEach(input =>
+            {
+                var splitted = input.Split(',')
+                    .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                    .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+            });
+        }
     }
 }
