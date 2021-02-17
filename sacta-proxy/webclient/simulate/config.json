@@ -154,9 +154,9 @@
 					}
 				},
 				"Sectorization": {
-					"Sectors": [],
-					"Positions": [],
-					"Virtuals": []
+					"Sectors": [1,2,3,4],
+					"Positions": [1,2,3,4],
+					"Virtuals": [110,111]
 				}
 			},
 			{
@@ -230,9 +230,9 @@
 					}
 				},
 				"Sectorization": {
-					"Sectors": [],
-					"Positions": [],
-					"Virtuals": []
+					"Sectors": [11,12,13],
+					"Positions": [21,22,23,24],
+					"Virtuals": [212,213,214]
 				}
 			}
 		]
