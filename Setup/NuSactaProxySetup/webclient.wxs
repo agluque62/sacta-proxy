@@ -61,9 +61,6 @@
             <Component Id="cmpA048596CF5B29F578BE46CFC01103246" Directory="dir784D4B1E2F9712B636AEB0D142963622" Guid="*">
                 <File Id="fil39E1E698665137AD8B67BE82F8615C3D" KeyPath="yes" Source="$(var.SourcePath)\app\views\SprxAbout.html" />
             </Component>
-            <Component Id="cmp1394CB021B54A46F9B8150AD07710901" Directory="dir784D4B1E2F9712B636AEB0D142963622" Guid="*">
-                <File Id="filC2864505683DEA25004511C2B0F8F9C0" KeyPath="yes" Source="$(var.SourcePath)\app\views\SprxConfig - copia.html" />
-            </Component>
             <Component Id="cmp0E9D6D5DBD771D1B3E1458E622420740" Directory="dir784D4B1E2F9712B636AEB0D142963622" Guid="*">
                 <File Id="fil13B66CE91662261E1231884912B719C9" KeyPath="yes" Source="$(var.SourcePath)\app\views\SprxConfig.html" />
             </Component>
