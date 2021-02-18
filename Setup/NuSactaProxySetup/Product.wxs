@@ -34,6 +34,12 @@
     <Property Id="DB_TIMEOUT" Value="5" >
       <RegistrySearch Id='DB_TIMEOUT_Property' Name='DB_TIMEOUT_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
     </Property>
+    <Property Id="DB_USER" Value="root" >
+      <RegistrySearch Id='DB_USER_Property' Name='DB_USER_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
+    </Property>
+    <Property Id="DB_PWD" Value="pwd" >
+      <RegistrySearch Id='DB_PWD_Property' Name='DB_PWD_Property' Root='HKLM' Key='SOFTWARE\Wix\SACTAPROXY' Type='raw' />
+    </Property>
 
     <WixVariable Id="WixUIDialogBmp"  Value="bkg-image.jpg" Overridable="yes"/>
     <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
@@ -118,6 +124,14 @@
                         File = "[#SactaProxyCfg]"
                         ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='DbConnTimeout'[\]]/value"
                         Value="[DB_TIMEOUT]"/>
+        <util:XmlFile Id="DbUser" Action="setValue"
+                        File = "[#SactaProxyCfg]"
+                        ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='DbRootUser'[\]]/value"
+                        Value="[DB_USER]"/>
+        <util:XmlFile Id="DbPwd" Action="setValue"
+                        File = "[#SactaProxyCfg]"
+                        ElementPath="/configuration/applicationSettings/sacta_proxy.Properties.Settings/setting[\[]@name='DbRootPwd'[\]]/value"
+                        Value="[DB_PWD]"/>
       </Component>
       <Component Id ="sacta_proxy_data" Guid="*">
         <!--<File Id="SactaProxyCfg" Name="sacta-proxy-config.json"></File>-->
@@ -141,6 +155,8 @@
           <RegistryValue Name='DB_IP_Property' Value='[DB_IP]' Type='string' />
           <RegistryValue Name='DB_CONN_Property' Value='[DB_CONN]' Type='string' />
           <RegistryValue Name='DB_TIMEOUT_Property' Value='[DB_TIMEOUT]' Type='string' />
+          <RegistryValue Name='DB_USER_Property' Value='[DB_USER]' Type='string' />
+          <RegistryValue Name='DB_PWD_Property' Value='[DB_PWD]' Type='string' />
         </RegistryKey>
       </Component>
     </ComponentGroup>
@@ -247,12 +263,36 @@
           </ComboBox>
         </Control>
 
-        <Control Id="DbConnTimeoutLabel" Type="Text" X="205" Y="120" Width="100" Height="10" TabSkip="no" Text="Timeout de Conexion BDT" />
-        <Control Id="DbConnTimeoutValue" Type="Edit" X="205" Y="130" Width="100" Height="18" Property="DB_TIMEOUT" Text="{4}" />
+        <Control Id="DbConnTimeoutLabel" Type="Text" X="205" Y="120" Width="100" Height="10" TabSkip="no" Text="Timeout de Conexion BDT" >
+          <Condition Action="hide"><![CDATA[DB_CONN = "0"]]></Condition>
+          <Condition Action="show"><![CDATA[DB_CONN = "1"]]></Condition>
+        </Control>
+        <Control Id="DbConnTimeoutValue" Type="Edit" X="205" Y="130" Width="100" Height="18" Property="DB_TIMEOUT" Text="{4}" >
+          <Condition Action="hide"><![CDATA[DB_CONN = "0"]]></Condition>
+          <Condition Action="show"><![CDATA[DB_CONN = "1"]]></Condition>
+        </Control>
 
-        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back"/>
+        <Control Id="DbUserLabel" Type="Text" X="45" Y="150" Width="100" Height="10" TabSkip="no" Text="Usuario Base de Datos" >
+          <Condition Action="hide"><![CDATA[DB_CONN = "0"]]></Condition>
+          <Condition Action="show"><![CDATA[DB_CONN = "1"]]></Condition>
+        </Control>
+        <Control Id="DbUserValue" Type="Edit" X="45" Y="160" Width="100" Height="18" Property="DB_USER" Text="{32}" >
+          <Condition Action="hide"><![CDATA[DB_CONN = "0"]]></Condition>
+          <Condition Action="show"><![CDATA[DB_CONN = "1"]]></Condition>
+        </Control>
+
+        <Control Id="DbPwdLabel" Type="Text" X="205" Y="150" Width="100" Height="10" TabSkip="no" Text="Clave Base de Datos" >
+          <Condition Action="hide"><![CDATA[DB_CONN = "0"]]></Condition>
+          <Condition Action="show"><![CDATA[DB_CONN = "1"]]></Condition>
+        </Control>
+        <Control Id="DbPwdValue" Type="Edit" X="205" Y="160" Width="100" Height="18" Property="DB_PWD" Text="{32}" >
+          <Condition Action="hide"><![CDATA[DB_CONN = "0"]]></Condition>
+          <Condition Action="show"><![CDATA[DB_CONN = "1"]]></Condition>
+        </Control>
+
+        <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Atras"/>
         <!--<Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)" />-->
-        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Text="Next" />
+        <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Text="Siguiente" />
         <!--<Condition Action="enable"><![CDATA[SPREAD_NUMBER > 1 AND SPREAD_IPBASE]]></Condition>
           <Condition Action="disable"><![CDATA[NOT SPREAD_NUMBER OR SPREAD_NUMBER < 2 OR NOT SPREAD_IPBASE]]></Condition>
           <Publish Event="DoAction" Value="GenerateSpreadConf"><![CDATA[SPREAD=1]]></Publish>
