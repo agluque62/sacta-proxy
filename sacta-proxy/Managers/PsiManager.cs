@@ -176,19 +176,24 @@ namespace sacta_proxy.Managers
                                         Logger.Debug<PsiManager>($"On PSI from Scv Lan {lan} Valid message {msg.Type} received.  Id = {msg.Id}");
                                         if (msg.Type == SactaMsg.MsgType.Init)
                                         {
-                                                ScvInfo.LastSectMsgId = -1;
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.Presence)
                                         { 
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.SectAsk)
                                         {
-                                            Logger.Info<PsiManager>($"On PSI from Scv Lan {lan} Sectorization Sectoriztion Request Received");
-                                            if (ScvInfo.LastSectMsgId != msg.Id)
+                                            Logger.Info<PsiManager>($"On PSI from Scv Lan {lan} Sectorization Sectorization Request Received");
+                                            // Si el mensaje llega por las dos redes solo respondo una vez...
+                                            if (SectAskpending == false)
                                             {
-                                                // Si el mensaje llega por las dos redes solo respondo una vez...
+                                                SectAskpending = true;
+                                                // Una vez respondido a la primera, abro una ventana de no atencion de 500 msg.
+                                                Task.Run(() => { Task.Delay(500).Wait(); SectAskpending = false; });
                                                 SafeLaunchEvent<SectorizationRequestArgs>(EventSectRequest, new SectorizationRequestArgs());
-                                                ScvInfo.LastSectMsgId = msg.Id;
+                                            }
+                                            else
+                                            {
+                                                Logger.Warn<PsiManager>($"On PSI from Scv lan {lan}. Sectorization Request Message Ignored...");
                                             }
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.SectAnswer)
@@ -342,7 +347,8 @@ namespace sacta_proxy.Managers
         int SectorizationVersion { get; set; }
         UdpSocket Listener1, Listener2;
 
-        PsiOrScvInfo ScvInfo = new PsiOrScvInfo();
+        bool SectAskpending { get; set; } = false;
+
         Func<History> History { get; set; }
         #endregion
     }

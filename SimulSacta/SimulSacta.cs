@@ -4,6 +4,7 @@ using System.Timers;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
+using System.Threading.Tasks;
 
 using NLog;
 using SimulSACTA.Properties;
@@ -160,12 +161,22 @@ namespace SimulSACTA
                             if (_ActivityTimeOut < 5) _ActivityTimeOut = Settings.Default.ActivityTimeOut;
                             break;
                         case SactaMsg.MsgType.SectAsk:
-                            MainForm.LogMethod("INFO", "Recibida Peticion de Sectorizacion");
-                            SendSectorization(_SectorUcs, msg);
+                            MainForm.LogMethod("INFO", $"LAN {net}: Recibida Peticion de Sectorizacion...");
+                            if (SectAskpending == false)
+                            {
+                                SectAskpending = true;
+                                Task.Run(() => { Task.Delay(500).Wait(); SectAskpending = false; });
+                                SendSectorization(_SectorUcs, msg);
+                            }
+                            else
+                            {
+                                MainForm.LogMethod("INFO", $"LAN {net}: Peticion de Sectorizacion Ignorada (ya se esta tramitando por la otra red)");
+                            }
                             break;
                         case SactaMsg.MsgType.SectAnwer:
                             SactaMsg.SectAnswerInfo info = (SactaMsg.SectAnswerInfo)(msg.Info);
-                            MainForm.LogMethod("INFO", String.Format("Sectorizacion V-{0}: {1}", info.Version, (info.Result == 1 ? "Implantada" : "Rechazada")));
+                            var res = info.Result == 1 ? "Implantada" : "Rechazada";
+                            MainForm.LogMethod("INFO", $"LAN {net}: Sectorizacion V-{info.Version}: {res}");
                             break;
                     }
                 }
@@ -350,6 +361,9 @@ namespace SimulSACTA
         class UdpSocket2
         {
         }
+
+        bool SectAskpending { get; set; } = false;
+
 
     }
 }
