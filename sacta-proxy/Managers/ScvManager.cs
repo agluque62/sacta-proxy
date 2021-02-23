@@ -224,7 +224,7 @@ namespace sacta_proxy.Managers
                                             }
                                             else
                                             {
-                                                Logger.Info<ScvManager>($"Sectorization Request (Red = {lan}, Versión = {((SactaMsg.SectInfo)(msg.Info)).Version}, IGNORED. Already in Progress...");
+                                                Logger.Warn<ScvManager>($"Sectorization Request (Red = {lan}, Versión = {((SactaMsg.SectInfo)(msg.Info)).Version}, IGNORED. Already in Progress...");
                                             }
                                         }
                                         else
