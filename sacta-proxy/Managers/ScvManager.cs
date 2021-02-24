@@ -17,7 +17,6 @@ namespace sacta_proxy.Managers
 {
     class ScvManager : BaseManager, IDisposable
     {
-        enum SactaState { WaitingSactaActivity, WaitingSectorization, SendingPresences, Stopped }
         #region Events
         public event EventHandler<ActivityOnLanArgs> EventActivity;
         public event EventHandler<SectorizationReceivedArgs> EventSectorization;
@@ -174,6 +173,25 @@ namespace sacta_proxy.Managers
             }
         }
 
+        public override bool TxEnabled 
+        { 
+            get => base.TxEnabled;
+            set
+            {
+                lock (Locker)
+                {
+                    if (value == true)
+                    {
+                        WhenSectorAsked = DateTime.MinValue;
+                    }
+                    else
+                    {
+                        GlobalState = SactaState.WaitingSactaActivity;
+                    }
+                    base.TxEnabled = value;
+                }
+            } 
+        }
         #endregion Public
 
         #region Protected Methods
@@ -197,7 +215,12 @@ namespace sacta_proxy.Managers
                                         Logger.Debug<ScvManager>($"On {Cfg.Id} from Sacta Lan {lan} Valid message {msg.Type} received");
                                         if (msg.Type == SactaMsg.MsgType.Init)
                                         {
-                                            // todo
+                                            if (GlobalState != SactaState.WaitingSactaActivity)
+                                            {
+                                                // Se ha reiniciado la dependencia si transcurrir el tiempo....
+                                                Logger.Warn<ScvManager>($"On {Cfg.Id} from Sacta Lan {lan}. INIT in state {GlobalState}");
+                                                GlobalState = SactaState.WaitingSactaActivity;
+                                            }
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.Sectorization)
                                         {
@@ -388,13 +411,13 @@ namespace sacta_proxy.Managers
         }
         protected void SendPresence()
         {
-            Logger.Info<ScvManager>($"On {Id} (TXE {TxEnabled}) Sending Presence Msg (Sequence {Sequence}) ...");
+            Logger.Debug<ScvManager>($"On {Id} (TXE {TxEnabled}) Sending Presence Msg (Sequence {Sequence}) ...");
             var msg = SactaMsg.MsgToSacta(Cfg, SactaMsg.MsgType.Presence, 0, Sequence).Serialize();
             if (BroadMessage(msg))
             {
                 Sequence = Sequence >= 287 ? 0 : Sequence + 1;
                 LastPresenceSended = DateTime.Now;
-                Logger.Info<ScvManager>($"On {Cfg.Id} Presence Msg sended. (New Sequence {Sequence}) ");
+                Logger.Debug<ScvManager>($"On {Cfg.Id} Presence Msg sended. (New Sequence {Sequence}) ");
             }
         }
         protected void SendSectAsk()

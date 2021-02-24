@@ -168,6 +168,13 @@ angular.module("sacta_proxy")
             var lan_data = lan == 'Lan1' ? cfg.status.act.lan1 : cfg.status.act.lan2;
             return { str: 'Transmite (' + lan_data.sendto + ')' };
         }
+
+        ctrl.sacta_aut_text = (std) => {
+            var str = std == 0 ? "Esperando Actividad Sacta" :
+                std == 1 ? "Esperando Configuracion SACTA" :
+                    std == 2 ? "Enviando Presencias" : "Parado";
+            return { str: str };
+        }
         /** */
         function msgTableCreate(element) {
             var table = element.DataTable(

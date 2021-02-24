@@ -117,6 +117,7 @@ namespace sacta_proxy.Managers
                 return new
                 {
                     global_state = PS.Status,
+                    aut_state = SactaState.SendingPresences,
                     act = new 
                     { 
                         global = IsThereLanActivity, 
@@ -176,6 +177,17 @@ namespace sacta_proxy.Managers
                                         Logger.Debug<PsiManager>($"On PSI from Scv Lan {lan} Valid message {msg.Type} received.  Id = {msg.Id}");
                                         if (msg.Type == SactaMsg.MsgType.Init)
                                         {
+                                            if (ScvActivity == true)
+                                            {
+                                                // Hay un reset de SCV que no se ha detectado por TIMEOUT...
+                                                Logger.Warn<PsiManager>($"On Psi Activity on LAN OFF. Cause: Init Received ...");
+                                                ScvActivity = false;
+                                                // Evento de Desconexion con SCV.
+                                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
+                                                {
+                                                    ActivityOnLan = false
+                                                });
+                                            }
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.Presence)
                                         { 
@@ -319,13 +331,13 @@ namespace sacta_proxy.Managers
         }
         protected void SendPresenceMsg()
         {
-            Logger.Info<PsiManager>($"On PSI (TXE {TxEnabled}) Sending Presence Msg (Sequence {Sequence}...");
+            Logger.Debug<PsiManager>($"On PSI (TXE {TxEnabled}) Sending Presence Msg (Sequence {Sequence}...");
             var msg = SactaMsg.MsgToScv(Cfg, SactaMsg.MsgType.Presence, 0, Sequence).Serialize();
             if (BroadMessage(msg))
             {
                 Sequence = Sequence >= 287 ? 0 : Sequence + 1;
                 LastPresenceSended = DateTime.Now;
-                Logger.Info<PsiManager>($"On PSI Presence Msg sended. (New Sequence {Sequence})");
+                Logger.Debug<PsiManager>($"On PSI Presence Msg sended. (New Sequence {Sequence})");
             }
         }
         protected void SendSectorizationMsg(Dictionary<string,int> sectorUcs)

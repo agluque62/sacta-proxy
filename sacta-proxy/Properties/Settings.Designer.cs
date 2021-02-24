@@ -94,5 +94,14 @@ namespace sacta_proxy.Properties {
                 return ((int)(this["DbMaxConsecutiveErrors"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int SectInitTimeout {
+            get {
+                return ((int)(this["SectInitTimeout"]));
+            }
+        }
     }
 }
