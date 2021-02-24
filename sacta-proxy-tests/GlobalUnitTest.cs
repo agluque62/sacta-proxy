@@ -6,6 +6,7 @@ using System.Linq;
 
 using System.Net;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 using sacta_proxy;
 using sacta_proxy.helpers;
@@ -36,6 +37,32 @@ namespace sacta_proxy_tests
 
             Task.Delay(TimeSpan.FromSeconds(1000)).Wait();
             app.StopOnConsole();
+        }
+        [TestMethod]
+        public void TestCustomEventSync()
+        {
+            var eventsync = new CustomEventSync(2);
+            var startingpoint = DateTime.Now;
+
+            Task.Run(() =>
+            {
+                Task.Delay(500).Wait();
+                eventsync?.Signal();
+            });
+
+            Task.Run(() =>
+            {
+                Task.Delay(1700).Wait();
+                eventsync?.Signal();
+            });
+            using (eventsync)
+            {
+                eventsync.Wait(TimeSpan.FromSeconds(3), (timeout) =>
+                {
+                    Debug.WriteLine($"eventsync Timeout: {timeout}, Elapsed: {(DateTime.Now-startingpoint).TotalSeconds}");
+                });
+            }
+            eventsync = null;
         }
     }
 }

@@ -192,4 +192,39 @@ namespace sacta_proxy.helpers
 
 		#endregion
 	}
+
+	public class CustomEventSync : IDisposable
+	{
+		private ManualResetEvent EventObject { get; set; }
+		private int Count { get; set; }
+		public CustomEventSync(int count)
+        {
+			EventObject = new ManualResetEvent(false);
+			Count = count;
+        }
+        public void Dispose()
+        {
+			EventObject.Dispose();
+		}
+		public void Wait(TimeSpan timeout, Action<bool> retorno)
+        {
+			var Limit = DateTime.Now + timeout;
+			int count = 0;
+			EventObject.Reset();
+			do
+			{
+				if (EventObject.WaitOne(100) == true)
+				{
+					EventObject.Reset();
+					count++;
+				}
+			} while (DateTime.Now < Limit && count < Count);
+			retorno(count < Count);
+        }
+
+		public void Signal()
+        {
+			EventObject.Set();
+		}
+    }
 }
