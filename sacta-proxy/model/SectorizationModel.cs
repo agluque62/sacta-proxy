@@ -99,9 +99,9 @@ namespace sacta_proxy.model
 
         public static void CompareWithDb(string PositionsList, string SectorsList, string VirtualSectorsList, Action<string> notifyError)
         {
-            var PosInCfg = PositionsList.Split(',').OrderBy(i => i).ToList();
-            var SecInCfg = SectorsList.Split(',').OrderBy(i => i).ToList();
-            var VirInCfg = VirtualSectorsList.Split(',').OrderBy(i => i).ToList();
+            var PosInCfg = PositionsList.Count()==0 ? new List<string>() : PositionsList.Split(',').OrderBy(i => i).ToList();
+            var SecInCfg = SectorsList.Count() == 0 ? new List<string>() : SectorsList.Split(',').OrderBy(i => i).ToList();
+            var VirInCfg = VirtualSectorsList.Count() == 0 ? new List<string>() : VirtualSectorsList.Split(',').OrderBy(i => i).ToList();
             SectorizationsItemsInDB((PosInDb, SecInDb, VirInDb) =>
             {
                 var PosEquals = PosInCfg.Except(PosInDb).Count() == 0 && PosInDb.Except(PosInCfg).Count()==0;
@@ -156,9 +156,9 @@ namespace sacta_proxy.model
                                     while (VirtualsReader.Read())
                                         virtuals.Add(VirtualsReader[0].ToString());
                                 }
-                                positions = positions.Count == 0 ? new List<string>() { "-1" } : positions;
-                                sectors = sectors.Count == 0 ? new List<string>() { "-1" } : sectors;
-                                virtuals = virtuals.Count == 0 ? new List<string>() { "-1" } : virtuals;
+                                //positions = positions.Count == 0 ? new List<string>() { "-1" } : positions;
+                                //sectors = sectors.Count == 0 ? new List<string>() { "-1" } : sectors;
+                                //virtuals = virtuals.Count == 0 ? new List<string>() { "-1" } : virtuals;
                                 notify(positions, sectors, virtuals);
                             }
                         });
