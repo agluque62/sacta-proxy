@@ -48,9 +48,9 @@ namespace SimulSACTA
         /// </summary>
         /// <param name="level"></param>
         /// <param name="message"></param>
-        public static void LogMethod(string level, string message)
+        public static void LogMethod(/*string level*/LogLevel level, string message)
         {
-            _This.Invoke(new GenericEventHandler<string>(_This.OnNewInfoEvent), new object[] { _This, message });
+            _This.Invoke(new GenericEventHandler<string>(_This.OnNewInfoEventNew), new object[] { /*_This*/level, message });
         }
         /// <summary>
         /// 
@@ -60,6 +60,7 @@ namespace SimulSACTA
         void OnNewInfoEvent(object sender, string info)
         {
             _InfoLB.BeginUpdate();
+
             if (_InfoLB.Items.Count > 2000)
             {
                 for (int i = _InfoLB.Items.Count - 1; i > 1500; i--)
@@ -70,6 +71,25 @@ namespace SimulSACTA
             _Logger.Info(info);
             _InfoLB.Items.Insert(0, info);
             _InfoLB.EndUpdate();
+        }
+
+        void OnNewInfoEventNew(object sender, string info)
+        {
+            _InfoLB.BeginUpdate();
+
+            if (_InfoLB.Items.Count > 2000)
+            {
+                //for (int i = _InfoLB.Items.Count - 1; i > 1500; i--)
+                //{
+                //    _InfoLB.Items.RemoveAt(i);
+                //}
+                for (int i = 0; i < 500; i++)
+                    _InfoLB.Items.RemoveAt(0);
+            }
+            _Logger.Log(sender as LogLevel, info);
+            _InfoLB.Items.Add($"{DateTime.Now.ToLongTimeString()}: {info}");
+            _InfoLB.EndUpdate();
+            _InfoLB.SelectedIndex = _InfoLB.Items.Count - 1;
         }
 
         /// <summary>

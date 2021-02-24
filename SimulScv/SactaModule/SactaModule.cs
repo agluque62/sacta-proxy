@@ -790,7 +790,7 @@ namespace Sacta
                     int net = client == sacta1 ? 0 : client == sacta2 ? 1 : -1;
                     if (net == -1)
                     {
-                        Logger.Info<SactaModule>(String.Format("From {0} => Trama no identificada", dg.Client.Address.ToString()));
+                        Logger.Error<SactaModule>(String.Format("From {0} => Trama no identificada", dg.Client.Address.ToString()));
                         return;
                     }
 #else
@@ -965,7 +965,7 @@ namespace Sacta
                                     }
                                     Logger.Exception<SactaModule>(x);
                                 }
-                                Logger.Info<SactaModule>(String.Format("Sectorizacion {0} procesada en {1} segundos.",
+                                Logger.Warn<SactaModule>(String.Format("Sectorizacion {0} procesada en {1} segundos.",
                                     ((SactaMsg.SectInfo)(currentSect.Info)).Version,
                                     (DateTime.Now - startingTime).TotalSeconds));
                             }
@@ -976,7 +976,7 @@ namespace Sacta
             }
             else
             {
-                Logger.Info<SactaModule>(String.Format("Petición de sectorización (Red = {0}, Versión = {1}, DESCARTADA. Ya se esta procesado...",
+                Logger.Error<SactaModule>(String.Format("Petición de sectorización (Red = {0}, Versión = {1}, DESCARTADA. Ya se esta procesado...",
                     net, ((SactaMsg.SectInfo)(sect.Info)).Version));
             }
         }
@@ -1016,7 +1016,7 @@ namespace Sacta
                         info["SactaBEP"] = _EndPoint[1];
 
                         General.AsyncSafeLaunchEvent(SactaActivityChanged, this, info);
-                        Logger.Info<SactaModule>(String.Format("SactaActivityChangedEvent => {0}", _ActivityState));
+                        Logger.Warn<SactaModule>(String.Format("SactaActivityChangedEvent => {0}", _ActivityState));
                     }
 
                     if (_ActivityState == 0)
@@ -1304,7 +1304,7 @@ namespace Sacta
                 _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.Init, SactaMsg.InitId, 0)).Serialize());
             if (Lan2 && (_ActivityState & 0x2) == 0x2)
                 _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.Init, SactaMsg.InitId, 0)).Serialize());
-            Logger.Info<SactaModule>(String.Format("Mensaje INIT enviado..."));
+            Logger.Warn<SactaModule>(String.Format("Mensaje INIT enviado..."));
 #else
             if ((_ActivityState & 0x1) == 0x1) _Comm[0].Send(_EndPoint[0], _InitMsg);
             if ((_ActivityState & 0x2) == 0x2) _Comm[1].Send(_EndPoint[1], _InitMsg);

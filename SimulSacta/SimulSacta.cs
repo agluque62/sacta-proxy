@@ -161,7 +161,7 @@ namespace SimulSACTA
                             if (_ActivityTimeOut < 5) _ActivityTimeOut = Settings.Default.ActivityTimeOut;
                             break;
                         case SactaMsg.MsgType.SectAsk:
-                            MainForm.LogMethod("INFO", $"LAN {net}: Recibida Peticion de Sectorizacion...");
+                            MainForm.LogMethod(/*"INFO"*/LogLevel.Info, $"LAN {net}: Recibida Peticion de Sectorizacion...");
                             if (SectAskpending == false)
                             {
                                 SectAskpending = true;
@@ -170,13 +170,13 @@ namespace SimulSACTA
                             }
                             else
                             {
-                                MainForm.LogMethod("INFO", $"LAN {net}: Peticion de Sectorizacion Ignorada (ya se esta tramitando por la otra red)");
+                                MainForm.LogMethod(/*"INFO"*/LogLevel.Info, $"LAN {net}: Peticion de Sectorizacion Ignorada (ya se esta tramitando por la otra red)");
                             }
                             break;
                         case SactaMsg.MsgType.SectAnwer:
                             SactaMsg.SectAnswerInfo info = (SactaMsg.SectAnswerInfo)(msg.Info);
                             var res = info.Result == 1 ? "Implantada" : "Rechazada";
-                            MainForm.LogMethod("INFO", $"LAN {net}: Sectorizacion V-{info.Version}: {res}");
+                            MainForm.LogMethod(/*"INFO"*/LogLevel.Info, $"LAN {net}: Sectorizacion V-{info.Version}: {res}");
                             break;
                     }
                 }
@@ -185,7 +185,7 @@ namespace SimulSACTA
             {
                 if (!_Disposed)
                 {
-                    MainForm.LogMethod("ERROR", String.Format("Excepción al Procesar Datos Recibidos: {0}",ex.Message));
+                    MainForm.LogMethod(/*"ERROR"*/LogLevel.Error, String.Format("Excepción al Procesar Datos Recibidos: {0}",ex.Message));
                 }
             }
         }
@@ -217,7 +217,7 @@ namespace SimulSACTA
                 if (activityState != _ActivityState)
                 {
                     _ActivityState = activityState;
-                    MainForm.LogMethod("INFO", String.Format("Estado de Actividad de SCV Cambiado a {0}", _ActivityState));
+                    MainForm.LogMethod(/*"INFO"*/LogLevel.Info, String.Format("Estado de Actividad de SCV Cambiado a {0}", _ActivityState));
                 }
 
                 if ((uint)((DateTime.Now - _LastPresenceSended).TotalMilliseconds) > Settings.Default.PresenceInterval)
@@ -234,7 +234,7 @@ namespace SimulSACTA
             {
                 if (!_Disposed)
                 {
-                    MainForm.LogMethod("ERROR", String.Format("Excepción en Tareas Periodicas de SACTA: {0}", ex.Message));
+                    MainForm.LogMethod(/*"ERROR"*/LogLevel.Error, String.Format("Excepción en Tareas Periodicas de SACTA: {0}", ex.Message));
                 }
             }
             finally
@@ -259,7 +259,7 @@ namespace SimulSACTA
 
             foreach (string sUser in Settings.Default.ScvUsers)
             {
-                MainForm.LogMethod("INFO", String.Format("Enviado MSG Init a SCV {0}", sUser));
+                MainForm.LogMethod(/*"INFO"*/LogLevel.Info, String.Format("Enviado MSG Init a SCV {0}", sUser));
 
                 byte[] user = BitConverter.GetBytes(UInt16.Parse(sUser));
                 Array.Reverse(user);
@@ -288,7 +288,7 @@ namespace SimulSACTA
 
             if (ask != null)
             {
-                MainForm.LogMethod("INFO", String.Format("Enviando Sectorizacion a SCV {0} ({1})", ask.UserOrg, strSect(sectorUcs)));
+                MainForm.LogMethod(/*"INFO"*/LogLevel.Info, String.Format("Enviando Sectorizacion a SCV {0} ({1})", ask.UserOrg, strSect(sectorUcs)));
 
                 byte[] user = BitConverter.GetBytes(ask.UserOrg);
                 Array.Reverse(user);
@@ -301,7 +301,7 @@ namespace SimulSACTA
             {
                 foreach (string sUser in Settings.Default.ScvUsers)
                 {
-                    MainForm.LogMethod("INFO", String.Format("Enviando Sectorizacion V-{0} a SCV {1} ({2})", ((SactaMsg.SectInfo)(msg.Info)).Version, sUser, strSect(sectorUcs)));
+                    MainForm.LogMethod(/*"INFO"*/LogLevel.Info, String.Format("Enviando Sectorizacion V-{0} a SCV {1} ({2})", ((SactaMsg.SectInfo)(msg.Info)).Version, sUser, strSect(sectorUcs)));
 
                     byte[] user = BitConverter.GetBytes(UInt16.Parse(sUser));
                     Array.Reverse(user);
