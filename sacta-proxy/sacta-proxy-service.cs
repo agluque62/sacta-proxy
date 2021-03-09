@@ -513,8 +513,13 @@ namespace sacta_proxy
                         History.Add(HistoryItems.DepSectorizationReceivedEvent, "", ctrldep.Cfg.Id, "", SectorizationHelper.MapToString(data.SectorMap));
 
                         // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
-                        var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
-                        if (DepWithSectInfo.Count == DepManagers.Count)
+                        var actives = DepManagers.Where(d => d.Activity == true).ToList();
+                        var whithsect = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList().Count == DepManagers.Count;
+                        var sectenable = Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 : actives.Count() == DepManagers.Count();
+
+                        //var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
+                        //if (DepWithSectInfo.Count == DepManagers.Count)
+                        if (sectenable && whithsect)
                         {
                             if (ScvSectorizationAskPending == false)
                             {
@@ -532,8 +537,10 @@ namespace sacta_proxy
                         }
                         else
                         {
+                            var cause = sectenable ? "No se cumple la condicion AND/OR para sectorizar" : 
+                                "No todas las dependencias tienen sectorizaciones válidas.";
                             History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
-                                "", SectorizationHelper.MapToString(data.SectorMap), "No todas las dependencias tienen sectorizaciones válidas.");
+                                "", SectorizationHelper.MapToString(data.SectorMap), cause);
                             data.Acknowledge(false);
                         }
                     }
