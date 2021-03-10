@@ -260,5 +260,14 @@ namespace SimulSACTA.Properties {
                 return ((string)(this["Title"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int LatenciaLan {
+            get {
+                return ((int)(this["LatenciaLan"]));
+            }
+        }
     }
 }

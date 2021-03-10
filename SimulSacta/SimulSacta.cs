@@ -169,7 +169,11 @@ namespace SimulSACTA
                             {
                                 SectAskpending = true;
                                 Task.Run(() => { Task.Delay(500).Wait(); SectAskpending = false; });
-                                SendSectorization(_SectorUcs, msg);
+                                Task.Run(() =>
+                                {
+                                    Task.Delay(2 * Properties.Settings.Default.LatenciaLan).Wait();
+                                    SendSectorization(_SectorUcs, msg);
+                                });
                             }
                             else
                             {
