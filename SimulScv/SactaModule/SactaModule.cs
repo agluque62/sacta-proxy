@@ -948,6 +948,7 @@ namespace Sacta
                                 try
                                 {
                                     ProcessSectorization(currentSect);
+                                    Task.Delay(20 * SimulScv.Properties.Settings.Default.LatenciaLan).Wait();
                                 }
                                 catch (Exception x)
                                 {
