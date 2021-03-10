@@ -346,14 +346,14 @@ namespace sacta_proxy
             if (context.Request.HttpMethod == "GET")
             {
                 context.Response.StatusCode = 200;
-                sb.Append(JsonHelper.ToString(new 
-                { 
-                    res = "ok", 
-                    user=SystemUsers.CurrentUserId, 
-                    version=GenericHelper.VersionManagement.AssemblyVersion, 
+                sb.Append(JsonHelper.ToString(new
+                {
+                    res = "ok",
+                    user = SystemUsers.CurrentUserIdAndProfile,
+                    version = GenericHelper.VersionManagement.AssemblyVersion,
                     logic = Cfg.General.ActivateSactaLogic,
                     global = GlobalStateManager.Info,
-                    Status 
+                    Status
                 }, false));
             }
             else

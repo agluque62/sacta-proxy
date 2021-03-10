@@ -9,22 +9,30 @@ using sacta_proxy.helpers;
 
 namespace sacta_proxy.model
 {
-    class SystemUserInfo
+    class UserInfo
     {
+        public enum AccessProfiles { Operador = 0, Tecnico1 = 1, Tecnico2 = 2, Tecnico3 = 3 }
         public string Id { get; set; }
         public string Clave { get; set; }
-        public uint Perfil { get; set; }
+        public AccessProfiles Perfil { get; set; }
     }
     public class SystemUsers
     {
+        /// <summary>
+        /// Control de Acceso. 
+        /// Solo los Tecnico 2 (2) / Tecnico 3 (3)
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         static public bool Authenticate(string user, string pwd)
         {
             bool res = false;
-            uint profile = 0;
+            UserInfo.AccessProfiles profile = UserInfo.AccessProfiles.Operador;
             if (user == "root" && pwd == "#ncc#")
             {
                 res = true;
-                profile = 3;
+                profile = UserInfo.AccessProfiles.Tecnico3;
             }
             else
             {
@@ -44,15 +52,16 @@ namespace sacta_proxy.model
                 }
             }
             SetCurrentUser(res, user, profile);
-            return res;
+            return profile == UserInfo.AccessProfiles.Tecnico2 || profile == UserInfo.AccessProfiles.Tecnico3;
         }
         public static string CurrentUserId { get => CurrentUser?.Id; }
-        static void SetCurrentUser(bool login, string user, uint profile)
+        public static string CurrentUserIdAndProfile { get => $"{CurrentUser?.Id} / {CurrentUser?.Perfil}"; }
+        static void SetCurrentUser(bool login, string user, UserInfo.AccessProfiles profile)
         {
-            CurrentUser = new SystemUserInfo() { Id = login ? user : "", Perfil = login ? profile : 0 };
+            CurrentUser = new UserInfo() { Id = login ? user : "", Perfil = login ? profile : 0 };
         }
-        static  SystemUserInfo CurrentUser { get; set; }
-        static void UsersInDb(Action<List<SystemUserInfo>> delivery)
+        static  UserInfo CurrentUser { get; set; }
+        static void UsersInDb(Action<List<UserInfo>> delivery)
         {
             var settings = Properties.Settings.Default;
             if (settings.DbConn == 1)
@@ -69,15 +78,15 @@ namespace sacta_proxy.model
                         using (var command = new MySqlCommand(query, connection))
                         using (var reader = command.ExecuteReader())
                         {
-                            var users = new List<SystemUserInfo>();
+                            var users = new List<UserInfo>();
                             while (reader.Read())
                             {
                                 var perfil = settings.ScvType == 0 ? (uint)(long)reader[2] : (uint)reader[2];
-                                users.Add(new SystemUserInfo()
+                                users.Add(new UserInfo()
                                 {
                                     Id = reader[0] as string,
                                     Clave = reader[1] as string,
-                                    Perfil = perfil
+                                    Perfil = (UserInfo.AccessProfiles)perfil
                                 });
                             }
                             delivery(users);
