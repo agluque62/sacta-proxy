@@ -44,7 +44,7 @@ namespace sacta_proxy.model
         public void SignalWarning<T>(string cause, History history)
         {
             Set(State, cause);
-            // history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
+            history?.Add(HistoryItems.ServiceWarning, "", "", "", "", cause);
             Logger.Warn<T>(cause);
         }
         public object Status

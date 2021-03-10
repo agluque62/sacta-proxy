@@ -16,6 +16,7 @@ namespace sacta_proxy.model
         ServiceEnded = 2,                       // USER = "", DEP = "", STATE = "", MAP="", CAUSE=""
         ServiceFatalError = 3,                  // USER = "", DEP = "", STATE = "", MAP="", CAUSE="cause"
         ServiceInMode = 4,                      // USER = "", DEP = "", STATE = "Simple/Master/Standby", MAP="", CAUSE="cause"
+        ServiceWarning = 5,                     // USER = "", DEP = "", STATE = "", MAP="", CAUSE="cause"
 
         UserLogin = 10,                         // USER = "user", DEP = "", STATE = "", MAP="", CAUSE=""
         UserErrorAccess = 11,                   // USER = "user", DEP = "", STATE = "", MAP="", CAUSE="error"
@@ -60,6 +61,7 @@ namespace sacta_proxy.model
                 new HistoryItemDesciption(){ Code= HistoryItems.ServiceEnded, FormatString="Servicio Detenido"},
                 new HistoryItemDesciption(){ Code= HistoryItems.ServiceFatalError, FormatString="Error Grave en el Servicio {3}"},
                 new HistoryItemDesciption(){ Code= HistoryItems.ServiceInMode, FormatString="Entrando en Modo {1}"},
+                new HistoryItemDesciption(){ Code= HistoryItems.ServiceWarning, FormatString="Aviso en el Servicio {3}"},
 
                 new HistoryItemDesciption(){ Code= HistoryItems.UserLogin, FormatString="Acceso de Usuario"},
                 new HistoryItemDesciption(){ Code= HistoryItems.UserErrorAccess, FormatString="Error de Acceso de Usurario: {3}"},
