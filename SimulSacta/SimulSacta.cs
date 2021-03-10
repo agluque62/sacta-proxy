@@ -12,8 +12,10 @@ using Utilities;
 
 namespace SimulSACTA
 {
-    class SimulSacta : IDisposable
+    public class SimulSacta : IDisposable
     {
+        public bool Lan1EnableTx { get; set; }
+        public bool Lan2EnableTx { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -29,6 +31,7 @@ namespace SimulSACTA
         {
             Settings stts = Settings.Default;
 
+            Lan1EnableTx = Lan2EnableTx = true;
             _Comm = new UdpSocket[2];
 
             _Comm[0] = new UdpSocket(stts.SactaIpA, stts.ListenPortA);
@@ -265,8 +268,8 @@ namespace SimulSACTA
                 Array.Reverse(user);
                 Array.Copy(user, 0, data, 6, 2);
 
-                _Comm[0].Send(_EndPoint[0], data);
-                _Comm[1].Send(_EndPoint[1], data);
+                if (Lan1EnableTx) _Comm[0].Send(_EndPoint[0], data);
+                if (Lan2EnableTx) _Comm[1].Send(_EndPoint[1], data);
             }
 
             _SeqNum = 0;
@@ -294,8 +297,8 @@ namespace SimulSACTA
                 Array.Reverse(user);
                 Array.Copy(user, 0, data, 6, 2);
 
-                _Comm[0].Send(_EndPoint[0], data);
-                _Comm[1].Send(_EndPoint[1], data);
+                if (Lan1EnableTx) _Comm[0].Send(_EndPoint[0], data);
+                if (Lan2EnableTx) _Comm[1].Send(_EndPoint[1], data);
             }
             else
             {
@@ -307,8 +310,8 @@ namespace SimulSACTA
                     Array.Reverse(user);
                     Array.Copy(user, 0, data, 6, 2);
 
-                    _Comm[0].Send(_EndPoint[0], data);
-                    _Comm[1].Send(_EndPoint[1], data);
+                    if (Lan1EnableTx) _Comm[0].Send(_EndPoint[0], data);
+                    if (Lan2EnableTx) _Comm[1].Send(_EndPoint[1], data);
                 }
             }
         }
@@ -331,8 +334,8 @@ namespace SimulSACTA
                 Array.Reverse(user);
                 Array.Copy(user, 0, data, 6, 2);
 
-                _Comm[0].Send(_EndPoint[0], data);
-                _Comm[1].Send(_EndPoint[1], data);
+                if (Lan1EnableTx) _Comm[0].Send(_EndPoint[0], data);
+                if (Lan2EnableTx) _Comm[1].Send(_EndPoint[1], data);
             }
 
             _LastPresenceSended = DateTime.Now;

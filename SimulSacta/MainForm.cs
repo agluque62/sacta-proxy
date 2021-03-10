@@ -20,12 +20,13 @@ namespace SimulSACTA
         /// </summary>
         static Logger _Logger = LogManager.GetCurrentClassLogger();
         static MainForm _This;
-        SimulSacta _Sacta;
+        public SimulSacta _Sacta { get; set; }
         /// <summary>
         /// 
         /// </summary>
         public MainForm()
         {
+            _Sacta = new SimulSacta();
             InitializeComponent();
             LoadPresect();
 
@@ -33,8 +34,8 @@ namespace SimulSACTA
             var stts = Properties.Settings.Default;
             lan1Info.Text = $"{stts.SactaIpA}:{stts.ListenPortA} <= {stts.SactaMcastA}, {stts.SactaIpA}:{stts.ListenPortA} => {stts.ScvIpA}:{stts.ScvPortA}";
             lan2Info.Text = $"{stts.SactaIpB}:{stts.ListenPortB} <= {stts.SactaMcastB}, {stts.SactaIpB}:{stts.ListenPortB} => {stts.ScvIpB}:{stts.ScvPortB}";
-            _Sacta = new SimulSacta();
-
+            chkLan1.Checked = _Sacta.Lan1EnableTx;
+            chkLan2.Checked = _Sacta.Lan2EnableTx;
             //Settings stts = Settings.Default;
             //_Sacta.SectorUcs = stts.LastSectorization.Split(new char[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
             //_SectorsTB.Text = stts.LastSectorization;
@@ -170,5 +171,15 @@ namespace SimulSACTA
             _SectorsTB.Text = item.Value;
         }
 
+        private void OnLan1Changed(object sender, EventArgs e)
+        {
+            _Sacta.Lan1EnableTx = chkLan1.Checked;
+        }
+
+        private void chkLan2_CheckedChanged(object sender, EventArgs e)
+        {
+            _Sacta.Lan2EnableTx = chkLan2.Checked;
+
+        }
     }
 }

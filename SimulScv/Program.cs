@@ -12,6 +12,8 @@ namespace SimulScv
     class Program
     {
         static SactaModule SactaMod = null;
+        static bool Lan1 { get; set; }
+        static bool Lan2 { get; set; }
         static void Main(string[] args)
         {
             var cfg = Properties.Settings.Default;
@@ -26,10 +28,12 @@ namespace SimulScv
             CfgSacta.CfgSactaUsuarioSectores.IdSectores = cfg.Sectores;
             CfgSacta.CfgSactaUsuarioSectores.IdUcs = cfg.Posiciones;
 
-            PrintMenu();
+            Lan1 = Lan2 = true;
+
             ConsoleKeyInfo result;
             do
             {
+                PrintMenu();
                 result = Console.ReadKey(true);
                 switch (result.Key)
                 {
@@ -37,9 +41,12 @@ namespace SimulScv
                         if (SactaMod == null)
                         {
                             SactaMod = new SactaModule("sim");
+                            SactaMod.Lan1 = Lan1;
+                            SactaMod.Lan2 = Lan2;
                             SactaMod.Start();
                         }
                         break;
+
                     case ConsoleKey.P:
                         if (SactaMod != null)
                         {
@@ -47,8 +54,19 @@ namespace SimulScv
                             SactaMod = null;
                         }
                         break;
-                    case ConsoleKey.C:
-                        Console.Clear();
+
+                    case ConsoleKey.D1:
+                        Lan1 = !Lan1;
+                        if (SactaMod != null) SactaMod.Lan1 = Lan1;
+                        break;
+
+                    case ConsoleKey.D2:
+                        Lan2 = !Lan2;
+                        if (SactaMod != null) SactaMod.Lan2 = Lan2;
+                        PrintMenu();
+                        break;
+
+                    case ConsoleKey.M:
                         break;
                 }
             } while (result.Key != ConsoleKey.Escape);
@@ -65,8 +83,10 @@ namespace SimulScv
             Console.Clear();
             Console.WriteLine("SimulSactaOnScv. Nucleo 2020...2021.");
             Console.WriteLine();
+            Console.WriteLine($"Lan1: {Lan1}, Lan2:{Lan2}");
+            Console.WriteLine();
             Console.WriteLine("\t A => Arrancar, P => Parar.");
-            //Console.WriteLine("\t 1 => LAN1 on/off. 2 => LAN2 on/off.");
+            Console.WriteLine("\t 1 => LAN1 on/off. 2 => LAN2 on/off.");
             Console.WriteLine();
             Console.WriteLine("\tESC. Exit");
         }

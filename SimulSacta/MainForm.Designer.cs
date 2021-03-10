@@ -39,15 +39,19 @@ namespace SimulSACTA
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lan1Info = new System.Windows.Forms.Label();
+            this.chkLan2 = new System.Windows.Forms.CheckBox();
+            this.chkLan1 = new System.Windows.Forms.CheckBox();
             this.lan2Info = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
+            this.lan1Info = new System.Windows.Forms.Label();
+            this.simulSactaBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.mainFormBindingSource = new System.Windows.Forms.BindingSource(this.components);
             _InfoCM = new System.Windows.Forms.ContextMenuStrip(this.components);
             _MainMS = new System.Windows.Forms.MenuStrip();
             _InfoCM.SuspendLayout();
             _MainMS.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulSactaBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mainFormBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // _InfoCM
@@ -72,14 +76,14 @@ namespace SimulSACTA
             this.settingsToolStripMenuItem});
             _MainMS.Location = new System.Drawing.Point(0, 0);
             _MainMS.Name = "_MainMS";
-            _MainMS.Size = new System.Drawing.Size(696, 28);
+            _MainMS.Size = new System.Drawing.Size(696, 30);
             _MainMS.TabIndex = 8;
             _MainMS.Text = "menuStrip1";
             // 
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(106, 24);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(106, 26);
             this.settingsToolStripMenuItem.Text = "Propiedades";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
@@ -136,10 +140,10 @@ namespace SimulSACTA
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.chkLan2);
+            this.panel1.Controls.Add(this.chkLan1);
             this.panel1.Controls.Add(this.lan2Info);
-            this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.lan1Info);
-            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.comboBox1);
             this.panel1.Controls.Add(this._SectorizeBT);
@@ -151,41 +155,53 @@ namespace SimulSACTA
             this.panel1.Size = new System.Drawing.Size(657, 607);
             this.panel1.TabIndex = 11;
             // 
-            // label2
+            // chkLan2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(20, 23);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 17);
-            this.label2.TabIndex = 11;
-            this.label2.Text = "Lan1";
+            this.chkLan2.AutoSize = true;
+            this.chkLan2.Location = new System.Drawing.Point(23, 50);
+            this.chkLan2.Name = "chkLan2";
+            this.chkLan2.Size = new System.Drawing.Size(65, 21);
+            this.chkLan2.TabIndex = 16;
+            this.chkLan2.Text = "LAN2";
+            this.chkLan2.UseVisualStyleBackColor = true;
+            this.chkLan2.CheckedChanged += new System.EventHandler(this.chkLan2_CheckedChanged);
             // 
-            // lan1Info
+            // chkLan1
             // 
-            this.lan1Info.AutoSize = true;
-            this.lan1Info.Location = new System.Drawing.Point(66, 23);
-            this.lan1Info.Name = "lan1Info";
-            this.lan1Info.Size = new System.Drawing.Size(46, 17);
-            this.lan1Info.TabIndex = 12;
-            this.lan1Info.Text = "label3";
+            this.chkLan1.AutoSize = true;
+            this.chkLan1.Location = new System.Drawing.Point(23, 23);
+            this.chkLan1.Name = "chkLan1";
+            this.chkLan1.Size = new System.Drawing.Size(65, 21);
+            this.chkLan1.TabIndex = 15;
+            this.chkLan1.Text = "LAN1";
+            this.chkLan1.UseVisualStyleBackColor = true;
+            this.chkLan1.CheckedChanged += new System.EventHandler(this.OnLan1Changed);
             // 
             // lan2Info
             // 
             this.lan2Info.AutoSize = true;
-            this.lan2Info.Location = new System.Drawing.Point(66, 51);
+            this.lan2Info.Location = new System.Drawing.Point(94, 51);
             this.lan2Info.Name = "lan2Info";
             this.lan2Info.Size = new System.Drawing.Size(46, 17);
             this.lan2Info.TabIndex = 14;
             this.lan2Info.Text = "label3";
             // 
-            // label4
+            // lan1Info
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(20, 51);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(40, 17);
-            this.label4.TabIndex = 13;
-            this.label4.Text = "Lan2";
+            this.lan1Info.AutoSize = true;
+            this.lan1Info.Location = new System.Drawing.Point(94, 23);
+            this.lan1Info.Name = "lan1Info";
+            this.lan1Info.Size = new System.Drawing.Size(46, 17);
+            this.lan1Info.TabIndex = 12;
+            this.lan1Info.Text = "label3";
+            // 
+            // simulSactaBindingSource
+            // 
+            this.simulSactaBindingSource.DataSource = typeof(SimulSACTA.SimulSacta);
+            // 
+            // mainFormBindingSource
+            // 
+            this.mainFormBindingSource.DataSource = typeof(SimulSACTA.MainForm);
             // 
             // MainForm
             // 
@@ -197,12 +213,14 @@ namespace SimulSACTA
             this.MainMenuStrip = _MainMS;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
-            this.Text = Properties.Settings.Default.Title;// "SimulSACTA";
+            this.Text = global::SimulSACTA.Properties.Settings.Default.Title;
             _InfoCM.ResumeLayout(false);
             _MainMS.ResumeLayout(false);
             _MainMS.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.simulSactaBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.mainFormBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -219,9 +237,11 @@ namespace SimulSACTA
       private System.Windows.Forms.Label label1;
       private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lan2Info;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lan1Info;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.CheckBox chkLan1;
+        private System.Windows.Forms.CheckBox chkLan2;
+        private System.Windows.Forms.BindingSource simulSactaBindingSource;
+        private System.Windows.Forms.BindingSource mainFormBindingSource;
     }
 }
 
