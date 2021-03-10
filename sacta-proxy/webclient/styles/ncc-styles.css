@@ -98,6 +98,47 @@ table.dataTable tbody td {
     vertical-align: top;
 }
 
+.ncc-normal {
+    color: black;
+}
+    .ncc-normal:hover {
+        color: black;
+        background-color: lightgray;
+    }
+    .ncc-normal:focus {
+        color: black;
+        background-color: lightgray;
+        border: none;
+    }
+.ncc-warning {
+    color: orange;
+}
+    .ncc-warning:hover {
+        color: orange;
+        background-color: lightgray;
+    }
+    .ncc-warning:focus {
+        color: orange;
+        background-color: lightgray;
+        border: none;
+    }
+.ncc-fail {
+    color: red;
+}
+    .ncc-fail:hover {
+        color: red;
+        background-color: lightgray;
+    }
+    .ncc-fail:focus {
+        color: red;
+        background-color: lightgray;
+        border: none;
+    }
+.ncc-active{
+    background-color: lightgray;
+}
+
+
 /* Estilos antiguos. Para borrar */
 div#agrupar {
     margin-left: 2%;

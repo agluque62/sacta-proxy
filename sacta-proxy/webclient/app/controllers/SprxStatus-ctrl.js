@@ -140,6 +140,20 @@ angular.module("sacta_proxy")
             var status = $lserv.GlobalStd().Status;
             return status ? status.ems : [];
         };
+        ctrl.btnseldep = (index) => {
+            ctrl.seldepindex = index;
+            //ctrl.seldep();
+        };
+        ctrl.global_state = (index) => {
+            var active = index == ctrl.seldepindex ? "ncc-active " : "";
+            var dep = ctrl.deps()[index];
+            var lan1 = dep.status.act.lan1.ActivityOnLan1;
+            var lan2 = dep.status.act.lan2.ActivityOnLan2;
+            console.log("ctrl.global_state ", dep.id, lan1, lan2);
+            var std = lan1 && lan2 ? "ncc-normal" :
+                        !lan1 && !lan2 ? "ncc-fail" : "ncc-warning";
+            return { class: active + std };
+        };
 
         ctrl.logs = function () {
             var win = window.open('logs/logfile.csv', '_blank');
