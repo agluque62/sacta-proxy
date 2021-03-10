@@ -464,39 +464,22 @@ namespace sacta_proxy
                 var ctrldep = DepManagers.Where(d => d.Cfg.Id == data.ScvId).FirstOrDefault();
                 if (ctrldep != null)
                 {
-                    switch (data.What)
-                    {
-                        case BaseManager.WhatLanItems.Lan1:
-                        case BaseManager.WhatLanItems.Lan2:
-                            var strLan = data.What == BaseManager.WhatLanItems.Lan1 ? "LAN1" : "LAN2";
-                            var strStd = data.ActivityOnLan ? "ON" : "OFF";
-                            History.Add(HistoryItems.DepActivityEvent, "", ctrldep.Cfg.Id, $"{strLan} {strStd}");
-                            return;
-                    }
                     if (ctrldep.Activity != data.ActivityOnLan)
                     {
                         /** Actualiza el estado de la dependencia y Genera el Historico */
                         ctrldep.Activity = data.ActivityOnLan;
                         History.Add(HistoryItems.DepActivityEvent, "", ctrldep.Cfg.Id, data.ActivityOnLan ? "ON" : "OFF");
-
                         /** Actualiza el Tx del SCV */
                         var oldEnableTx = MainManager.Manager.TxEnabled;
                         var actives = DepManagers.Where(d => d.Activity == true).ToList();
-                        var newEnableTx = Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 : actives.Count() == DepManagers.Count();
-                        MainManager.Manager.TxEnabled = newEnableTx;
+                        MainManager.Manager.TxEnabled =
+                            Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 :
+                            Cfg.General.ActivateSactaLogic == "AND" ? actives.Count() == DepManagers.Count() :
+                            actives.Count() == DepManagers.Count();
                         /** Se genera el historico si corresponde */
                         if (oldEnableTx != MainManager.Manager.TxEnabled)
                         {
                             History.Add(HistoryItems.DepTxstateChange, "", MainManager.Cfg.Id, MainManager.Manager.TxEnabled ? "ON" : "OFF");
-                        }
-
-                        /** Para agilizar el modo AND Actualizo los Tx de las otras dependencias. */
-                        if (Cfg.General.ActivateSactaLogic=="AND" && newEnableTx == false)
-                        {
-                            DepManagers.Where(d => d.Cfg.Id != data.ScvId).ToList().ForEach(d =>
-                            {
-                                d.Manager.TxEnabled = false;
-                            });
                         }
                     }
                 }
@@ -530,13 +513,8 @@ namespace sacta_proxy
                         History.Add(HistoryItems.DepSectorizationReceivedEvent, "", ctrldep.Cfg.Id, "", SectorizationHelper.MapToString(data.SectorMap));
 
                         // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
-                        var actives = DepManagers.Where(d => d.Activity == true).ToList();
-                        var whithsect = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList().Count == DepManagers.Count;
-                        var sectenable = Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 : actives.Count() == DepManagers.Count();
-
-                        //var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
-                        //if (DepWithSectInfo.Count == DepManagers.Count)
-                        if (sectenable && whithsect)
+                        var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
+                        if (DepWithSectInfo.Count == DepManagers.Count)
                         {
                             if (ScvSectorizationAskPending == false)
                             {
@@ -554,10 +532,8 @@ namespace sacta_proxy
                         }
                         else
                         {
-                            var cause = sectenable ? "No se cumple la condicion AND/OR para sectorizar" : 
-                                "No todas las dependencias tienen sectorizaciones válidas.";
                             History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
-                                "", SectorizationHelper.MapToString(data.SectorMap), cause);
+                                "", SectorizationHelper.MapToString(data.SectorMap), "No todas las dependencias tienen sectorizaciones válidas.");
                             data.Acknowledge(false);
                         }
                     }
@@ -579,15 +555,6 @@ namespace sacta_proxy
         {
             EventThread.Enqueue("OnPsiEventActivity", () =>
             {
-                switch (data.What)
-                {
-                    case BaseManager.WhatLanItems.Lan1:
-                    case BaseManager.WhatLanItems.Lan2:
-                        var strLan = data.What == BaseManager.WhatLanItems.Lan1 ? "LAN1" : "LAN2";
-                        var strStd = data.ActivityOnLan ? "ON" : "OFF";
-                        History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, $"{strLan} {strStd}");
-                        return;
-                }
                 if (data.ActivityOnLan != MainManager.Activity)
                 {
                     MainManager.Activity = data.ActivityOnLan;

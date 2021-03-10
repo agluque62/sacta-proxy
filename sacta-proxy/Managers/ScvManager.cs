@@ -18,6 +18,7 @@ namespace sacta_proxy.Managers
     class ScvManager : BaseManager, IDisposable
     {
         #region Events
+        public event EventHandler<ActivityOnLanArgs> EventActivity;
         public event EventHandler<SectorizationReceivedArgs> EventSectorization;
         #endregion Events
 
@@ -34,8 +35,8 @@ namespace sacta_proxy.Managers
             GlobalState = SactaState.Stopped;
             TxEnabled = false;
 
-            LastActivityOfLan1 = DateTime.MinValue;
-            LastActivityOfLan2 = DateTime.MinValue;
+            LastActivityOnLan1 = DateTime.MinValue;
+            LastActivityOnLan2 = DateTime.MinValue;
             LastPresenceSended = DateTime.MinValue;
             WhenSectorAsked = DateTime.MinValue;
 
@@ -149,14 +150,14 @@ namespace sacta_proxy.Managers
                         lan1 = new
                         {
                             ActivityOnLan1,
-                            LastActivityOfLan1,
+                            LastActivityOnLan1,
                             listen = Lan1Listen.ToString(),
                             sendto = Lan1Sendto.ToString()
                         },
                         lan2 = new
                         {
                             ActivityOnLan2,
-                            LastActivityOfLan2,
+                            LastActivityOnLan2,
                             listen = Version==0 ? Lan2Listen.ToString() : Lan1Listen.ToString(),
                             sendto = Lan2Sendto.ToString()
                         },
@@ -185,8 +186,7 @@ namespace sacta_proxy.Managers
                     }
                     else
                     {
-                        if (GlobalState != SactaState.WaitingSactaActivity)
-                            GlobalState = SactaState.WaitingSectorization;
+                        GlobalState = SactaState.WaitingSactaActivity;
                     }
                     base.TxEnabled = value;
                 }
@@ -285,11 +285,10 @@ namespace sacta_proxy.Managers
             {
                 try
                 {
-                    var connected = IsThereLanActivity;
                     switch (GlobalState)
                     {
                         case SactaState.WaitingSactaActivity:
-                            if (connected)
+                            if (IsThereLanActivity)
                             {
                                 SendInit();
                                 SendPresence();
@@ -298,18 +297,26 @@ namespace sacta_proxy.Managers
                                 Logger.Info<ScvManager>($"On {Id} while WaitingSactaActivity Activity on LAN ON ...");
 
                                 // Evento de Conexion con SACTA.
-                                LaunchEventActivity(WhatLanItems.Global, true);
+                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
+                                {
+                                     ScvId=Cfg.Id,
+                                     ActivityOnLan = true
+                                });
                             }
                             break;
                         case SactaState.SendingPresences:
-                            if (!connected)
+                            if (!IsThereLanActivity)
                             {
                                 GlobalState = SactaState.WaitingSactaActivity;
                                 SactaSPSIUsers.Values.ToList().ForEach(u => u.LastSectMsgId = -1);
                                 Logger.Info<ScvManager>($"On {Id} while SendingPresences Activity on LAN OFF ...");
 
                                 // Evento de Desconexion con SACTA.
-                                LaunchEventActivity(WhatLanItems.Global, false);
+                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
+                                {
+                                    ScvId = Cfg.Id,
+                                    ActivityOnLan = false
+                                });
                             }
                             else
                             {
@@ -321,14 +328,18 @@ namespace sacta_proxy.Managers
                             }
                             break;
                         case SactaState.WaitingSectorization:
-                            if (!connected)
+                            if (!IsThereLanActivity)
                             {
                                 GlobalState = SactaState.WaitingSactaActivity;
                                 SactaSPSIUsers.Values.ToList().ForEach(u => u.LastSectMsgId = -1);
                                 Logger.Info<ScvManager>($"On {Id} while WaitingSectorization Activity on LAN OFF ...");
 
                                 // Evento de Desconexion con SACTA.
-                                LaunchEventActivity(WhatLanItems.Global, false);
+                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
+                                {
+                                    ScvId = Cfg.Id,
+                                    ActivityOnLan = false
+                                });
                             }
                             else
                             {
@@ -358,7 +369,7 @@ namespace sacta_proxy.Managers
         {
             if (TxEnabled)
             {
-                if ((DateTime.Now - LastActivityOfLan1) < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive))
+                if ((DateTime.Now - LastActivityOnLan1) < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive))
                 {
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN1 ...");
                     Listener1.Send(Lan1Sendto, message);
@@ -367,7 +378,7 @@ namespace sacta_proxy.Managers
                 {
                     Logger.Trace<ScvManager>($"On {Id} Discarding data on LAN1 ...");
                 }
-                if ((DateTime.Now - LastActivityOfLan2) < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive))
+                if ((DateTime.Now - LastActivityOnLan2) < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive))
                 {
                     Logger.Trace<ScvManager>($"On {Id} Sending Data on LAN2 ...");
                     if (Version == 0)
@@ -532,21 +543,21 @@ namespace sacta_proxy.Managers
                     var Lan = Listener == Listener1 ? 0 : 1;
                     deliver(Lan);
                     if (Lan==0)
-                        LastActivityOfLan1 = DateTime.Now;                
+                        LastActivityOnLan1 = DateTime.Now;                
                     else
-                        LastActivityOfLan2 = DateTime.Now;
+                        LastActivityOnLan2 = DateTime.Now;
                 }
                 else
                 {
                     if (IpHelper.IsInSubnet(Cfg.Comm.If1.FromMask, from))
                     {
                         deliver(0);
-                        LastActivityOfLan1 = DateTime.Now;
+                        LastActivityOnLan1 = DateTime.Now;
                     }
                     else if (IpHelper.IsInSubnet(Cfg.Comm.If2.FromMask, from))
                     {
                         deliver(1);
-                        LastActivityOfLan2 = DateTime.Now;
+                        LastActivityOnLan2 = DateTime.Now;
                     }
                     else
                     {
