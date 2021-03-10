@@ -127,6 +127,18 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\EditBox.datasource" />
+    <None Include="Properties\DataSources\MainForm.datasource" />
+    <None Include="Properties\DataSources\Program.datasource" />
+    <None Include="Properties\DataSources\SactaMsg.DataInfoBase.datasource" />
+    <None Include="Properties\DataSources\SactaMsg.datasource" />
+    <None Include="Properties\DataSources\SactaMsg.MsgType.datasource" />
+    <None Include="Properties\DataSources\SactaMsg.PresenceInfo.datasource" />
+    <None Include="Properties\DataSources\SactaMsg.SectAnswerInfo.datasource" />
+    <None Include="Properties\DataSources\SactaMsg.SectInfo.datasource" />
+    <None Include="Properties\DataSources\SactaMsg.SectInfo.SectorInfo.datasource" />
+    <None Include="Properties\DataSources\SettingsForm.datasource" />
+    <None Include="Properties\DataSources\SimulSacta.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
