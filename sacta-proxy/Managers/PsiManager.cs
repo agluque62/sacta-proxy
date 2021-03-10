@@ -16,7 +16,6 @@ namespace sacta_proxy.Managers
     class PsiManager : BaseManager, IDisposable
     {
         #region Events
-        public event EventHandler<ActivityOnLanArgs> EventActivity;
         public event EventHandler<SectorizationRequestArgs> EventSectRequest;
         #endregion Events
 
@@ -31,8 +30,8 @@ namespace sacta_proxy.Managers
             ScvActivity = false;
             Sequence = 0;
             SectorizationVersion = 0;
-            LastActivityOnLan1 = DateTime.MinValue;
-            LastActivityOnLan2 = DateTime.MinValue;
+            LastActivityOfLan1 = DateTime.MinValue;
+            LastActivityOfLan2 = DateTime.MinValue;
             LastPresenceSended = DateTime.MinValue;
 
             Lan1Listen = new IPEndPoint(IPAddress.Parse(Cfg.Comm.If1.Ip), Cfg.Comm.ListenPort);
@@ -124,14 +123,14 @@ namespace sacta_proxy.Managers
                         lan1 = new
                         {
                             ActivityOnLan1,
-                            LastActivityOnLan1,
+                            LastActivityOfLan1,
                             listen = Lan1Listen.ToString(),
                             sendto = Lan1Sendto.ToString()
                         },
                         lan2 = new
                         {
                             ActivityOnLan2,
-                            LastActivityOnLan2,
+                            LastActivityOfLan2,
                             listen = Lan2Listen.ToString(),
                             sendto = Lan2Sendto.ToString()
                         },
@@ -183,10 +182,7 @@ namespace sacta_proxy.Managers
                                                 Logger.Warn<PsiManager>($"On Psi Activity on LAN OFF. Cause: Init Received ...");
                                                 ScvActivity = false;
                                                 // Evento de Desconexion con SCV.
-                                                SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
-                                                {
-                                                    ActivityOnLan = false
-                                                });
+                                                LaunchEventActivity(WhatLanItems.Global, false);
                                             }
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.Presence)
@@ -249,20 +245,14 @@ namespace sacta_proxy.Managers
                         ScvActivity = true;
                         Logger.Info<PsiManager>($"On Psi Activity on LAN ON ...");
                         // Evento de Conexion con SCV.
-                        SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
-                        {
-                            ActivityOnLan = true
-                        });
+                        LaunchEventActivity(WhatLanItems.Global, true);
                     }
                     else if (ScvActivity && !IsThereLanActivity)
                     {
                         ScvActivity = false;
                         Logger.Info<PsiManager>($"On Psi Activity on LAN OFF ...");
                         // Evento de Desconexion con SCV.
-                        SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
-                        {
-                            ActivityOnLan = false
-                        });
+                        LaunchEventActivity(WhatLanItems.Global, false);
                     }
                     if (DateTime.Now - LastPresenceSended > TimeSpan.FromSeconds(Cfg.SactaProtocol.TickAlive))
                     {
@@ -285,12 +275,12 @@ namespace sacta_proxy.Managers
             if (ListenerFrom == Listener1)
             {
                 deliver(0);
-                LastActivityOnLan1 = DateTime.Now;
+                LastActivityOfLan1 = DateTime.Now;
             }
             else if (ListenerFrom == Listener2)
             {
                 deliver(1);
-                LastActivityOnLan2 = DateTime.Now;
+                LastActivityOfLan2 = DateTime.Now;
             }
             else
             {

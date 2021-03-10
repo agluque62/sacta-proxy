@@ -13,8 +13,9 @@ namespace sacta_proxy.Managers
 {
     public abstract class BaseManager
     {
+        public event EventHandler<ActivityOnLanArgs> EventActivity;
         protected enum SactaState { WaitingSactaActivity, WaitingSectorization, SendingPresences, Stopped }
-
+        public enum WhatLanItems { Lan1, Lan2, Global }
         public abstract void Start(/*int ProtocolVersion, Configuration.DependecyConfig cfg*/);
         public abstract void Stop();
         public virtual bool TxEnabled { get; set; }
@@ -23,20 +24,49 @@ namespace sacta_proxy.Managers
         {
             handler?.Invoke(this, args);
         }
+        public virtual void LaunchEventActivity(WhatLanItems item, bool status)
+        {
+            SafeLaunchEvent<ActivityOnLanArgs>(EventActivity, new ActivityOnLanArgs()
+            {
+                ScvId = Cfg.Id,
+                What = item,
+                ActivityOnLan = status
+            });
+        }
         #region Rutinas comunes
         protected bool ActivityOnLan1
         {
-            get { return (DateTime.Now - LastActivityOnLan1 < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive)); }
+            get
+            {
+                var currentActivity = (DateTime.Now - LastActivityOfLan1 < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive));
+                if (currentActivity != lastStateOfLan1)
+                {
+                    LaunchEventActivity(WhatLanItems.Lan1, currentActivity);
+                }
+                lastStateOfLan1 = currentActivity;
+                return currentActivity;
+            }
         }
         protected bool ActivityOnLan2
         {
-            get { return (DateTime.Now - LastActivityOnLan2 < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive)); }
+            get
+            {
+                var currentActivity = (DateTime.Now - LastActivityOfLan2 < TimeSpan.FromSeconds(Cfg.SactaProtocol.TimeoutAlive));
+                if (currentActivity != lastStateOfLan2)
+                {
+                    LaunchEventActivity(WhatLanItems.Lan2, currentActivity);
+                }
+                lastStateOfLan2 = currentActivity;
+                return currentActivity;
+            }
         }
         protected bool IsThereLanActivity
         {
             get
             {
-                return ActivityOnLan1 || ActivityOnLan2;
+                var lan1 = ActivityOnLan1;
+                var lan2 = ActivityOnLan2;
+                return lan1 || lan2;
             }
         }
         protected IPEndPoint Lan1Listen { get; set; }
@@ -51,11 +81,13 @@ namespace sacta_proxy.Managers
         protected int Version { get; set; }
         protected Configuration.DependecyConfig Cfg { get; set; }
         protected Timer TickTimer { get; set; }
-        protected DateTime LastActivityOnLan1 { get; set; }
-        protected DateTime LastActivityOnLan2 { get; set; }
+        protected DateTime LastActivityOfLan1 { get; set; }
+        protected DateTime LastActivityOfLan2 { get; set; }
         protected DateTime LastPresenceSended { get; set; }
         protected int Sequence { get; set; }
         protected ProcessStatusControl PS = new ProcessStatusControl();
+        private bool lastStateOfLan1 = false;
+        private bool lastStateOfLan2 = false;
         #endregion
     }
     public class ManagerEventArgs : EventArgs
@@ -64,6 +96,7 @@ namespace sacta_proxy.Managers
     }
     public class ActivityOnLanArgs : ManagerEventArgs
     {
+        public BaseManager.WhatLanItems What { get; set; }
         public bool ActivityOnLan { get; set; }
     }
     public class SectorizationReceivedArgs : ManagerEventArgs
