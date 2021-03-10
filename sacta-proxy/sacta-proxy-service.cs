@@ -541,20 +541,20 @@ namespace sacta_proxy
                             if (ScvSectorizationAskPending == false)
                             {
                                 (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
+                                // Historico
+                                History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "",
+                                    SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Recibida de SACTA ({data.ScvId})");
                             }
                             else
                             {
                                 Logger.Warn<SactaProxy>($"OnScvEventSectorization from {data.ScvId}. Blocked Sectorization. Cause: Scv ASK Pending.");
                                 ScvSectAskSync?.Signal();
                             }
-                            // Historico
-                            History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "",
-                                SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Recibida de SACTA ({data.ScvId})");
                             data.Acknowledge(true);
                         }
                         else
                         {
-                            var cause = sectenable ? "No se cumple la condicion AND/OR para sectorizar" : 
+                            var cause = !sectenable ? "No se cumple la condicion AND/OR para sectorizar" : 
                                 "No todas las dependencias tienen sectorizaciones válidas.";
                             History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
                                 "", SectorizationHelper.MapToString(data.SectorMap), cause);
@@ -627,6 +627,7 @@ namespace sacta_proxy
                         ScvSectAskSync = null;
                         ScvSectorizationAskPending = false;
                     });
+                    History.Add(HistoryItems.ScvSectorizationAskEvent, "", MainManager.Id);
                 }
                 else
                 {

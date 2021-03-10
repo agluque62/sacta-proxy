@@ -28,6 +28,7 @@ namespace sacta_proxy.model
         DepSectorizationReceivedEvent = 22,     // USER = "", DEP = "dep", STATE = "", MAP="map", CAUSE=""
         DepSectorizationRejectedEvent = 23,     // USER = "", DEP = "dep", STATE = "", MAP="map", CAUSE="cause"
         ScvSectorizationSendedEvent = 25,       // USER = "", DEP = "scv", STATE = "", MAP="map", CAUSE=""
+        ScvSectorizationAskEvent = 26,          // USER = "", DEP = "scv", STATE = "", MAP="map", CAUSE=""
     };
     public class History : IDisposable
     {
@@ -73,6 +74,7 @@ namespace sacta_proxy.model
                 new HistoryItemDesciption(){ Code= HistoryItems.DepSectorizationReceivedEvent, FormatString="Sectorizacion ## {2} ## Recibida para Dependencia {0}"},
                 new HistoryItemDesciption(){ Code= HistoryItems.DepSectorizationRejectedEvent, FormatString="Sectorizacion ## {2} ## Rechazada para Dependencia {0}. Cause: {3}"},
                 new HistoryItemDesciption(){ Code= HistoryItems.ScvSectorizationSendedEvent, FormatString="Sectorizacion ## {2} ## Enviada al SCV. Motivo: {3}"},
+                new HistoryItemDesciption(){ Code= HistoryItems.ScvSectorizationAskEvent, FormatString="{0} Peticion de Sectorizacion"},
             };
         }
 
