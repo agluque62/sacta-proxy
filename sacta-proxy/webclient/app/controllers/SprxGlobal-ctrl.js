@@ -93,12 +93,11 @@ angular.module("sacta_proxy")
             ctrl.date = moment().format('ll');
             ctrl.hora = moment().format('LTS');
 
-            ctrl.timer++;
-
             if ((ctrl.timer % 5) == 0) {
                 // alive();
                 get_status();
             }
+            ctrl.timer++;
 
             ctrl.title = getTitle();
         }, 1000);
