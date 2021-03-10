@@ -263,7 +263,6 @@ var HistoryCodes = [
     { code: 22, descr: "Sectorizacion Recibida" },
     { code: 23, descr: "Sectorizacion Rechazada" },
     { code: 25, descr: "Sectorizacion Enviada" },
-    { code: 26, descr: "Peticion de Sectorizacion" },
 ];
 
 /** */

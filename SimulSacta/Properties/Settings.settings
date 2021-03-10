@@ -91,8 +91,5 @@
     <Setting Name="Title" Type="System.String" Scope="Application">
       <Value Profile="(Default)">TWR</Value>
     </Setting>
-    <Setting Name="LatenciaLan" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">50</Value>
-    </Setting>
   </Settings>
 </SettingsFile>
