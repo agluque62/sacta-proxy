@@ -253,6 +253,7 @@ var HistoryCodes = [
     { code: 2, descr: "Parada Servicio" },
     { code: 3, descr: "Error Grave" },
     { code: 4, descr: "Entrando en Modo" },
+    { code: 5, descr: "Aviso" },
     { code: 10, descr: "Login" },
     { code: 11, descr: "Error Login" },
     { code: 12, descr: "Cambio de Configuracion" },
