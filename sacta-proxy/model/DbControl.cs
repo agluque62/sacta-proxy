@@ -29,15 +29,22 @@ namespace sacta_proxy.model
         public static bool IsPresent(Action<bool> delivery=null)
         {
             bool retorno = false;
-            using (var connection = new MySqlConnection(StrConn))
+            try
             {
-                ControlledOpen(connection, () =>
+                using (var connection = new MySqlConnection(StrConn))
                 {
-                    retorno = true;
-                });
-                delivery?.Invoke(retorno);
-                return retorno;
+                    ControlledOpen(connection, () =>
+                    {
+                        retorno = true;
+                    });
+                }
             }
+            catch (Exception x)
+            {
+                Logger.Exception<DbControl>(x, $"On DbControl IsPresent");
+            }
+            delivery?.Invoke(retorno);
+            return retorno;
         }
 
         public static string SqlQueryForPositions
@@ -68,6 +75,8 @@ namespace sacta_proxy.model
             }
         }
 
+        public static int ConsecutiveErrors { get => _ConsecutiveErrors; set => _ConsecutiveErrors = value; }
+
         public static void ControlledOpen(MySqlConnection connection, Action Continue)
         {
             if (ConsecutiveErrors < Properties.Settings.Default.DbMaxConsecutiveErrors)
@@ -82,13 +91,16 @@ namespace sacta_proxy.model
                 catch(Exception x)
                 {
                     ConsecutiveErrors += 1;
+                    if (ConsecutiveErrors == Properties.Settings.Default.DbMaxConsecutiveErrors)
+                        SactaProxy.This.Message("Maximo de Errores Consecutivos en Conexion de Base de Datos alcanzado...");
                     throw x;
                 }
             }
-            throw new Exception("No Hay conexion con Base de Datos...");
+
+            throw new Exception("Maximo de Errores Consecutivos en Conexion de Base de Datos alcanzado... No se establece la conexion a Base de Datos");
         }
 
-        private static int ConsecutiveErrors = 0;
+        private static int _ConsecutiveErrors = 0;
     }
 
 }

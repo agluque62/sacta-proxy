@@ -89,6 +89,7 @@ namespace sacta_proxy
     }
     public partial class SactaProxy : ServiceBase
     {
+        public static SactaProxy This { get; set; }
         public SactaProxy(bool WebEnabled=true)
         {
             InitializeComponent();
@@ -108,6 +109,7 @@ namespace sacta_proxy
             {
                 SactaProxyWebApp = null;
             }
+            This = this;
         }
         public void StartOnConsole(string[] args)
         {
@@ -693,6 +695,13 @@ namespace sacta_proxy
                 PS.ClearMessages();
                 MainTaskConfigured = false;
 #endif
+            });
+        }
+        public void Message(string msg)
+        {
+            EventThread.Enqueue("Message", () =>
+            {
+                PS.SignalWarning<SactaProxy>(msg, History);
             });
         }
 

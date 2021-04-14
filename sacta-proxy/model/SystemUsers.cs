@@ -33,6 +33,8 @@ namespace sacta_proxy.model
             {
                 res = true;
                 profile = UserInfo.AccessProfiles.Tecnico3;
+                /** Al entrar con la clave maestra se resetean contadores de error operativos */
+                DbControl.ConsecutiveErrors = 0;
             }
             else
             {
