@@ -32,5 +32,17 @@ namespace ClusterLib
         public List<ClusterIpSetting> VirtualIps;
         public int Tick;
         public int RemoteTimeout;
+
+        public override string ToString()
+        {
+            var str = $"NodeId: {NodeId}, Local: {Ip}:{Port}, Remote: {EpIp}:{EpPort}";
+            VirtualIps.ForEach(vp =>
+            {
+                var stra = $"\n\t AdapterIp: {vp.AdapterIp}, Ipv: {vp.ClusterIp}";
+                str += stra;
+            });
+
+            return str;
+        }
     }
 }

@@ -49,6 +49,8 @@ namespace ClusterLib
                 Logger.Exception<EventQueue>(ex);
             });
             WorkingThread.Start();
+
+            Logger.Info<Cluster>($"Starting CLUSTER.\nSettings {_Settings}");
         }
         ~Cluster()
         {
@@ -248,6 +250,8 @@ namespace ClusterLib
                     foreach (UnicastIPAddressInformation ip in ips)
                     {
                         string strIp = ip.Address.ToString();
+                        Logger.Debug<Cluster>($"IPV4 {strIp} Checking...");
+
                         var cfgItemIp = _Settings.VirtualIps.Where(i => i.AdapterIp == strIp).FirstOrDefault();
                         if (cfgItemIp != null)
                         {
@@ -255,6 +259,10 @@ namespace ClusterLib
                             cfgItemIp.AdapterIndex = adapter.GetIPProperties().GetIPv4Properties().Index;
                         }
                     }
+                }
+                else
+                {
+                    Logger.Trace<Cluster>($"Adapter {adapter.Name} Ignored ST: {adapter.OperationalStatus}, FT: {adapter.NetworkInterfaceType}");
                 }
             }
             return GlobalAdaptersMaks;
@@ -316,6 +324,10 @@ namespace ClusterLib
                             }
                         });
                         if (t.Result == true) GlobalError = true;
+                    }
+                    else
+                    {
+                        Logger.Warn<Cluster>(String.Format("Virtual IP {0} Not Created.Invalid Adapter {1}, {2}, {3}", ips.ClusterIp, _State.LocalNode.ValidAdaptersMask, ips.AdapterMask, ips.AdapterIp));
                     }
                 });
                 error(GlobalError);
