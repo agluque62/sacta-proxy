@@ -145,12 +145,29 @@ namespace sacta_proxy.Managers
                 };
             }
         }
-        public void SendSectorization(Dictionary<string, int> sectorMap)
+        public void SendSectorization(Dictionary<string, int> sectorMap, Action<bool> response)
         {
             lock (Locker)
             {
                 SendSectorizationMsg(sectorMap);
+                SectResponse = response;
             }
+        }
+        public bool PreprocessSectorizationToSend(Dictionary<string, int> sectorMap, Action<string> OnError)
+        {
+            var idSectorsToProcess = sectorMap.Keys.Select(k => k)
+                .Where(s => Cfg.Sectorization.VirtualsList().Contains(int.Parse(s)) == false)
+                .Select(s => int.Parse(s));
+            var SectorsNotFound = Cfg.Sectorization.SectorsList()
+                .Where(s => idSectorsToProcess.Contains(s) == false)
+                .Select(s => s.ToString())
+                .ToList();
+            if (SectorsNotFound.Count > 0)
+            {
+                OnError($"Sectores no Encontrados: {String.Join(", ", SectorsNotFound)}. ");
+                return false;
+            }
+            return true;
         }
         #endregion Publics
 
@@ -208,6 +225,9 @@ namespace sacta_proxy.Managers
                                         {
                                             SactaMsg.SectAnswerInfo info = (SactaMsg.SectAnswerInfo)(msg.Info);
                                             Logger.Info<PsiManager>($"On PSI from Scv Lan {lan} Sectorization {info.Version} {(info.Result == 1 ? "Accepted" : "Rejected")}.");
+                                            if (SectResponse!=null)
+                                                SectResponse(info.Result == 1);
+                                            SectResponse = null;
                                         }
                                         break;
                                     default:
@@ -250,7 +270,7 @@ namespace sacta_proxy.Managers
                     else if (ScvActivity && !IsThereLanActivity)
                     {
                         ScvActivity = false;
-                        Logger.Info<PsiManager>($"On Psi Activity on LAN OFF ...");
+                        Logger.Info<PsiManager>($"On Psi Activity SCV OFF ...");
                         // Evento de Desconexion con SCV.
                         LaunchEventActivity(WhatLanItems.Global, false);
                     }
@@ -352,6 +372,8 @@ namespace sacta_proxy.Managers
         bool SectAskpending { get; set; } = false;
 
         Func<History> History { get; set; }
+
+        Action<bool> SectResponse = null;
         #endregion
     }
 }
