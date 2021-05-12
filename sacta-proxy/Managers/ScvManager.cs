@@ -504,7 +504,7 @@ namespace sacta_proxy.Managers
                 {
                     Accepted = false,
                     ScvId = Cfg.Id,
-                    //SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
+                    SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
                     ReceivedMap = String.Join(",", sectorsReceived.Select(s => s.ToString())),
                     RejectCause = message,
                     Acknowledge = (result)=> deliver(false, message)

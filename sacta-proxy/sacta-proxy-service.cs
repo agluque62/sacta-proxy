@@ -52,7 +52,8 @@ namespace sacta_proxy
             SectorizationPersistence.Get(id, (date, data) =>
             {
                 LastChange = date;
-                sectorization = data;
+                if (data != null)
+                    sectorization = data;
             });
         }
         public List<SectorizationItem> Sectorization
@@ -62,6 +63,10 @@ namespace sacta_proxy
                 var sect = MapOfSectors.Select(m => new SectorizationItem() { Sector = m.Key, Position = m.Value }).ToList();
                 return sect;
             }
+        }
+        public void ResetSectorization()
+        {
+            sectorization.Clear();
         }
         public void MergeSectorization(SectMap map)
         {
@@ -515,51 +520,74 @@ namespace sacta_proxy
             EventThread.Enqueue("OnScvEventSectorization", () =>
             {
                 var ctrldep = DepManagers.Where(d => d.Cfg.Id == data.ScvId).FirstOrDefault();
+                string cause = "";
+                // Actualizo la Sectorizacion en la Dependencia.
+                ctrldep.MapOfSectors = data.SectorMap;
                 if (ctrldep != null)
                 {
                     if (data.Accepted)
                     {
-                        // Actualizo la Sectorizacion en la Dependencia.
-                        ctrldep.MapOfSectors = data.SectorMap;
-
-                        // Mapeo la sectorizacion recibida.
-                        var MapOfSectorsMapped = ctrldep.Map(data.SectorMap);
-
-                        // Actualizo la Sectorizacion en el Manager.
-                        MainManager.MergeSectorization(MapOfSectorsMapped);
+                        // Genero la Sectorizacion del SCV...
+                        MainManager.ResetSectorization();
+                        DepManagers.ForEach(dep =>
+                        {
+                            MainManager.MergeSectorization(dep.Map(dep.MapOfSectors));
+                        });
 
                         // Historico.
                         History.Add(HistoryItems.DepSectorizationReceivedEvent, "", ctrldep.Cfg.Id, "", SectorizationHelper.MapToString(data.SectorMap));
 
-                        // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
-                        var actives = DepManagers.Where(d => d.Activity == true).ToList();
-                        var whithsect = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList().Count == DepManagers.Count;
-                        var sectenable = Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 : actives.Count() == DepManagers.Count();
-
-                        //var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
-                        //if (DepWithSectInfo.Count == DepManagers.Count)
-                        if (sectenable && whithsect)
+                        // Miro si la Sectorizacion Global cumple Parametros.
+                        if ((MainManager.Manager as PsiManager).PreprocessSectorizationToSend(MainManager.MapOfSectors, (error)=>cause=error)==true)
                         {
-                            if (ScvSectorizationAskPending == false)
+                            // Propagar la Sectorizacion al SCV real si todas las dependencias han recibido sectorizacion.
+                            var actives = DepManagers.Where(d => d.Activity == true).ToList();
+                            var whithsect = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList().Count == DepManagers.Count;
+                            var sectenable = Cfg.General.ActivateSactaLogic == "OR" ? actives.Count() > 0 : actives.Count() == DepManagers.Count();
+
+                            //var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
+                            //if (DepWithSectInfo.Count == DepManagers.Count)
+                            if (sectenable && whithsect)
                             {
-                                (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
-                                // Historico
-                                History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "",
-                                    SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Recibida de SACTA ({data.ScvId})");
+                                if (ScvSectorizationAskPending == false)
+                                {
+                                    (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors, (accepted) =>
+                                    {
+                                        if (accepted)
+                                        {
+                                            // Historico
+                                            History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "",
+                                                SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Recibida de SACTA ({data.ScvId})");
+                                            data.Acknowledge(true);
+                                        }
+                                        else
+                                        {
+                                            History.Add(HistoryItems.DepSectorizationRejectedEvent, "", MainManager.Cfg.Id,
+                                                "", SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Rechazada por SCV");
+                                            data.Acknowledge(false);
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    Logger.Warn<SactaProxy>($"OnScvEventSectorization from {data.ScvId}. Blocked Sectorization. Cause: Scv ASK Pending.");
+                                    ScvSectAskSync?.Signal();
+                                    data.Acknowledge(true);
+                                }
                             }
                             else
                             {
-                                Logger.Warn<SactaProxy>($"OnScvEventSectorization from {data.ScvId}. Blocked Sectorization. Cause: Scv ASK Pending.");
-                                ScvSectAskSync?.Signal();
+                                cause = !sectenable ? "No se cumple la condicion AND/OR para sectorizar" :
+                                    "No todas las dependencias tienen sectorizaciones válidas.";
+                                History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
+                                    "", SectorizationHelper.MapToString(data.SectorMap), cause);
+                                data.Acknowledge(false);
                             }
-                            data.Acknowledge(true);
                         }
                         else
                         {
-                            var cause = !sectenable ? "No se cumple la condicion AND/OR para sectorizar" : 
-                                "No todas las dependencias tienen sectorizaciones válidas.";
-                            History.Add(HistoryItems.DepSectorizationRejectedEvent, "", ctrldep.Cfg.Id,
-                                "", SectorizationHelper.MapToString(data.SectorMap), cause);
+                            History.Add(HistoryItems.DepSectorizationRejectedEvent, "", MainManager.Cfg.Id,
+                                "", SectorizationHelper.MapToString(MainManager.MapOfSectors), cause);
                             data.Acknowledge(false);
                         }
                     }
@@ -620,10 +648,19 @@ namespace sacta_proxy
                         {
                             ScvSectAskSync.Wait(TimeSpan.FromSeconds(Properties.Settings.Default.SectInitTimeout), (timeout) =>
                             {
-                                (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
-                                /** Historico */
-                                History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "",
-                                    SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Peticion SCV");
+                                (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors, (accepted)=>
+                                {
+                                    /** Historico */
+                                    if (accepted)
+                                        History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "",
+                                            SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Peticion SCV");
+                                    else
+                                    {
+                                        // Reject
+                                        History.Add(HistoryItems.DepSectorizationRejectedEvent, "", MainManager.Cfg.Id,
+                                            "", SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Rechazada por SCV");
+                                    }
+                                });
                             });
                         }
                         ScvSectAskSync = null;
@@ -635,25 +672,6 @@ namespace sacta_proxy
                 {
                     Logger.Warn<SactaProxy>($"OnPsiEventSectorizationAsk. IGNORED. No all Sectorization Info Present.");
                 }
-
-                //Task.Run(() =>
-                //{
-                //    Task.Delay(TimeSpan.FromSeconds(3)).Wait();
-                //    //var DepWithSectInfo = DepManager.Where(d => d.Value.MapOfSectors.Count() > 0).ToList();
-                //    var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
-                //    if (DepWithSectInfo.Count == DepManagers.Count)
-                //    {
-                //        (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors);
-                //        /** Historico */
-                //        History.Add(HistoryItems.ScvSectorizationSendedEvent, "", MainManager.Cfg.Id, "",
-                //            SectorizationHelper.MapToString(MainManager.MapOfSectors), $"Peticion SCV");
-                //    }
-                //    else
-                //    {
-                //        Logger.Warn<SactaProxy>($"OnPsiEventSectorizationAsk. IGNORED. No all Sectorization Info Present.");
-                //    }
-                //    ScvSectorizationAskPending = false;
-                //});
             });
         }
 
