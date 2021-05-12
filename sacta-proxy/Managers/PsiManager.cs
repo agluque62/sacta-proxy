@@ -17,6 +17,7 @@ namespace sacta_proxy.Managers
     {
         #region Events
         public event EventHandler<SectorizationRequestArgs> EventSectRequest;
+        public event EventHandler<ScvActivityEventArgs> EventScvActivity;
         #endregion Events
 
         #region Publics
@@ -193,13 +194,27 @@ namespace sacta_proxy.Managers
                                         Logger.Debug<PsiManager>($"On PSI from Scv Lan {lan} Valid message {msg.Type} received.  Id = {msg.Id}");
                                         if (msg.Type == SactaMsg.MsgType.Init)
                                         {
-                                            if (ScvActivity == true)
+                                            // Si el mensaje llega por las dos redes solo respondo a uno
+                                            if (InitMsgPending == false)
                                             {
-                                                // Hay un reset de SCV que no se ha detectado por TIMEOUT...
-                                                Logger.Warn<PsiManager>($"On Psi Activity on LAN OFF. Cause: Init Received ...");
-                                                ScvActivity = false;
-                                                // Evento de Desconexion con SCV.
-                                                LaunchEventActivity(WhatLanItems.Global, false);
+                                                InitMsgPending = true;
+                                                // Una vez tratado el primento, abro una ventana de no atencion de 500 msg.
+                                                Task.Run(() => { Task.Delay(500).Wait(); InitMsgPending = false; });
+
+                                                //if (ScvActivity == true)
+                                                //{
+                                                //    // Hay un reset de SCV que no se ha detectado por TIMEOUT...
+                                                //    Logger.Warn<PsiManager>($"On Psi Activity on LAN OFF. Cause: Init Received ...");
+                                                //    // Evento de Desconexion con SCV.
+                                                //    LaunchEventActivity(WhatLanItems.Global, false);
+                                                //}
+
+                                                SafeLaunchEvent<ScvActivityEventArgs>(EventScvActivity, new ScvActivityEventArgs()
+                                                {
+                                                    ScvId = "PSI",
+                                                    OnOff = true
+                                                });
+                                                ScvActivity = true;
                                             }
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.Presence)
@@ -260,19 +275,30 @@ namespace sacta_proxy.Managers
             {
                 try
                 {
-                    if (!ScvActivity && IsThereLanActivity)
+                    //if (!ScvActivity && IsThereLanActivity)
+                    //{
+                    //    ScvActivity = true;
+                    //    Logger.Info<PsiManager>($"On Psi Activity on LAN ON ...");
+                    //    // Evento de Conexion con SCV.
+                    //    LaunchEventActivity(WhatLanItems.Global, true);
+                    //}
+                    //else if (ScvActivity && !IsThereLanActivity)
+                    //{
+                    //    ScvActivity = false;
+                    //    Logger.Info<PsiManager>($"On Psi Activity SCV OFF ...");
+                    //    // Evento de Desconexion con SCV.
+                    //    LaunchEventActivity(WhatLanItems.Global, false);
+                    //}
+                    if (ScvActivity && !IsThereLanActivity)
                     {
-                        ScvActivity = true;
-                        Logger.Info<PsiManager>($"On Psi Activity on LAN ON ...");
-                        // Evento de Conexion con SCV.
-                        LaunchEventActivity(WhatLanItems.Global, true);
-                    }
-                    else if (ScvActivity && !IsThereLanActivity)
-                    {
-                        ScvActivity = false;
                         Logger.Info<PsiManager>($"On Psi Activity SCV OFF ...");
                         // Evento de Desconexion con SCV.
-                        LaunchEventActivity(WhatLanItems.Global, false);
+                        SafeLaunchEvent<ScvActivityEventArgs>(EventScvActivity, new ScvActivityEventArgs()
+                        {
+                            ScvId = "PSI",
+                            OnOff = false
+                        });
+                        ScvActivity = false;
                     }
                     if (DateTime.Now - LastPresenceSended > TimeSpan.FromSeconds(Cfg.SactaProtocol.TickAlive))
                     {
@@ -370,6 +396,7 @@ namespace sacta_proxy.Managers
         UdpSocket Listener1, Listener2;
 
         bool SectAskpending { get; set; } = false;
+        bool InitMsgPending { get; set; } = false;
 
         Func<History> History { get; set; }
 

@@ -110,5 +110,8 @@ namespace sacta_proxy.Managers
     public class SectorizationRequestArgs : ManagerEventArgs 
     { 
     }
-    
+    public class ScvActivityEventArgs : ManagerEventArgs
+    {
+        public bool OnOff { get; set; }
+    }
 }

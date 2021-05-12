@@ -214,6 +214,7 @@ namespace sacta_proxy
                 var manager = new PsiManager(cfg.ProtocolVersion, cfg.Psi, () => History);
                 manager.EventActivity += OnPsiEventActivity;
                 manager.EventSectRequest += OnPsiEventSectorizationAsk;
+                manager.EventScvActivity += OnPsiEventScvActivity;
                 Managers.Add(new DependencyControl(cfg.Psi.Id)
                 {
                     IsMain = true,
@@ -328,6 +329,7 @@ namespace sacta_proxy
                     {
                         (depEntry.Manager as PsiManager).EventActivity -= OnPsiEventActivity;
                         (depEntry.Manager as PsiManager).EventSectRequest -= OnPsiEventSectorizationAsk;
+                        (depEntry.Manager as PsiManager).EventScvActivity -= OnPsiEventScvActivity;
                     }
                     else
                     {
@@ -618,19 +620,19 @@ namespace sacta_proxy
                         History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, $"{strLan} {strStd}");
                         return;
                 }
-                if (data.ActivityOnLan != MainManager.Activity)
-                {
-                    MainManager.Activity = data.ActivityOnLan;
-                    /** Historico del Cambio */
-                    History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
-                    // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
-                    DepManagers.ForEach(dependency =>
-                        {
-                            dependency.Manager.TxEnabled = MainManager.Activity;
-                            /** Historico del Cambio */
-                            History.Add(HistoryItems.DepTxstateChange, "", dependency.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
-                        });
-                }
+                //if (data.ActivityOnLan != MainManager.Activity)
+                //{
+                //    MainManager.Activity = data.ActivityOnLan;
+                //    /** Historico del Cambio */
+                //    History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
+                //    // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
+                //    DepManagers.ForEach(dependency =>
+                //    {
+                //        dependency.Manager.TxEnabled = MainManager.Activity;
+                //        /** Historico del Cambio */
+                //        History.Add(HistoryItems.DepTxstateChange, "", dependency.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
+                //    });
+                //}
             });
         }
         protected void OnPsiEventSectorizationAsk(Object sender, SectorizationRequestArgs data)
@@ -674,10 +676,25 @@ namespace sacta_proxy
                 }
             });
         }
-
+        protected void OnPsiEventScvActivity(object sender, ScvActivityEventArgs data)
+        {
+            EventThread.Enqueue("OnPsiEventScvActivity", () =>
+            {
+                MainManager.Activity = data.OnOff;
+                /** Historico del Cambio */
+                History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
+                // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
+                DepManagers.ForEach(dependency =>
+                {
+                    dependency.Manager.TxEnabled = MainManager.Activity;
+                        /** Historico del Cambio */
+                    History.Add(HistoryItems.DepTxstateChange, "", dependency.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
+                });
+            });
+        }
 #endregion EventManagers
 
-        void TestDuplicated(List<string> pos, List<string> sec, List<string> vir, Action continues)
+            void TestDuplicated(List<string> pos, List<string> sec, List<string> vir, Action continues)
         {
             if (pos.Count() > 0)
                 PS.SignalFatal<SactaProxy>($"Existen Id de Posiciones duplicadas => {String.Join(",", pos)}", History);
