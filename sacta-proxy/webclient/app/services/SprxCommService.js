@@ -49,8 +49,8 @@ angular
                 },
                 (error) => {
                     // Error en el tratamiento de la peticion.
-                    console.log("Error Peticion");
-                    window.open("/", "_self");
+                    console.log("Error Peticion: ", error);
+                    //window.open("/", "_self");
                 }
             );
         }

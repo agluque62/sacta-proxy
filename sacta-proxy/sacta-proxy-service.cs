@@ -356,6 +356,9 @@ namespace sacta_proxy
             context.Response.ContentType = "application/json";
             if (context.Request.HttpMethod == "GET")
             {
+#if DEBUG1
+                ThrowExcepcionEveryMinute();
+#endif
                 context.Response.StatusCode = 200;
                 sb.Append(JsonHelper.ToString(new
                 {
@@ -763,6 +766,21 @@ namespace sacta_proxy
         private bool ScvSectorizationAskPending { get; set; } = false;
         private CustomEventSync ScvSectAskSync { get; set; }
         #endregion
+
+#if DEBUG
+        #region Pruebas Forzadas
+        DateTime LastThrow = DateTime.Now;
+        void ThrowExcepcionEveryMinute()
+        {
+            var elapsed = DateTime.Now - LastThrow;
+            if (elapsed >= TimeSpan.FromMinutes(1))
+            {
+                LastThrow = DateTime.Now;
+                throw new Exception("EveryMinuteException");
+            }
+        }
+        #endregion Pruebas Forzadas
+#endif
     }
 
 }
