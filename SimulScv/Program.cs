@@ -83,7 +83,10 @@ namespace SimulScv
             Console.Clear();
             Console.WriteLine("SimulSactaOnScv. Nucleo 2020...2021.");
             Console.WriteLine();
-            Console.WriteLine($"Lan1: {Lan1}, Lan2:{Lan2}");
+            Console.WriteLine($"Lan1      : {Lan1}, Lan2:{Lan2}");
+            Console.WriteLine($"Sectores  : {Properties.Settings.Default.Sectores}");
+            Console.WriteLine($"Posiciones: {Properties.Settings.Default.Posiciones}");
+            Console.WriteLine($"Modo CD30 : {Properties.Settings.Default.Cd30Mode}");
             Console.WriteLine();
             Console.WriteLine("\t A => Arrancar, P => Parar.");
             Console.WriteLine("\t 1 => LAN1 on/off. 2 => LAN2 on/off.");

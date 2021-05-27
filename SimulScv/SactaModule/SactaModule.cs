@@ -543,8 +543,8 @@ namespace Sacta
 
         IPEndPoint[] _EndPoint;
         int _ActivityState;
-        uint _ActivityTimeOut = (uint)SactaSectionHandler.CfgSacta.CfgTimeouts.Presencia; // = Settings.Default.ActivityTimeOut; 
-        uint _PresenceInterval = (uint)SactaSectionHandler.CfgSacta.CfgTimeouts.TimeOutActividad; // = Settings.Default.PresenceInterval;
+        uint _ActivityTimeOut = (uint)SactaSectionHandler.CfgSacta.CfgTimeouts.TimeOutActividad; // = Settings.Default.ActivityTimeOut; 
+        uint _PresenceInterval = (uint)SactaSectionHandler.CfgSacta.CfgTimeouts.Presencia; // = Settings.Default.PresenceInterval;
         SactaState _State;
         DateTime[] _LastSactaReceived;
         DateTime _BeginOfWaitForSect;
@@ -1019,34 +1019,65 @@ namespace Sacta
                         General.AsyncSafeLaunchEvent(SactaActivityChanged, this, info);
                         Logger.Warn<SactaModule>(String.Format("SactaActivityChangedEvent => {0}", _ActivityState));
                     }
-
-                    if (_ActivityState == 0)
+                    if (SimulScv.Properties.Settings.Default.Cd30Mode)
                     {
-                        _State = SactaState.WaitingSactaActivity;
-                        foreach (var item in _SactaSPSIUsers)
-                            item.Value.LastSectMsgId = -1;
+                        if (_ActivityState == 0)
+                        {
+                            _State = SactaState.WaitingSactaActivity;
+                            foreach (var item in _SactaSPSIUsers)
+                                item.Value.LastSectMsgId = -1;
+                        }
+                        else
+                        {
+                            if ((_State == SactaState.WaitingSactaActivity) ||
+                                ((_State == SactaState.WaitingSectorization) &&
+                                ((uint)((DateTime.Now - _BeginOfWaitForSect).TotalMilliseconds) > _WaitForSectTimeOut)))
+                            {
+                                /** */
+                                foreach (var item in _SactaSPSIUsers)
+                                    item.Value.LastSectMsgId = -1;
+
+                                SendInit();
+                                SendSectAsk();
+                                SendPresence();
+
+                                _State = SactaState.WaitingSectorization;
+                            }
+                        }
+                        if ((uint)((DateTime.Now - _LastPresenceSended).TotalMilliseconds) > _PresenceInterval)
+                        {
+                            SendPresence();
+                        }
                     }
                     else
                     {
-                        if ((_State == SactaState.WaitingSactaActivity) ||
-                            ((_State == SactaState.WaitingSectorization) &&
-                            ((uint)((DateTime.Now - _BeginOfWaitForSect).TotalMilliseconds) > _WaitForSectTimeOut)))
+                        if (_ActivityState == 0)
                         {
-                            /** */
+                            _State = SactaState.WaitingSactaActivity;
                             foreach (var item in _SactaSPSIUsers)
                                 item.Value.LastSectMsgId = -1;
-
-                            SendInit();
-                            SendSectAsk();
-                            SendPresence();
-
-                            _State = SactaState.WaitingSectorization;
                         }
-                        else if ((uint)((DateTime.Now - _LastPresenceSended).TotalMilliseconds) > _PresenceInterval)
+                        else
                         {
-                            SendPresence();
-                        }
+                            if ((_State == SactaState.WaitingSactaActivity) ||
+                                ((_State == SactaState.WaitingSectorization) &&
+                                ((uint)((DateTime.Now - _BeginOfWaitForSect).TotalMilliseconds) > _WaitForSectTimeOut)))
+                            {
+                                /** */
+                                foreach (var item in _SactaSPSIUsers)
+                                    item.Value.LastSectMsgId = -1;
 
+                                SendInit();
+                                SendSectAsk();
+                                SendPresence();
+
+                                _State = SactaState.WaitingSectorization;
+                            }
+                            else if ((uint)((DateTime.Now - _LastPresenceSended).TotalMilliseconds) > _PresenceInterval)
+                            {
+                                SendPresence();
+                            }
+                        }
                     }
                 }
             }
@@ -1109,8 +1140,34 @@ namespace Sacta
         void ProcessSectorization(SactaMsg msg)
         {
 #if __LOCAL_TESTING__
+
             Logger.Info<SactaModule>(String.Format("Procesando Sectorizacion Recibida...."));
-            OnResultSectorizacion(0, _TryingSectVersion);
+            TestSectorization(msg, (res, err) =>
+            {
+                var resmsg = res ? "Rechazada" : "Aceptada";
+                Logger.Error<SactaModule>($"Sectorizacion {resmsg}. {err}");
+                OnResultSectorizacion(res ? 1 : 0, _TryingSectVersion);
+            });
+
+            //// Obtengo Sectores recibidos.
+            //SactaMsg.SectInfo sactaSect = (SactaMsg.SectInfo)(msg.Info);
+            //List<int> ReceivedSectors = new List<int>();
+            //foreach (SactaMsg.SectInfo.SectorInfo sector in sactaSect.Sectors)
+            //{
+            //    ReceivedSectors.Add(int.Parse(sector.SectorCode));
+            //}
+            //Logger.Warn<SactaModule>($"Received Sectors: {String.Join(",", ReceivedSectors.Select(s => s.ToString()).ToArray())}");
+            //// Miro si estan todos.
+            //var CfgSectors = SimulScv.Properties.Settings.Default.Sectores.Split(',').Select(s => int.Parse(s)).ToList();
+            //Logger.Warn<SactaModule>($"Configured Sectors: {String.Join(",", CfgSectors.Select(s => s.ToString()).ToArray())}");
+            //int result = 0;
+            //ReceivedSectors.ForEach(s =>
+            //{
+            //    if (CfgSectors.Contains(s) == false)
+            //        result = 1;
+            //});
+
+            //OnResultSectorizacion(result, _TryingSectVersion);
 #else
             const int Error = 1;
 
@@ -1293,45 +1350,99 @@ namespace Sacta
                 }
             }
         }
+
+        void TestSectorization(SactaMsg msg, Action<bool,string> notify)
+        {
+            var CfgSectors = SimulScv.Properties.Settings.Default.Sectores.Split(',').Select(s => int.Parse(s)).ToList();
+            var CfgPositions = SimulScv.Properties.Settings.Default.Posiciones.Split(',').Select(p => int.Parse(p)).ToList();
+
+            var pairsToProcess = ((SactaMsg.SectInfo)(msg.Info)).Sectors.ToList();
+            var idSectorsToProcess = pairsToProcess
+                .Select(s => int.Parse(s.SectorCode)).ToList();
+            var SectorsNotFound = CfgSectors
+                .Where(s => idSectorsToProcess.Contains(s) == false)
+                .Select(s => s.ToString())
+                .ToList();
+            var UnknowUcs = pairsToProcess
+                .Where(s => CfgPositions.Contains((int)s.Ucs) == false)
+                .Select(s => s.Ucs.ToString())
+                .ToList();
+            var UnknowSectors = pairsToProcess
+                .Where(s => CfgSectors.Contains(int.Parse(s.SectorCode)) == false)
+                .Select(s => s.SectorCode)
+                .ToList();
+            var duplicatedSect = pairsToProcess
+                .GroupBy(s => s.SectorCode)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+
+            bool err = SectorsNotFound.Count > 0 || UnknowUcs.Count() > 0 || UnknowSectors.Count() > 0 || duplicatedSect.Count() > 0;
+            var message = "";
+            if (err)
+            {
+                message += SectorsNotFound.Count() > 0 ? $"Sectores no Encontrados: {String.Join(", ", SectorsNotFound)}. " : "";
+                message += UnknowUcs.Count() > 0 ? $"Posiciones Desconocidas: {String.Join(", ", UnknowUcs)}. " : "";
+                message += UnknowSectors.Count() > 0 ? $"Sectores Desconocidos: {String.Join(", ", UnknowSectors)}. " : "";
+                message += duplicatedSect.Count() > 0 ? $"Sectores Duplicados: {String.Join(", ", duplicatedSect)}. " : "";
+            }
+            Logger.Warn<SactaModule>($"Testing Sectorization Received, Sectors: {String.Join(",", idSectorsToProcess.Select(s => s.ToString()).ToArray())}");
+            notify(err, message);
+        }
 #endif
         /// <summary>
         /// 
         /// </summary>
         void SendInit()
         {
-            Debug.Assert(_ActivityState != 0);
-#if __SACTA2017__
-            if (Lan1 && (_ActivityState & 0x1) == 0x1)
+            //Debug.Assert(_ActivityState != 0);
+            if (SimulScv.Properties.Settings.Default.Cd30Mode)
+            {
                 _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.Init, SactaMsg.InitId, 0)).Serialize());
-            if (Lan2 && (_ActivityState & 0x2) == 0x2)
                 _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.Init, SactaMsg.InitId, 0)).Serialize());
-            Logger.Warn<SactaModule>(String.Format("Mensaje INIT enviado..."));
+                Logger.Warn<SactaModule>(String.Format("Mensaje INIT enviado..."));
+                _SeqNum = 0;
+            }
+            else
+            {
+#if __SACTA2017__
+                if (Lan1 && (_ActivityState & 0x1) == 0x1)
+                    _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.Init, SactaMsg.InitId, 0)).Serialize());
+                if (Lan2 && (_ActivityState & 0x2) == 0x2)
+                    _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.Init, SactaMsg.InitId, 0)).Serialize());
+                Logger.Warn<SactaModule>(String.Format("Mensaje INIT enviado..."));
 #else
             if ((_ActivityState & 0x1) == 0x1) _Comm[0].Send(_EndPoint[0], _InitMsg);
             if ((_ActivityState & 0x2) == 0x2) _Comm[1].Send(_EndPoint[1], _InitMsg);
 #endif
-            _SeqNum = 0;
+                _SeqNum = 0;
+            }
         }
         /// <summary>
         /// 
         /// </summary>
         void SendSectAsk()
         {
-            Debug.Assert(_ActivityState != 0);
-
-#if __SACTA2017__
-            if (Lan1 && (_ActivityState & 0x1) == 0x1)
+            //Debug.Assert(_ActivityState != 0);
+            if (SimulScv.Properties.Settings.Default.Cd30Mode)
+            {
                 _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.SectAsk, 0, _SeqNum)).Serialize());
-            if (Lan2 && (_ActivityState & 0x2) == 0x2)
                 _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.SectAsk, 0, _SeqNum)).Serialize());
-
-            _SeqNum = _SeqNum >= 287 ? 0 : _SeqNum + 1; // (_SeqNum + 1) & 0x1FFF;
-
-            Logger.Info<SactaModule>(String.Format("Mensaje SECTASK enviado..."));
+            }
+            else
+            {
+#if __SACTA2017__
+                if (Lan1 && (_ActivityState & 0x1) == 0x1)
+                    _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.SectAsk, 0, _SeqNum)).Serialize());
+                if (Lan2 && (_ActivityState & 0x2) == 0x2)
+                    _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.SectAsk, 0, _SeqNum)).Serialize());
 #else
             if ((_ActivityState & 0x1) == 0x1) _Comm[0].Send(_EndPoint[0], _SectAskMsg);
             if ((_ActivityState & 0x2) == 0x2) _Comm[1].Send(_EndPoint[1], _SectAskMsg);
 #endif
+            }
+            _SeqNum = _SeqNum >= 287 ? 0 : _SeqNum + 1; // (_SeqNum + 1) & 0x1FFF;
+            Logger.Info<SactaModule>(String.Format("Mensaje SECTASK enviado..."));
             _BeginOfWaitForSect = DateTime.Now;
         }
         /// <summary>
@@ -1341,17 +1452,20 @@ namespace Sacta
         /// <param name="result"></param>
         void SendSectAnswer(uint version, int result)
         {
-            Debug.Assert(_ActivityState != 0);
+            //Debug.Assert(_ActivityState != 0);
+            if (SimulScv.Properties.Settings.Default.Cd30Mode)
+            {
+                _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.SectAnwer, 0, _SeqNum, (int)version, (result == 0 ? 1 : 0))).Serialize());
+                _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.SectAnwer, 0, _SeqNum, (int)version, (result == 0 ? 1 : 0))).Serialize());
+            }
+            else
+            {
 
 #if __SACTA2017__
-            if (Lan1 && (_ActivityState & 0x1) == 0x1)
+                if (Lan1 && (_ActivityState & 0x1) == 0x1)
                 _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.SectAnwer, 0, _SeqNum, (int)version, (result == 0 ? 1 : 0))).Serialize());
             if (Lan2 && (_ActivityState & 0x2) == 0x2)
                 _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.SectAnwer, 0, _SeqNum, (int)version, (result == 0 ? 1 : 0))).Serialize());
-
-            _SeqNum = _SeqNum >= 287 ? 0 : _SeqNum + 1; // _SeqNum = (_SeqNum + 1) & 0x1FFF;
-
-            Logger.Info<SactaModule>(String.Format("Mensaje SectAnswer enviado..."));
 #else
             _SectAnswerMsg[13] = (byte)_SeqNum++;
             _SectAnswerMsg[24] = (byte)(result == 0 ? 1 : 0);
@@ -1360,28 +1474,36 @@ namespace Sacta
             if ((_ActivityState & 0x1) == 0x1) _Comm[0].Send(_EndPoint[0], _SectAnswerMsg);
             if ((_ActivityState & 0x2) == 0x2) _Comm[1].Send(_EndPoint[1], _SectAnswerMsg);
 #endif
+            }
+            _SeqNum = _SeqNum >= 287 ? 0 : _SeqNum + 1; // _SeqNum = (_SeqNum + 1) & 0x1FFF;
+            Logger.Info<SactaModule>(String.Format("Mensaje SectAnswer enviado..."));
         }
         /// <summary>
         /// 
         /// </summary>
         void SendPresence()
         {
-            Debug.Assert(_ActivityState != 0);
-
-#if __SACTA2017__
-            if (Lan1 && (_ActivityState & 0x1) == 0x1)
+            //Debug.Assert(_ActivityState != 0);
+            if (SimulScv.Properties.Settings.Default.Cd30Mode)
+            {
                 _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.Presence, 0, _SeqNum)).Serialize());
-            if (Lan2 && (_ActivityState & 0x2) == 0x2)
                 _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.Presence, 0, _SeqNum)).Serialize());
-
-            _SeqNum = _SeqNum >= 287 ? 0 : _SeqNum + 1; // _SeqNum = (_SeqNum + 1) & 0x1FFF;
-
-            Logger.Info<SactaModule>(String.Format("{0}, Presencia Enviado...", strModuleState));
+            }
+            else
+            {
+#if __SACTA2017__
+                if (Lan1 && (_ActivityState & 0x1) == 0x1)
+                    _socket.Send(_EndPoint[0], (new SactaMsg(SactaMsg.MsgType.Presence, 0, _SeqNum)).Serialize());
+                if (Lan2 && (_ActivityState & 0x2) == 0x2)
+                    _socket.Send(_EndPoint[1], (new SactaMsg(SactaMsg.MsgType.Presence, 0, _SeqNum)).Serialize());
 #else
             _PresenceMsg[13] = (byte)_SeqNum++;
             if ((_ActivityState & 0x1) == 0x1) _Comm[0].Send(_EndPoint[0], _PresenceMsg);
             if ((_ActivityState & 0x2) == 0x2) _Comm[1].Send(_EndPoint[1], _PresenceMsg);
 #endif
+            }
+            _SeqNum = _SeqNum >= 287 ? 0 : _SeqNum + 1; // _SeqNum = (_SeqNum + 1) & 0x1FFF;
+            Logger.Info<SactaModule>(String.Format("{0}, Presencia Enviado...", strModuleState));
             _LastPresenceSended = DateTime.Now;
         }
 
@@ -1581,6 +1703,8 @@ namespace Sacta
 
         public bool Lan1 { get; set; }
         public bool Lan2 { get; set; }
+
+        
 
     }
 

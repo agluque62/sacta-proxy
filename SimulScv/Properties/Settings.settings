@@ -20,11 +20,14 @@
     <Setting Name="Sectores" Type="System.String" Scope="Application">
       <Value Profile="(Default)">1,2,3,4,10,11,12</Value>
     </Setting>
-    <Setting Name="Posiciones" Type="System.String" Scope="User">
+    <Setting Name="Posiciones" Type="System.String" Scope="Application">
       <Value Profile="(Default)">1,2,3,4,10,11</Value>
     </Setting>
     <Setting Name="LatenciaLan" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="Cd30Mode" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

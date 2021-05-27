@@ -77,15 +77,12 @@ namespace SimulScv.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1,2,3,4,10,11")]
         public string Posiciones {
             get {
                 return ((string)(this["Posiciones"]));
-            }
-            set {
-                this["Posiciones"] = value;
             }
         }
         
@@ -95,6 +92,15 @@ namespace SimulScv.Properties {
         public int LatenciaLan {
             get {
                 return ((int)(this["LatenciaLan"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Cd30Mode {
+            get {
+                return ((bool)(this["Cd30Mode"]));
             }
         }
     }
