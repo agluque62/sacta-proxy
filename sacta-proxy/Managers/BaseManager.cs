@@ -98,6 +98,10 @@ namespace sacta_proxy.Managers
     {
         public BaseManager.WhatLanItems What { get; set; }
         public bool ActivityOnLan { get; set; }
+        public override string ToString()
+        {
+            return $"On {ScvId} Lan {What} => {ActivityOnLan}";
+        }
     }
     public class SectorizationReceivedArgs : ManagerEventArgs
     {
@@ -106,12 +110,24 @@ namespace sacta_proxy.Managers
         public Dictionary<string, int> SectorMap { get; set; }
         public string RejectCause { get; set; }
         public Action<bool> Acknowledge { get; set; }
+        public override string ToString()
+        {
+            return $"On {ScvId} Accepted {Accepted}";
+        }
     }
     public class SectorizationRequestArgs : ManagerEventArgs 
-    { 
+    {
+        public override string ToString()
+        {
+            return $"On {ScvId}";
+        }
     }
     public class ScvActivityEventArgs : ManagerEventArgs
     {
         public bool OnOff { get; set; }
+        public override string ToString()
+        {
+            return $"On {ScvId} OnOff {OnOff}"; ;
+        }
     }
 }

@@ -289,6 +289,18 @@ namespace sacta_proxy.Managers
                     //    // Evento de Desconexion con SCV.
                     //    LaunchEventActivity(WhatLanItems.Global, false);
                     //}
+                    //if (!ScvActivity && IsThereLanActivity)
+                    //{
+                    //    Logger.Info<PsiManager>($"On Psi Activity on LAN ON ...");
+                    //    // Evento de Desconexion con SCV.
+                    //    SafeLaunchEvent<ScvActivityEventArgs>(EventScvActivity, new ScvActivityEventArgs()
+                    //    {
+                    //        ScvId = "PSI",
+                    //        OnOff = true
+                    //    });
+                    //    ScvActivity = true;
+                    //}
+                    //else
                     if (ScvActivity && !IsThereLanActivity)
                     {
                         Logger.Info<PsiManager>($"On Psi Activity SCV OFF ...");
@@ -388,10 +400,31 @@ namespace sacta_proxy.Managers
             }
         }
 
-       #endregion
+        public override bool TxEnabled 
+        { 
+            get => base.TxEnabled;
+            set
+            {
+                if (value == true)
+                {
+                    if (IsThereLanActivity == true)
+                    {
+                        SafeLaunchEvent<ScvActivityEventArgs>(EventScvActivity, new ScvActivityEventArgs()
+                        {
+                            ScvId = "PSI",
+                            OnOff = true
+                        });
+                        ScvActivity = true;
+                    }
+                }
+                base.TxEnabled = value;
+            }
+        }
+
+        #endregion
 
         #region Private Data
-        bool ScvActivity { get; set; }
+        public bool ScvActivity { get; set; }
         int SectorizationVersion { get; set; }
         UdpSocket Listener1, Listener2;
 

@@ -312,6 +312,8 @@ namespace sacta_proxy
                 Managers.ForEach(dependency =>
                 {
                     dependency.Manager.Start();
+                    if (dependency.IsMain)
+                        Task.Delay(TimeSpan.FromSeconds(dependency.Cfg.SactaProtocol.TickAlive*2)).Wait();
                 });
                 PS.Set(ProcessStates.Running);
                 Logger.Info<SactaProxy>("Gestores Arrancados.");
@@ -470,6 +472,7 @@ namespace sacta_proxy
             EventThread.Enqueue("OnScvEventActivity", () =>
             {
                 //var controlDep = DepManager.Where(d => d.Key == data.ScvId).Select(d => d.Value).ToList();
+                Logger.Info<SactaProxy>($"OnScvEventActivity => {data.ToString()}");
                 var ctrldep = DepManagers.Where(d => d.Cfg.Id == data.ScvId).FirstOrDefault();
                 if (ctrldep != null)
                 {
@@ -502,7 +505,7 @@ namespace sacta_proxy
                         /** Para agilizar el modo AND Actualizo los Tx de las otras dependencias. */
                         if (Cfg.General.ActivateSactaLogic=="AND" && newEnableTx == false)
                         {
-                            DepManagers.Where(d => d.Cfg.Id != data.ScvId).ToList().ForEach(d =>
+                            DepManagers/*.Where(d => d.Cfg.Id != data.ScvId).ToList()*/.ForEach(d =>
                             {
                                 d.Manager.TxEnabled = false;
                             });
@@ -521,12 +524,13 @@ namespace sacta_proxy
             /** Se ha recibido una sectorizacion correcta de una dependencia */ 
             EventThread.Enqueue("OnScvEventSectorization", () =>
             {
+                Logger.Info<SactaProxy>($"OnScvEventSectorization => {data.ToString()}");
                 var ctrldep = DepManagers.Where(d => d.Cfg.Id == data.ScvId).FirstOrDefault();
                 string cause = "";
-                // Actualizo la Sectorizacion en la Dependencia.
-                ctrldep.MapOfSectors = data.SectorMap;
                 if (ctrldep != null)
                 {
+                    // Actualizo la Sectorizacion en la Dependencia.
+                    ctrldep.MapOfSectors = data.SectorMap;
                     if (data.Accepted)
                     {
                         // Genero la Sectorizacion del SCV...
@@ -611,6 +615,7 @@ namespace sacta_proxy
         {
             EventThread.Enqueue("OnPsiEventActivity", () =>
             {
+                Logger.Info<SactaProxy>($"OnPsiEventActivity => {data.ToString()}");
                 switch (data.What)
                 {
                     case BaseManager.WhatLanItems.Lan1:
@@ -639,6 +644,7 @@ namespace sacta_proxy
         {
             EventThread.Enqueue("OnPsiEventActivity", () =>
             {
+                Logger.Info<SactaProxy>($"OnPsiEventSectorizationAsk => {data.ToString()}");
                 var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
                 if (DepWithSectInfo.Count == DepManagers.Count)
                 {
@@ -680,6 +686,7 @@ namespace sacta_proxy
         {
             EventThread.Enqueue("OnPsiEventScvActivity", () =>
             {
+                Logger.Info<SactaProxy>($"OnPsiEventScvActivity => {data.ToString()}");
                 MainManager.Activity = data.OnOff;
                 /** Historico del Cambio */
                 History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
@@ -693,8 +700,7 @@ namespace sacta_proxy
             });
         }
 #endregion EventManagers
-
-            void TestDuplicated(List<string> pos, List<string> sec, List<string> vir, Action continues)
+        void TestDuplicated(List<string> pos, List<string> sec, List<string> vir, Action continues)
         {
             if (pos.Count() > 0)
                 PS.SignalFatal<SactaProxy>($"Existen Id de Posiciones duplicadas => {String.Join(",", pos)}", History);
