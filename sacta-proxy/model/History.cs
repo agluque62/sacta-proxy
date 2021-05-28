@@ -174,14 +174,14 @@ namespace sacta_proxy.model
                                 String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.Date),
                                 4,
                                 9999,
-                                $"{Environment.MachineName.ToString()}: {item.ToString()} {item.User}",
+                                NormalizeBdtFieldLen($"{Environment.MachineName}: {item} {item.User}", 255),
                                 99) :
                             string.Format("INSERT INTO historicoincidencias (IdSistema, Scv, IdIncidencia, IdHw, TipoHw, FechaHora, Usuario, Descripcion) " +
                                 "VALUES (\"{0}\",{1},{2},\"{3}\",{4},\"{5}\",\"{6}\",\"{7}\")",
                                 "departamento", 0, 50, "ProxySacta", 4,
                                 String.Format("{0:yyyy-MM-dd HH:mm:ss}", item.Date),
-                                item.User,
-                                $"{Environment.MachineName.ToString()}: {item.ToString()}");
+                                NormalizeBdtFieldLen(item.User, 32),
+                                NormalizeBdtFieldLen($"{Environment.MachineName.ToString()}: {item}", 200));
                         using (var command = new MySqlCommand(query, connection))
                         {
                             command.ExecuteNonQuery();
@@ -189,6 +189,10 @@ namespace sacta_proxy.model
                     });
                 }
             }
+        }
+        private string NormalizeBdtFieldLen(string field, int maxlen)
+        {
+            return field.Length > maxlen ? field.Substring(0, maxlen) : field;
         }
 
         int MaxDays { get; set; }
