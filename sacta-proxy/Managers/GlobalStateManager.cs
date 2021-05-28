@@ -13,7 +13,7 @@ namespace sacta_proxy.Managers
     {
         public static bool MainStandbyCheck(Action<bool, bool> notify=null)
         {
-#if !DEBUG
+#if !DEBUG1
             var dualMode = Properties.Settings.Default.ServerType == 1;
             var virtualIpIsLocal = IpHelper.IsLocalIpV4Address(Properties.Settings.Default.ScvServerIp);
             notify?.Invoke(dualMode, dualMode ? virtualIpIsLocal : true);
@@ -58,7 +58,7 @@ namespace sacta_proxy.Managers
                     ret = new
                     {
                         server = isdual==false ? "Simple" : "Dual",
-                        scv = settings.ServerType == 0 ? "CD30" : "ULISES",
+                        scv = settings.ScvType == 0 ? "CD30" : "ULISES",
                         db = settings.DbConn == 0 ? "NO" : settings.DbConn == 1 ? "MySQL" : "Otra",
                         main,
                         dbconn = DbIsPresent
