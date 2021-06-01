@@ -96,7 +96,7 @@ namespace ClusterLib
 
                 if (_State.LocalNode.State == NodeState.Active)
                 {
-                    DeleteVirtualAddresses(false);
+                    DeleteVirtualAddresses();
                 }
 
                 _State.LocalNode.SetState(NodeState.NoActive, Resources.LocalDeactivateAsk);
@@ -198,7 +198,7 @@ namespace ClusterLib
                         _Comm.Dispose();
                         _Comm = null;
                     }
-                    DeleteVirtualAddresses(false);
+                    DeleteVirtualAddresses();
                     _Settings = null;
                     _State = null;
                     _EndPoint = null;
@@ -221,11 +221,11 @@ namespace ClusterLib
             }
             return nAdapters;
         }
-        bool IsValidAdapter(ClusterIpSetting ips/*int adapterIndex*/)
-        {
-            // Comprobar ValidAdapters,
-            return ((_State.LocalNode.ValidAdaptersMask & ips.AdapterMask/* adapterIndex*/) != 0);
-        }
+        //bool IsValidAdapter(ClusterIpSetting ips/*int adapterIndex*/)
+        //{
+        //    // Comprobar ValidAdapters,
+        //    return ((_State.LocalNode.ValidAdaptersMask & ips.AdapterMask/* adapterIndex*/) != 0);
+        //}
         int GetAdaptersState()
         {
 #if DEBUG
@@ -307,33 +307,26 @@ namespace ClusterLib
                 bool GlobalError = false;
                 _Settings.VirtualIps.ForEach(ips =>
                 {
-                    if (IsValidAdapter(ips))
+                    Task<bool> t = Task.Run(() =>
                     {
-                        Task<bool> t = Task.Run(() =>
+                        try
                         {
-                            try
-                            {
-                                ips.VirtualIpContext = Native.IpHlpApi.AddIPAddress(ips.ClusterIp, ips.ClusterMsk, ips.AdapterIndex);
-                                Logger.Info<Cluster>(String.Format("Virtual IP {0} Created...", ips.ClusterIp));
-                                return false;
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.Exception<Cluster>(ex, ips.ClusterIp);
-                                return true;
-                            }
-                        });
-                        if (t.Result == true) GlobalError = true;
-                    }
-                    else
-                    {
-                        Logger.Warn<Cluster>(String.Format("Virtual IP {0} Not Created.Invalid Adapter {1}, {2}, {3}", ips.ClusterIp, _State.LocalNode.ValidAdaptersMask, ips.AdapterMask, ips.AdapterIp));
-                    }
+                            ips.VirtualIpContext = Native.IpHlpApi.AddIPAddress(ips.ClusterIp, ips.ClusterMsk, ips.AdapterIndex);
+                            Logger.Info<Cluster>(String.Format("Virtual IP {0} Created...", ips.ClusterIp));
+                            return false;
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Exception<Cluster>(ex, ips.ClusterIp);
+                            return true;
+                        }
+                    });
+                    if (t.Result == true) GlobalError = true;
                 });
                 error(GlobalError);
             }
         }
-        void DeleteVirtualAddresses(bool force)
+        void DeleteVirtualAddresses()
         {
             Logger.Trace<Cluster>("DeleteVirtualAdd");
             if (SimulatedAdapters > 0)
@@ -344,30 +337,27 @@ namespace ClusterLib
             {
                 _Settings.VirtualIps.ForEach(ips =>
                 {
-                    if (force || IsValidAdapter(ips))
+                    //Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(ips)).Wait();
+                    Task.Factory.StartNew(() =>
                     {
-                        //Task.Factory.StartNew(() => ForceDeleteVirtualAddressTask(ips)).Wait();
-                        Task.Factory.StartNew(() =>
+                        try
                         {
-                            try
+                            if (ips.VirtualIpContext >= 0)
                             {
-                                if (ips.VirtualIpContext >= 0)
-                                {
-                                    Native.IpHlpApi.DeleteIPAddressOnContext(ips.VirtualIpContext);
-                                    ips.VirtualIpContext = -1;
-                                }
-                                else
-                                {
-                                    Native.IpHlpApi.DeleteIPAddress(ips.ClusterIp);
-                                }
-                                Logger.Info<Cluster>(String.Format("Virtual IP {0} Deleted.", ips.ClusterIp));
+                                Native.IpHlpApi.DeleteIPAddressOnContext(ips.VirtualIpContext);
+                                ips.VirtualIpContext = -1;
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                Logger.Exception<Cluster>(ex, $"Exception deleting the Virtual IP {ips.ClusterIp}. ");
+                                Native.IpHlpApi.DeleteIPAddress(ips.ClusterIp);
                             }
-                        }).Wait();
-                    }
+                            Logger.Info<Cluster>(String.Format("Virtual IP {0} Deleted.", ips.ClusterIp));
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Exception<Cluster>(ex, $"Exception deleting the Virtual IP {ips.ClusterIp}. ");
+                        }
+                    }).Wait();
                 });
             }
         }
@@ -438,7 +428,7 @@ namespace ClusterLib
                     if (_State.LocalNode.State == NodeState.NoValid)
                     {
                         // 20171019. Fuerzo el borrado de la IP virtual...
-                        DeleteVirtualAddresses(true);
+                        DeleteVirtualAddresses();
                         /////////////////////////////////////////////////
                         _State.LocalNode.ValidAdaptersMask = GetAdaptersState();
                         if (_State.LocalNode.ValidAdaptersMask > 0)
@@ -548,7 +538,7 @@ namespace ClusterLib
                         if (_State.LocalNode.State == NodeState.NoValid)        // Hay adaptadores disponibles y el estado anterior decia que no. 
                         {
                             Logger.Warn<Cluster>($"On {_State.LocalNode.State} there are valid adapters. Changing to NoActive...");
-                            DeleteVirtualAddresses(true);
+                            DeleteVirtualAddresses();
                             _State.LocalNode.SetState(NodeState.NoActive,/*Resources.AdapterDetected*/"");
                             FromLocalInvalid = true;
                         }
@@ -609,7 +599,7 @@ namespace ClusterLib
                                     }
                                     else
                                     {
-                                        DeleteVirtualAddresses(true);
+                                        DeleteVirtualAddresses();
                                         _State.LocalNode.SetState(NodeState.NoActive, Resources.LocalDeactivateAsk);
                                     }
                                 });
@@ -629,7 +619,7 @@ namespace ClusterLib
                                         }
                                         else
                                         {
-                                            DeleteVirtualAddresses(true);
+                                            DeleteVirtualAddresses();
                                             _State.LocalNode.SetState(NodeState.NoActive, Resources.LocalDeactivateAsk);
                                         }
                                     });
@@ -673,7 +663,7 @@ namespace ClusterLib
                                 if (numRemoteValidAdapters >= numLocalValidAdapters)
                                 {
                                     Logger.Warn<Cluster>($"On Active State and Activating RemoteState. The remote wants to activate. Changing to NoActive...");
-                                    DeleteVirtualAddresses(false);
+                                    DeleteVirtualAddresses();
                                     _State.LocalNode.SetState(NodeState.NoActive, Resources.RemoteDeactivateAsk);
                                 }
                                 else
@@ -689,7 +679,7 @@ namespace ClusterLib
                                 //   (_State.RemoteNode.StateBegin.Ticks < _State.LocalNode.StateBegin.Ticks)))
                                 {
                                     Logger.Warn<Cluster>(Resources.DetectedTwoActiveNodesError);
-                                    DeleteVirtualAddresses(false);
+                                    DeleteVirtualAddresses();
                                     _State.LocalNode.SetState(NodeState.NoActive, Resources.LocalDeactivateAsk);
                                 }
                             }
@@ -702,7 +692,7 @@ namespace ClusterLib
                         if (_State.LocalNode.State != NodeState.NoValid)
                         {
                             /** 20170803. AGL, si no hay adaptadores hay que forzar el borrado de las IP virtuales. */
-                            DeleteVirtualAddresses(true);
+                            DeleteVirtualAddresses();
                         }
                         _State.LocalNode.SetState(NodeState.NoValid, Resources.DeactivateByNotAdapters);
                     }
