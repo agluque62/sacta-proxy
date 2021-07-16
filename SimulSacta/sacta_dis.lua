@@ -54,5 +54,6 @@ function sacta35_proto.dissector(buffer,pinfo,tree)
 end
 -- load the udp.port table
 udp_table = DissectorTable.get("udp.port")
--- register our protocol to handle udp port 19204
+-- register our protocol to handle udp port 19204 / 15100
 udp_table:add(19204,sacta35_proto)
+udp_table:add(15100,sacta35_proto)
