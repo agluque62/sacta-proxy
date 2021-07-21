@@ -56,9 +56,9 @@ namespace sacta_proxy.WebServer
                 };
             var SecureUris = new List<string>()
             {
-                "/styles/bootstrap/bootstrap.min.css",
+                "/modules/bootstrap-3.4.1/css/bootstrap.min.css",
                 "/styles/ncc-styles.css",
-                "/scripts/jquery/jquery-2.1.3.min.js",
+                "/modules/jquery/jquery-2.1.3.min.js",
                 "/images/corporativo-a.png",
                 "/favicon.ico"
             };
