@@ -392,7 +392,7 @@
                                                 <div class="row form-group">
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-10" ng-show="ctrl.dep.isdep">
-                                                        <label for="vmpo">Mapa de Posiciones</label>
+                                                        <label for="vmpo">Mapa de Posiciones (UCSenPSI:POSenSCV, ...)</label>
                                                         <input id="vmpo" name="vmpo" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.PositionsMap" nu-validate="smap" />
                                                         <span style="color:red" ng-show="cfgform.vmpo.$dirty && cfgform.vmpo.$invalid">
                                                             <span ng-show="cfgform.vmpo.$error.nuValidate">Error de formato (pd1:ps1, pd2:ps2, ... pdn:psn)</span>
@@ -402,7 +402,7 @@
                                                 <div class="row form-group">
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-10" ng-show="ctrl.dep.isdep">
-                                                        <label for="vmse">Mapa de Sectores</label>
+                                                        <label for="vmse">Mapa de Sectores (ORenPSI:ORenSCV, ...) </label>
                                                         <input id="vmse" name="vmse" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.SectorsMap" nu-validate="smap" />
                                                         <span style="color:red" ng-show="cfgform.vmse.$dirty && cfgform.vmse.$invalid">
                                                             <span ng-show="cfgform.vmse.$error.nuValidate">Error de formato (sd1:ss1, ... sdn:ssn)</span>
