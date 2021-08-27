@@ -268,8 +268,11 @@ namespace sacta_proxy.model
             try
             {
                 var cfg = JsonHelper.Parse<Configuration>(ConfigurationData);
-                Write(cfg);
-                return true;
+                if (cfg != null)
+                {
+                    Write(cfg);
+                    return true;
+                }
             }
             catch (Exception x)
             {

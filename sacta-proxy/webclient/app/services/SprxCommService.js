@@ -80,8 +80,9 @@ angular
                 },
                 (error) => {
                     // Error en el tratamiento de la peticion.
-                    console.log("Error Peticion");
-                    window.open("/", "_self");
+                    console.log("Error Peticion", error);
+                    alertify.error("Error: " + error.status + ": " + error.statusText + ". " + error.data.res);
+                    //window.open("/", "_self");
                 }
             );
 

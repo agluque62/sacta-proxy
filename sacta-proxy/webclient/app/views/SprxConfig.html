@@ -23,7 +23,8 @@
                         <div class="col-md-1"></div>
                         <div class="col-md-3">
                             <label for="wp">Puerto de Servicio WEB</label>
-                            <input id="wp" name="wp" type="number" min="1024" max="49000" class="form-control" ng-model="ctrl.config.General.WebPort" required />
+                            <input id="wp" name="wp" type="number" min="1024" max="49000" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                   class="form-control" ng-model="ctrl.config.General.WebPort" required />
                             <span style="color:red" ng-show="cfgform.wp.$dirty && cfgform.wp.$invalid">
                                 <span ng-show="cfgform.wp.$error.required">Este campo debe rellenarse</span>
                                 <span ng-show="cfgform.wp.$error.min || cfgform.wp.$error.max">Este campo debe estar en rango 1024, 49000</span>
@@ -31,7 +32,8 @@
                         </div>
                         <div class="col-md-3">
                             <label for="ws">Duracion Sesion WEB (m)</label>
-                            <input id="ws" name="ws" type="number" min="15" max="60" class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" required />
+                            <input id="ws" name="ws" type="number" min="15" max="60" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                   class="form-control" ng-model="ctrl.config.General.WebActivityMinTimeout" required />
                             <span style="color:red" ng-show="cfgform.ws.$dirty && cfgform.ws.$invalid">
                                 <span ng-show="cfgform.ws.$error.required">Este campo debe rellenarse</span>
                                 <span ng-show="cfgform.ws.$error.min || cfgform.ws.$error.max">Este campo debe estar en rango 15, 60</span>
@@ -49,7 +51,8 @@
                         <div class="col-md-1"></div>
                         <div class="col-md-3">
                             <label for="hdays">Profundidad Historico (Dias)</label>
-                            <input id="hdays" name="hdays" type="number" min="7" max="30" class="form-control" ng-model="ctrl.config.General.HistoryMaxDays" required />
+                            <input id="hdays" name="hdays" type="number" min="7" max="30" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                   class="form-control" ng-model="ctrl.config.General.HistoryMaxDays" required />
                             <span style="color:red" ng-show="cfgform.hdays.$dirty && cfgform.hdays.$invalid">
                                 <span ng-show="cfgform.hdays.$error.required">Este campo debe rellenarse</span>
                                 <span ng-show="cfgform.hdays.$error.min || cfgform.hdays.$error.max">Este campo debe estar en rango 7, 30</span>
@@ -57,7 +60,8 @@
                         </div>
                         <div class="col-md-3">
                             <label for="hlen">Profundidad Historico (Registros)</label>
-                            <input id="hlen" name="hlen" type="number" min="500" max="3000" class="form-control" ng-model="ctrl.config.General.HistoryMaxItems" required />
+                            <input id="hlen" name="hlen" type="number" min="500" max="3000" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                   class="form-control" ng-model="ctrl.config.General.HistoryMaxItems" required />
                             <span style="color:red" ng-show="cfgform.hlen.$dirty && cfgform.hlen.$invalid">
                                 <span ng-show="cfgform.hlen.$error.required">Este campo debe rellenarse</span>
                                 <span ng-show="cfgform.hlen.$error.min || cfgform.hlen.$error.max">Este campo debe estar en rango 500, 3000</span>
@@ -100,7 +104,8 @@
                                         <td class="col-md-5">
                                             <div class="col-md-6">
                                                 <label for="lport">Escucha</label>
-                                                <input id="lport" name="lport" type="number" min="1025" max="49999" class="form-control" ng-model="ctrl.dep.cfg.Comm.ListenPort" required />
+                                                <input id="lport" name="lport" type="number" min="1025" max="49999" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                       class="form-control" ng-model="ctrl.dep.cfg.Comm.ListenPort" required />
                                                 <span style="color:red" ng-show="cfgform.lport.$dirty && cfgform.lport.$invalid">
                                                     <span ng-show="cfgform.lport.$error.required">Este campo debe rellenarse</span>
                                                     <span ng-show="cfgform.lport.$error.min || cfgform.lport.$error.max">Este campo debe estar en rango 1025, 49999</span>
@@ -111,7 +116,8 @@
                                         <td class="col-md-5">
                                             <div class="col-md-6">
                                                 <label for="sport">Envio</label>
-                                                <input id="sport" name="sport" type="number" min="1025" max="49999" class="form-control" ng-model="ctrl.dep.cfg.Comm.SendingPort" required />
+                                                <input id="sport" name="sport" type="number" min="1025" max="49999" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                       class="form-control" ng-model="ctrl.dep.cfg.Comm.SendingPort" required />
                                                 <span style="color:red" ng-show="cfgform.sport.$dirty && cfgform.sport.$invalid">
                                                     <span ng-show="cfgform.sport.$error.required">Este campo debe rellenarse</span>
                                                     <span ng-show="cfgform.sport.$error.min || cfgform.sport.$error.max">Este campo debe estar en rango 1025, 49999</span>
@@ -241,7 +247,8 @@
                                 <div class="row form-group">
                                     <div class="col-md-3">
                                         <label for="tic">Tic Presencia</label>
-                                        <input id="tic" name="tic" type="number" min="1" max="10" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TickAlive" required />
+                                        <input id="tic" name="tic" type="number" min="1" max="10" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TickAlive" required />
                                         <span style="color:red" ng-show="cfgform.tic.$dirty && cfgform.tic.$invalid">
                                             <span ng-show="cfgform.tic.$error.required">Este campo debe rellenarse</span>
                                             <span ng-show="cfgform.tic.$error.min || cfgform.tic.$error.max">Este campo debe estar en rango 1, 10</span>
@@ -249,7 +256,8 @@
                                     </div>
                                     <div class="col-md-3">
                                         <label for="toc">Timeout Presencia</label>
-                                        <input id="toc" name="toc" type="number" min="20" max="60" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TimeoutAlive" required />
+                                        <input id="toc" name="toc" type="number" min="20" max="60" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.TimeoutAlive" required />
                                         <span style="color:red" ng-show="cfgform.toc.$dirty && cfgform.toc.$invalid">
                                             <span ng-show="cfgform.toc.$error.required">Este campo debe rellenarse</span>
                                             <span ng-show="cfgform.toc.$error.min || cfgform.toc.$error.max">Este campo debe estar en rango 20, 60</span>
@@ -270,7 +278,8 @@
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-3">
                                                         <label for="sdom">Dominio</label>
-                                                        <input id="sdom" name="sdom" type="number" min="1" max="2" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Domain" required />
+                                                        <input id="sdom" name="sdom" type="number" min="1" max="2" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Domain" required />
                                                         <span style="color:red" ng-show="cfgform.sdom.$dirty && cfgform.sdom.$invalid">
                                                             <span ng-show="cfgform.sdom.$error.required">Este campo debe rellenarse</span>
                                                             <span ng-show="cfgform.sdom.$error.min || cfgform.sdom.$error.max">Este campo debe estar en rango 1, 2</span>
@@ -278,7 +287,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="scen">Centro</label>
-                                                        <input id="scen" name="scen" type="number" min="1" max="255" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Center" required />
+                                                        <input id="scen" name="scen" type="number" min="1" max="255" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Center" required />
                                                         <span style="color:red" ng-show="cfgform.scen.$dirty && cfgform.scen.$invalid">
                                                             <span ng-show="cfgform.scen.$error.required">Este campo debe rellenarse</span>
                                                             <span ng-show="cfgform.scen.$error.min || cfgform.scen.$error.max">Este campo debe estar en rango 1, 255</span>
@@ -286,7 +296,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="sgrp">Grupo</label>
-                                                        <input id="sgrp" name="sgrp" type="number" min="1" max="255" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.PsiGroup" required />
+                                                        <input id="sgrp" name="sgrp" type="number" min="1" max="255" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.PsiGroup" required />
                                                         <span style="color:red" ng-show="cfgform.sgrp.$dirty && cfgform.sgrp.$invalid">
                                                             <span ng-show="cfgform.sgrp.$error.required">Este campo debe rellenarse</span>
                                                             <span ng-show="cfgform.sgrp.$error.min || cfgform.sgrp.$error.max">Este campo debe estar en rango 1, 255</span>
@@ -320,7 +331,8 @@
                                                     <div class="col-md-1"></div>
                                                     <div class="col-md-3">
                                                         <label for="vdom">Dominio</label>
-                                                        <input id="vdom" name="vdom" type="number" min="1" max="2" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Domain" required />
+                                                        <input id="vdom" name="vdom" type="number" min="1" max="2" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Domain" required />
                                                         <span style="color:red" ng-show="cfgform.vdom.$dirty && cfgform.vdom.$invalid">
                                                             <span ng-show="cfgform.vdom.$error.required">Este campo debe rellenarse</span>
                                                             <span ng-show="cfgform.vdom.$error.min || cfgform.vdom.$error.max">Este campo debe estar en rango 1, 2</span>
@@ -328,7 +340,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="vcen">Centro</label>
-                                                        <input id="vcen" name="vcen" type="number" min="1" max="255" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Center" required />
+                                                        <input id="vcen" name="vcen" type="number" min="1" max="255" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Center" required />
                                                         <span style="color:red" ng-show="cfgform.vcen.$dirty && cfgform.vcen.$invalid">
                                                             <span ng-show="cfgform.vcen.$error.required">Este campo debe rellenarse</span>
                                                             <span ng-show="cfgform.vcen.$error.min || cfgform.vcen.$error.max">Este campo debe estar en rango 1, 255</span>
@@ -336,7 +349,8 @@
                                                     </div>
                                                     <div class="col-md-3">
                                                         <label for="vusu">Usuario</label>
-                                                        <input id="vusu" name="vusu" type="number" min="1" max="65535" class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Scv" required />
+                                                        <input id="vusu" name="vusu" type="number" min="1" max="65535" step="1" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                                               class="form-control" ng-model="ctrl.dep.cfg.SactaProtocol.Scv.Scv" required />
                                                         <span style="color:red" ng-show="cfgform.vusu.$dirty && cfgform.vusu.$invalid">
                                                             <span ng-show="cfgform.vusu.$error.required">Este campo debe rellenarse</span>
                                                             <span ng-show="cfgform.vusu.$error.min || cfgform.vusu.$error.max">Este campo debe estar en rango 1, 65535</span>
