@@ -93,7 +93,7 @@
           Account="LocalSystem"
           ErrorControl="ignore"
           Interactive="no">
-          <ServiceConfig DelayedAutoStart="no" OnInstall="yes"  OnReinstall="yes" OnUninstall="no"></ServiceConfig>
+          <ServiceConfig DelayedAutoStart="yes" OnInstall="yes"  OnReinstall="yes" OnUninstall="no"></ServiceConfig>
           <ServiceDependency Id="dot3svc"/>
           <util:ServiceConfig
                   FirstFailureActionType='restart'
