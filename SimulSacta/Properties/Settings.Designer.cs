@@ -269,5 +269,14 @@ namespace SimulSACTA.Properties {
                 return ((int)(this["LatenciaLan"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ControlledAskResponses {
+            get {
+                return ((bool)(this["ControlledAskResponses"]));
+            }
+        }
     }
 }

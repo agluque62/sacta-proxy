@@ -165,19 +165,30 @@ namespace SimulSACTA
                             break;
                         case SactaMsg.MsgType.SectAsk:
                             MainForm.LogMethod(/*"INFO"*/LogLevel.Info, $"LAN {net}: Recibida Peticion de Sectorizacion...");
-                            if (SectAskpending == false)
+                            if (Properties.Settings.Default.ControlledAskResponses)
                             {
-                                SectAskpending = true;
-                                Task.Run(() => { Task.Delay(500).Wait(); SectAskpending = false; });
+                                if (SectAskpending == false)
+                                {
+                                    SectAskpending = true;
+                                    Task.Run(() => { Task.Delay(500).Wait(); SectAskpending = false; });
+                                    Task.Run(() =>
+                                    {
+                                        Task.Delay(2 * Properties.Settings.Default.LatenciaLan).Wait();
+                                        SendSectorization(_SectorUcs, msg);
+                                    });
+                                }
+                                else
+                                {
+                                    MainForm.LogMethod(/*"INFO"*/LogLevel.Info, $"LAN {net}: Peticion de Sectorizacion Ignorada (ya se esta tramitando por la otra red)");
+                                }
+                            }
+                            else
+                            {
                                 Task.Run(() =>
                                 {
                                     Task.Delay(2 * Properties.Settings.Default.LatenciaLan).Wait();
                                     SendSectorization(_SectorUcs, msg);
                                 });
-                            }
-                            else
-                            {
-                                MainForm.LogMethod(/*"INFO"*/LogLevel.Info, $"LAN {net}: Peticion de Sectorizacion Ignorada (ya se esta tramitando por la otra red)");
                             }
                             break;
                         case SactaMsg.MsgType.SectAnwer:
