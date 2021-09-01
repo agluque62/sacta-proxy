@@ -26,8 +26,14 @@
     <Setting Name="DbMaxConsecutiveErrors" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">3</Value>
     </Setting>
-    <Setting Name="SectInitTimeout" Type="System.Int32" Scope="Application">
+    <Setting Name="ScvSectInitTimeout" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="ScvSectAckTimeout" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="DepSecAskWindow" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">2</Value>
     </Setting>
   </Settings>
 </SettingsFile>

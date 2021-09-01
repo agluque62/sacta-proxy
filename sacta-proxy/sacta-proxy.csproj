@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ControllersAndFilters.cs" />
     <Compile Include="Helpers\CustomBinaryFormatter.cs" />
     <Compile Include="Helpers\EventQeue.cs" />
     <Compile Include="Helpers\GenericHelper.cs" />

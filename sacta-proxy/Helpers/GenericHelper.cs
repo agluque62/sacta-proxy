@@ -151,6 +151,7 @@ namespace sacta_proxy.helpers
             }
         }
         #endregion
+        #region Fichero de Versiones
         public class VersionManagement
         {
             public class VersionDataFileItem
@@ -211,7 +212,6 @@ namespace sacta_proxy.helpers
                 }
             }
         }
-        #region Fichero de Versiones
         #endregion
     }
 }

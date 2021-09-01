@@ -147,12 +147,21 @@ namespace sacta_proxy.Managers
             }
         }
         public void SendSectorization(Dictionary<string, int> sectorMap, Action<bool> response)
-        {
-            lock (Locker)
+        {           
+            // Ojo, lo mismo hay que implementar el bloqueo de algunas varaibles locales...
+            Logger.Info<PsiManager>($"On PSI SendSectorization");
+            bool retorno = false;
+            SendSectorizationMsg(sectorMap);
+            using (SectAckSync=new BooleanValueEventSync())
             {
-                SendSectorizationMsg(sectorMap);
-                SectResponse = response;
+                SectAckSync.Wait(TimeSpan.FromSeconds(Properties.Settings.Default.ScvSectAckTimeout), (timeout, res) =>
+                {
+                    retorno = timeout ? false : res;
+                });
             }
+            SectAckSync = null;
+            Logger.Info<PsiManager>($"On PSI Sectorization ACK => {retorno}");
+            response(retorno);
         }
         public bool PreprocessSectorizationToSend(Dictionary<string, int> sectorMap, Action<string> OnError)
         {
@@ -240,9 +249,10 @@ namespace sacta_proxy.Managers
                                         {
                                             SactaMsg.SectAnswerInfo info = (SactaMsg.SectAnswerInfo)(msg.Info);
                                             Logger.Info<PsiManager>($"On PSI from Scv Lan {lan} Sectorization {info.Version} {(info.Result == 1 ? "Accepted" : "Rejected")}.");
-                                            if (SectResponse!=null)
-                                                SectResponse(info.Result == 1);
-                                            SectResponse = null;
+                                            SectAckSync?.Set(info.Result == 1);
+                                            //if (SectResponse!=null)
+                                            //    SectResponse(info.Result == 1);
+                                            //SectResponse = null;
                                         }
                                         break;
                                     default:
@@ -405,19 +415,22 @@ namespace sacta_proxy.Managers
             get => base.TxEnabled;
             set
             {
-                if (value == true)
+                if (value != base.TxEnabled)
                 {
-                    if (IsThereLanActivity == true)
+                    if (value == true)
                     {
-                        SafeLaunchEvent<ScvActivityEventArgs>(EventScvActivity, new ScvActivityEventArgs()
+                        if (IsThereLanActivity == true)
                         {
-                            ScvId = "PSI",
-                            OnOff = true
-                        });
-                        ScvActivity = true;
+                            SafeLaunchEvent<ScvActivityEventArgs>(EventScvActivity, new ScvActivityEventArgs()
+                            {
+                                ScvId = "PSI",
+                                OnOff = true
+                            });
+                            ScvActivity = true;
+                        }
                     }
+                    base.TxEnabled = value;
                 }
-                base.TxEnabled = value;
             }
         }
 
@@ -433,7 +446,9 @@ namespace sacta_proxy.Managers
 
         Func<History> History { get; set; }
 
-        Action<bool> SectResponse = null;
+        //Action<bool> SectResponse = null;
+        BooleanValueEventSync SectAckSync { get; set; } = null;
+     
         #endregion
     }
 }

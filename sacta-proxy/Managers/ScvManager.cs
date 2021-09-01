@@ -179,16 +179,19 @@ namespace sacta_proxy.Managers
             {
                 lock (Locker)
                 {
-                    if (value == true)
+                    if (value != base.TxEnabled)
                     {
-                        WhenSectorAsked = DateTime.MinValue;
+                        if (value == true)
+                        {
+                            WhenSectorAsked = DateTime.MinValue;
+                        }
+                        else
+                        {
+                            if (GlobalState != SactaState.WaitingSactaActivity)
+                                GlobalState = SactaState.WaitingSectorization;
+                        }
+                        base.TxEnabled = value;
                     }
-                    else
-                    {
-                        if (GlobalState != SactaState.WaitingSactaActivity)
-                            GlobalState = SactaState.WaitingSectorization;
-                    }
-                    base.TxEnabled = value;
                 }
             } 
         }
@@ -224,30 +227,37 @@ namespace sacta_proxy.Managers
                                         }
                                         else if (msg.Type == SactaMsg.MsgType.Sectorization)
                                         {
-                                            if (IsSecondSectMsg(msg) == false)
+                                            if (RequestedSectsFilter.ProcessEvent(lan))
                                             {
-                                                ProccessSectorization(msg, (ok, error) =>
+                                                if (IsSecondSectMsg(msg) == false)
                                                 {
-                                                    // Será llamado por el WorkingThread del servicio PPAL en la gestion del evento que se genere...
-                                                    lock (Locker)
+                                                    ProccessSectorization(msg, (ok, error) =>
                                                     {
-                                                        if (ok)
+                                                        // Será llamado por el WorkingThread del servicio PPAL en la gestion del evento que se genere...
+                                                        lock (Locker)
                                                         {
-                                                            Logger.Info<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Processed.");
-                                                            SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 1);
+                                                            if (ok)
+                                                            {
+                                                                Logger.Info<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Processed.");
+                                                                SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 1);
+                                                            }
+                                                            else
+                                                            {
+                                                                Logger.Warn<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Rejected => {error}");
+                                                                SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 0);
+                                                            }
+                                                            GlobalState = SactaState.SendingPresences;
                                                         }
-                                                        else
-                                                        {
-                                                            Logger.Warn<ScvManager>($"On {Cfg.Id}. Sectorization {msg.Id} Rejected => {error}");
-                                                            SendSectAnsw((int)((SactaMsg.SectInfo)(msg.Info)).Version, 0);
-                                                        }
-                                                        GlobalState = SactaState.SendingPresences;
-                                                    }
-                                                });
+                                                    });
+                                                }
+                                                else
+                                                {
+                                                    Logger.Warn<ScvManager>($"On {Cfg.Id}. Sectorization Request (Red = {lan}, Versión = {((SactaMsg.SectInfo)(msg.Info)).Version}, IGNORED. Already in Progress...");
+                                                }
                                             }
                                             else
                                             {
-                                                Logger.Warn<ScvManager>($"Sectorization Request (Red = {lan}, Versión = {((SactaMsg.SectInfo)(msg.Info)).Version}, IGNORED. Already in Progress...");
+                                                Logger.Warn<ScvManager>($"On {Cfg.Id}. Sectorization Request (Red = {lan}, Versión = {((SactaMsg.SectInfo)(msg.Info)).Version}, IGNORED. Discarded by the temporary filter.");
                                             }
                                         }
                                         else
@@ -395,7 +405,7 @@ namespace sacta_proxy.Managers
             if (BroadMessage(msg))
             {
                 Sequence = 0;
-                Logger.Info<ScvManager>($"On {Cfg.Id} Init Msg sended.");
+                Logger.Warn<ScvManager>($"On {Cfg.Id} Init Msg sended.");
             }
         }
         protected void SendPresence()
@@ -416,7 +426,9 @@ namespace sacta_proxy.Managers
             if (BroadMessage(msg))
             {
                 Sequence = Sequence >= 287 ? 0 : Sequence + 1;
-                Logger.Info<ScvManager>($"On {Cfg.Id} SectAsk Msg sended. (New Sequence {Sequence})");
+
+                RequestedSectsFilter.BootDuring(RequestedSectsFilterTime);
+                Logger.Warn<ScvManager>($"On {Cfg.Id} SectAsk Msg sended. (New Sequence {Sequence}). Filtro de Sectorizaciones activado durante {RequestedSectsFilterTime.TotalSeconds} seg.");
             }
             WhenSectorAsked = DateTime.Now;
         }
@@ -532,7 +544,7 @@ namespace sacta_proxy.Managers
                     var Lan = Listener == Listener1 ? 0 : 1;
                     deliver(Lan);
                     if (Lan==0)
-                        LastActivityOfLan1 = DateTime.Now;                
+                        LastActivityOfLan1 = DateTime.Now;
                     else
                         LastActivityOfLan2 = DateTime.Now;
                 }
@@ -570,6 +582,8 @@ namespace sacta_proxy.Managers
         SactaState GlobalState { get; set; }
         DateTime WhenSectorAsked { get; set; }
         Func<History> History { get; set; }
+        TemporaryEventsFilter RequestedSectsFilter { get; set; } = new TemporaryEventsFilter(1);
+        TimeSpan RequestedSectsFilterTime { get; set; } = TimeSpan.FromSeconds(Properties.Settings.Default.DepSecAskWindow);
 
         #endregion Datos
 

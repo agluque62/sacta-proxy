@@ -193,11 +193,11 @@ namespace sacta_proxy.helpers
 		#endregion
 	}
 
-	public class CustomEventSync : IDisposable
+	public class SeveralEventsSync : IDisposable
 	{
 		private ManualResetEvent EventObject { get; set; }
 		private int Count { get; set; }
-		public CustomEventSync(int count)
+		public SeveralEventsSync(int count)
         {
 			EventObject = new ManualResetEvent(false);
 			Count = count;
@@ -226,5 +226,76 @@ namespace sacta_proxy.helpers
         {
 			EventObject.Set();
 		}
+    }
+
+	public class NamedEventsSync : IDisposable
+	{
+		private ManualResetEvent EventObject { get; set; }
+		private List<string> NamedEvents = new List<string>();
+		public NamedEventsSync(string[] namedEvents)
+		{
+			EventObject = new ManualResetEvent(false);
+			NamedEvents = namedEvents.ToList();
+		}
+		public void Dispose()
+		{
+			EventObject.Dispose();
+		}
+		public void Wait(TimeSpan timeout, Action<bool> retorno)
+		{
+			var Limit = DateTime.Now + timeout;
+			EventObject.Reset();
+			do
+			{
+				if (EventObject.WaitOne(100) == true)
+				{
+					EventObject.Reset();
+				}
+			} while (DateTime.Now < Limit && NamedEvents.Count > 0);
+			retorno(NamedEvents.Count==0);
+		}
+
+		public void Signal(string nameofevent)
+		{
+			if (NamedEvents.Contains(nameofevent))
+            {
+				NamedEvents.Remove(nameofevent);
+				EventObject.Set();
+			}
+		}
+	}
+
+    public class BooleanValueEventSync : IDisposable
+    {
+		public BooleanValueEventSync()
+        {
+			SyncObject = new ManualResetEvent(false);
+		}
+        public void Dispose()
+        {
+			SyncObject?.Dispose();
+			Result = false;
+        }
+
+		public void Set(bool res)
+        {
+			Result = res;
+			SyncObject.Set();
+        }
+
+		public void Wait(TimeSpan timeout, Action<bool, bool> response)
+        {
+			if (SyncObject.WaitOne(timeout))
+            {
+				response(false, Result);
+            }
+			else
+            {
+				response(true, Result);
+            }
+        }
+
+		ManualResetEvent SyncObject { get; set; }
+		bool Result { get; set; }
     }
 }

@@ -532,7 +532,7 @@ namespace sacta_proxy
                 string cause = "";
                 if (ctrldep != null)
                 {
-                    // Actualizo la Sectorizacion en la Dependencia.
+                    // Actualizo la Sectorizacion en la Dependencia. RM4907
                     ctrldep.MapOfSectors = data.SectorMap;
                     if (data.Accepted)
                     {
@@ -579,8 +579,8 @@ namespace sacta_proxy
                                 }
                                 else
                                 {
-                                    Logger.Warn<SactaProxy>($"OnScvEventSectorization from {data.ScvId}. Blocked Sectorization. Cause: Scv ASK Pending.");
-                                    ScvSectAskSync?.Signal();
+                                    Logger.Warn<SactaProxy>($"OnScvEventSectorization from {data.ScvId}. ScvSectAskSync ({ScvSectAskSync!=null}), Blocked Sectorization. Cause: Scv ASK Pending.");
+                                    ScvSectAskSync?.Signal(data.ScvId);
                                     data.Acknowledge(true);
                                 }
                             }
@@ -648,16 +648,16 @@ namespace sacta_proxy
             EventThread.Enqueue("OnPsiEventActivity", () =>
             {
                 Logger.Info<SactaProxy>($"OnPsiEventSectorizationAsk => {data.ToString()}");
-                var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).ToList();
+                var DepWithSectInfo = DepManagers.Where(d => d.MapOfSectors.Count > 0).Select(d => d.Id).ToList();
                 if (DepWithSectInfo.Count == DepManagers.Count)
                 {
                     ScvSectorizationAskPending = true;
-                    ScvSectAskSync = new CustomEventSync(DepWithSectInfo.Count);
+                    ScvSectAskSync = new NamedEventsSync(DepWithSectInfo.ToArray());
                     Task.Run(() =>
                     {
                         using (ScvSectAskSync)
                         {
-                            ScvSectAskSync.Wait(TimeSpan.FromSeconds(Properties.Settings.Default.SectInitTimeout), (timeout) =>
+                            ScvSectAskSync.Wait(TimeSpan.FromSeconds(Properties.Settings.Default.ScvSectInitTimeout), (timeout) =>
                             {
                                 (MainManager.Manager as PsiManager).SendSectorization(MainManager.MapOfSectors, (accepted)=>
                                 {
@@ -764,7 +764,7 @@ namespace sacta_proxy
         private List<DependencyControl> DepManagers => Managers.Where(d => d.IsMain == false).ToList();
         private History History { get; set; }
         private bool ScvSectorizationAskPending { get; set; } = false;
-        private CustomEventSync ScvSectAskSync { get; set; }
+        private NamedEventsSync ScvSectAskSync { get; set; }
         #endregion
 
 #if DEBUG

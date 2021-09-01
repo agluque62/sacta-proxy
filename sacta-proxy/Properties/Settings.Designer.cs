@@ -98,9 +98,27 @@ namespace sacta_proxy.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("5")]
-        public int SectInitTimeout {
+        public int ScvSectInitTimeout {
             get {
-                return ((int)(this["SectInitTimeout"]));
+                return ((int)(this["ScvSectInitTimeout"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int ScvSectAckTimeout {
+            get {
+                return ((int)(this["ScvSectAckTimeout"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int DepSecAskWindow {
+            get {
+                return ((int)(this["DepSecAskWindow"]));
             }
         }
     }
