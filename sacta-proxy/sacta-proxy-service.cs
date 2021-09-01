@@ -532,10 +532,11 @@ namespace sacta_proxy
                 string cause = "";
                 if (ctrldep != null)
                 {
-                    // Actualizo la Sectorizacion en la Dependencia. RM4907
-                    ctrldep.MapOfSectors = data.SectorMap;
                     if (data.Accepted)
                     {
+                        // RM4907. Actualizo la Sectorizacion en la Dependencia solo si ha sido aceptada.
+                        ctrldep.MapOfSectors = data.SectorMap;
+
                         // Genero la Sectorizacion del SCV...
                         MainManager.ResetSectorization();
                         DepManagers.ForEach(dep =>
