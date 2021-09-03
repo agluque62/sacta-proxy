@@ -478,28 +478,40 @@ namespace sacta_proxy.Managers
         protected void ProccessSectorization(SactaMsg msg, Action<bool,string> deliver)
         {
             var sectorsReceived = ((SactaMsg.SectInfo)(msg.Info)).Sectors.ToList();
+
+            // 1:  Se extraen los sectores marcados en la lista de 'Ignorar Sectores'.
             var sectorsToProcess = sectorsReceived
-                .Where(s => Cfg.Sectorization.VirtualsList().Contains(int.Parse(s.SectorCode)) == false)
+                .Where(s => Cfg.Sectorization.IgnoredSectorsList.Contains(int.Parse(s.SectorCode)) == false)
                 .ToList();
             var idSectorsToProcess = sectorsToProcess
                 .Select(s => int.Parse(s.SectorCode)).ToList();
-            var SectorsNotFound = Cfg.Sectorization.SectorsList()
-                .Where(s => idSectorsToProcess.Contains(s) == false)
-                .Select(s => s.ToString())
-                .ToList();
-            var UnknowUcs = sectorsToProcess
-                .Where(s => Cfg.Sectorization.PositionsList().Contains((int)s.Ucs) == false)
-                .Select(s => s.Ucs.ToString())
-                .ToList();
-            var UnknowSectors= sectorsToProcess
-                .Where(s => Cfg.Sectorization.SectorsList().Contains(int.Parse(s.SectorCode)) == false)
-                .Select(s => s.SectorCode)
-                .ToList();
+
+            // 2.1: Verifica que no hay sectores repetidos.
             var duplicatedSect = sectorsToProcess
                 .GroupBy(s => s.SectorCode)
                 .Where(g => g.Count() > 1)
                 .Select(g => g.Key)
                 .ToList();
+
+            // 2.2: Verifica que están todos los sectores marcados como 'Reales'.
+            var SectorsNotFound = Cfg.Sectorization.SectorsList()
+                .Where(s => idSectorsToProcess.Contains(s) == false)
+                .Select(s => s.ToString())
+                .ToList();
+
+            // 2.3: Verifica que todos los sectores presentes no marcados como 'Reales', están en la lista de 'Virtuales'.
+            var UnknowSectors = sectorsToProcess
+                .Where(s => Cfg.Sectorization.SectorsList().Contains(int.Parse(s.SectorCode)) == false)
+                .Where(s => Cfg.Sectorization.VirtualsList().Contains(int.Parse(s.SectorCode))==false)
+                .Select(s => s.SectorCode)
+                .ToList();
+
+            // 2.4: Verifica que todas las posiciones (UCS) enviadas están en la lista de posiciones.
+            var UnknowUcs = sectorsToProcess
+                .Where(s => Cfg.Sectorization.PositionsList().Contains((int)s.Ucs) == false)
+                .Select(s => s.Ucs.ToString())
+                .ToList();
+
             bool err = SectorsNotFound.Count > 0 || UnknowUcs.Count() > 0 || UnknowSectors.Count() > 0 || duplicatedSect.Count() > 0;
             if (err)
             {
@@ -510,13 +522,12 @@ namespace sacta_proxy.Managers
                 message += UnknowSectors.Count() > 0 ? $"Sectores Desconocidos: {String.Join(", ", UnknowSectors)}. " : "";
                 message += duplicatedSect.Count() > 0 ? $"Sectores Duplicados: {String.Join(", ", duplicatedSect)}. " : "";
 
-                // deliver(false, message);
                 // Evento para el Historico.
                 SafeLaunchEvent<SectorizationReceivedArgs>(EventSectorization, new SectorizationReceivedArgs()
                 {
                     Accepted = false,
                     ScvId = Cfg.Id,
-                    SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
+                    //SectorMap = sectorsToProcess.ToDictionary(s => s.SectorCode, s => (int)s.Ucs),
                     ReceivedMap = String.Join(",", sectorsReceived.Select(s => s.ToString())),
                     RejectCause = message,
                     Acknowledge = (result)=> deliver(false, message)
@@ -524,7 +535,6 @@ namespace sacta_proxy.Managers
             }
             else
             {
-                //deliver(true, "");
                 // Actulizar con los datos recibidos la sectorizacion global...
                 SafeLaunchEvent<SectorizationReceivedArgs>(EventSectorization, new SectorizationReceivedArgs()
                 {

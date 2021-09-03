@@ -147,6 +147,7 @@ namespace sacta_proxy.model
             public string Virtuals { get; set; }
             public string SectorsMap { get; set; }        // Sector Dependencia => Sector SCV.
             public string PositionsMap { get; set; }      // Posicion Dependencia => Posicion SCV.
+            public string IgnoredSectors { get; set; }
             public SectorizationDataConfig(bool bGenerate = false)
             {
                 Sectors = "";
@@ -154,6 +155,7 @@ namespace sacta_proxy.model
                 Virtuals = "";
                 SectorsMap = "";
                 PositionsMap = "";
+                IgnoredSectors = "";
                 if (bGenerate)
                 {
                     Sectors = "0";
@@ -172,6 +174,7 @@ namespace sacta_proxy.model
             {
                 return String2ListInt(Virtuals);
             }
+            public List<int> IgnoredSectorsList => String2ListInt(IgnoredSectors);
         }
         public class DependecyConfig
         {
@@ -263,22 +266,36 @@ namespace sacta_proxy.model
                 Logger.Exception<ConfigurationManager>(x);
             }
         }
-        public bool Set(string ConfigurationData)
+        public void Set(string ConfigurationData, Action<bool, string> result)
         {
             try
             {
                 var cfg = JsonHelper.Parse<Configuration>(ConfigurationData);
                 if (cfg != null)
                 {
-                    Write(cfg);
-                    return true;
+                    Test(cfg, (error, errorMsg) =>
+                    {
+                        if (error)
+                        {
+                            result(true, errorMsg);
+                        }
+                        else
+                        {
+                            Write(cfg);
+                            result(false, "");
+                        }
+                    });
+                }
+                else
+                {
+                    result(true, "Error decodificando datos Json...");
                 }
             }
             catch (Exception x)
             {
                 Logger.Exception<ConfigurationManager>(x);
+                result(true, $"Se ha producido una excepcion al procesar los datos => {x.Message}");
             }
-            return false;
         }
         public void Write(Configuration cfg)
         {
@@ -286,5 +303,97 @@ namespace sacta_proxy.model
             File.WriteAllText(FileName, data);
         }
 
+        public void Test(Configuration cfg, Action<bool, string> result)
+        {
+            var depErrs = new List<string>();
+
+            /** Test de las dependencias... */
+            cfg.Dependencies.ForEach(dep =>
+            {
+                var sectors = dep.Sectorization.SectorsList().Select(s => s).ToList();
+                sectors.AddRange(dep.Sectorization.VirtualsList());
+
+                var dupSect = sectors
+                    .GroupBy(s => s)
+                    .Where(g => g.Count() > 1)
+                    .Select(g => g.Key.ToString())
+                    .ToList();
+                var dupPos = dep.Sectorization.PositionsList()
+                    .GroupBy(s => s)
+                    .Where(g => g.Count() > 1)
+                    .Select(g => g.Key.ToString())
+                    .ToList();
+                var ignReals = dep.Sectorization.IgnoredSectorsList
+                    .Where(i => dep.Sectorization.SectorsList().Contains(i))
+                    .ToList();
+
+                if (dupSect.Count > 0 || dupPos.Count >0 || ignReals.Count>0)
+                {
+                    var strErr = dupSect.Count > 0 ? $"Sectores (Reales o Virtuales) Duplicados => {String.Join(",", dupSect)}, " : "";
+                    strErr += dupPos.Count > 0 ? $"Posiciones Duplicadas => {String.Join(",", dupPos)}, " : "";
+                    strErr += ignReals.Count > 0 ? $"Se estan ignorando sectores reales => {String.Join(",", ignReals)}, " : "";
+                    strErr = $"En Dependencia {dep.Id}: {strErr}";
+                    depErrs.Add(strErr);
+                }
+            });
+
+            if (depErrs.Count > 0)
+            {
+                result(true, String.Join("; ", depErrs));
+                return;
+            }
+            /** Las dependencias estan bien Genero la Configuracion PSI desde las mismas */
+            var PsiReals = new List<int>();
+            var PsiVirts = new List<int>();
+            var PsiPos = new List<int>();
+
+            cfg.Dependencies.ForEach(dep =>
+            {
+                /** Construyendo la configuracion de Sectorizacion general aplicando los mapas. */
+                var sectorsMap = dep.Sectorization.SectorsMap.Split(',')
+                    .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                    .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+                var positionsMap = dep.Sectorization.PositionsMap.Split(',')
+                    .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                    .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+
+                var virtuals = dep.Sectorization.VirtualsList()
+                    .Select(v => sectorsMap.Keys.Contains(v) ? sectorsMap[v] : v)
+                    .ToList();
+                var reals = dep.Sectorization.SectorsList()
+                    .Select(r => sectorsMap.Keys.Contains(r) ? sectorsMap[r] : r)
+                    .ToList();
+                var positions = dep.Sectorization.PositionsList()
+                    .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p] : p)
+                    .ToList();
+                PsiReals.AddRange(reals);
+                PsiVirts.AddRange(virtuals);
+                PsiPos.AddRange(positions);
+            });
+
+            /** Chequear que no haya sectores o posiciones repetidas */
+            var PsiSectors = PsiReals.Select(s => s).ToList();
+            PsiSectors.AddRange(PsiVirts);
+
+            var PsidupSec = PsiSectors.GroupBy(s => s)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key.ToString())
+                .ToList();
+            var PsidupPos = PsiPos.GroupBy(s => s)
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key.ToString())
+                .ToList();
+            if (PsidupSec.Count > 0 || PsidupPos.Count > 0 )
+            {
+                var strErr = PsidupSec.Count > 0 ? $"Sectores (Reales o Virtuales) Duplicados => {String.Join(",", PsidupSec)}, " : "";
+                strErr += PsidupPos.Count > 0 ? $"Posiciones Duplicadas => {String.Join(",", PsidupPos)}, " : "";
+                strErr = $"En Cfg SCV: {strErr}";
+
+                result(true, strErr);
+                return;
+            }
+
+            result(false, "");
+        }
     }
 }

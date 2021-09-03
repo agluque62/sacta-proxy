@@ -92,7 +92,7 @@
                         <div class="col-md-1"></div>
                         <div class="col-md-10">
                             <button class="btn btn-success col-md-12" data-toggle="collapse" data-target="#comm-data">Comunicaciones</button>
-                            <div id="comm-data" class="col-md-12 collapse collapsable-group in">
+                            <div id="comm-data" class="col-md-12 collapse collapsable-group">
                                 <table id="comm-table1" class="table col-md-12">
                                     <tr>
                                         <td colspan="2"><label class="text-info">Puertos</label></td>
@@ -243,7 +243,7 @@
                         <div class="col-md-1"></div>
                         <div class="col-md-10">
                             <button class="btn btn-info col-md-12" data-toggle="collapse" data-target="#protocol-data">Protocolo Sacta</button>
-                            <div id="protocol-data" class="col-md-12 collapse collapsable-group">
+                            <div id="protocol-data" class="col-md-12 collapse collapsable-group in">
                                 <div class="row form-group">
                                     <div class="col-md-3">
                                         <label for="tic">Tic Presencia</label>
@@ -322,6 +322,16 @@
                                                                ng-model="ctrl.dep.cfg.SactaProtocol.Sacta.Spvs" ng-disabled="true" required />
                                                         <span style="color:red" ng-show="cfgform.sspv.$dirty && cfgform.sspv.$invalid">
                                                             <span ng-show="cfgform.sspv.$error.required">Este campo debe rellenarse</span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="row form-group" ng-show="ctrl.dep.isdep">
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-11">
+                                                        <label for="vign">Ignorar Sectores</label>
+                                                        <input id="vign" name="vign" type="text" class="form-control" ng-model="ctrl.dep.cfg.Sectorization.IgnoredSectors" nu-validate="lnum" />
+                                                        <span style="color:red" ng-show="cfgform.vign.$dirty && cfgform.vign.$invalid">
+                                                            <span ng-show="cfgform.vign.$error.nuValidate">Error de formato (se1, se2, ... sen)</span>
                                                         </span>
                                                     </div>
                                                 </div>

@@ -166,12 +166,14 @@ namespace sacta_proxy.Managers
         public bool PreprocessSectorizationToSend(Dictionary<string, int> sectorMap, Action<string> OnError)
         {
             var idSectorsToProcess = sectorMap.Keys.Select(k => k)
-                .Where(s => Cfg.Sectorization.VirtualsList().Contains(int.Parse(s)) == false)
+//                .Where(s => Cfg.Sectorization.VirtualsList().Contains(int.Parse(s)) == false)
                 .Select(s => int.Parse(s));
-            var SectorsNotFound = Cfg.Sectorization.SectorsList()
-                .Where(s => idSectorsToProcess.Contains(s) == false)
+            var SectorsNotFound = idSectorsToProcess
+                .Where(s => Cfg.Sectorization.SectorsList().Contains(s) == false)
+                .Where(s => Cfg.Sectorization.VirtualsList().Contains(s) == false)
                 .Select(s => s.ToString())
                 .ToList();
+
             if (SectorsNotFound.Count > 0)
             {
                 OnError($"Sectores no Encontrados: {String.Join(", ", SectorsNotFound)}. ");

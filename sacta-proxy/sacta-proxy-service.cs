@@ -397,20 +397,24 @@ namespace sacta_proxy
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     string strData = reader.ReadToEnd();
-                    if (cfgManager.Set(strData))
+                    cfgManager.Set(strData, (error, errorMsg) =>
                     {
-                        /** Reiniciar el Servicio */
-                        Reset();
-                        /** Historico */
-                        History.Add(HistoryItems.UserConfigChange, SystemUsers.CurrentUserId);
-                        context.Response.StatusCode = 200;
-                        sb.Append(JsonHelper.ToString(new { res = "ok" }, false));
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 500;
-                        sb.Append(JsonHelper.ToString(new { res = "Error actualizando la configuracion" }, false));
-                    }
+                        if (!error)
+                        {
+                            /** Reiniciar el Servicio */
+                            Reset();
+                            /** Historico */
+                            History.Add(HistoryItems.UserConfigChange, SystemUsers.CurrentUserId, "", "OK");
+                            context.Response.StatusCode = 200;
+                            sb.Append(JsonHelper.ToString(new { res = "ok" }, false));
+                        }
+                        else
+                        {
+                            History.Add(HistoryItems.UserConfigChange, SystemUsers.CurrentUserId, "", "ERROR", "", errorMsg);
+                            context.Response.StatusCode = 500;
+                            sb.Append(JsonHelper.ToString(new { res = $"Error actualizando la configuracion => {errorMsg}" }, false));
+                        }
+                    });
                 }
             }
             else
