@@ -287,7 +287,7 @@ namespace sacta_proxy
 #if DEBUG
             webCallbacks.Add("/testing/*", OnWebRequestTesting);
 #endif
-            SactaProxyWebApp?.Start(Cfg.General.WebPort, Cfg.General.WebActivityMinTimeout, webCallbacks);
+            SactaProxyWebApp?.Start(Properties.Settings.Default.WebPort, Cfg.General.WebActivityMinTimeout, webCallbacks);
             Logger.Info<SactaProxy>("Servidor WEB Arrancado.");
         }
         protected void StopWebServer()

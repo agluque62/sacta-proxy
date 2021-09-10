@@ -35,5 +35,8 @@
     <Setting Name="DepSecAskWindow" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">2</Value>
     </Setting>
+    <Setting Name="WebPort" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">8091</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

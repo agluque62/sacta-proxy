@@ -121,5 +121,14 @@ namespace sacta_proxy.Properties {
                 return ((int)(this["DepSecAskWindow"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8091")]
+        public int WebPort {
+            get {
+                return ((int)(this["WebPort"]));
+            }
+        }
     }
 }
