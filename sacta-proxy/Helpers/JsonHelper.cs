@@ -10,7 +10,7 @@ using Newtonsoft.Json.Converters;
 
 namespace sacta_proxy.helpers
 {
-    class JsonHelper
+    public class JsonHelper
     {
         public static dynamic SafeDynamicObjectParse(string s)
         {

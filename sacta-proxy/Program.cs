@@ -19,6 +19,7 @@ namespace sacta_proxy
         /// </summary>
         static void Main(string[] args)
         {
+#if !DEBUG
             using (Mutex mutex = new Mutex(false, "Global\\" + AppGuid))
             {
                 if (!mutex.WaitOne(0, false))
@@ -28,7 +29,9 @@ namespace sacta_proxy
                 }
                 (new SactaProxyApp()).Run(args);
             }
-
+#else
+            (new SactaProxyApp()).Run(args);
+#endif
         }
     }
 

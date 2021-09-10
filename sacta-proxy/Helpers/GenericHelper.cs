@@ -213,5 +213,16 @@ namespace sacta_proxy.helpers
             }
         }
         #endregion
+        public static int ToInt(string str, int def = -1)
+        {
+            try
+            {
+                return int.Parse(str);
+            }
+            catch
+            {
+                return def;
+            }
+        }
     }
 }
