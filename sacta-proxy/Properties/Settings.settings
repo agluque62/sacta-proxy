@@ -38,5 +38,26 @@
     <Setting Name="WebPort" Type="System.Int32" Scope="Application">
       <Value Profile="(Default)">8091</Value>
     </Setting>
+    <Setting Name="InternalLanInterface" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">192.168.168.1</Value>
+    </Setting>
+    <Setting Name="DataSyncSendingPeriod" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">11</Value>
+    </Setting>
+    <Setting Name="DataSyncMaxJitter" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="DataSyncEnable" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DataSyncInternalDelay" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="DataSyncListenerSpvPeriod" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="DataSyncMulticastGroup" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">224.100.10.1:1030</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

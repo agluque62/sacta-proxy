@@ -103,6 +103,9 @@ angular.module("sacta_proxy")
         ctrl.std = function () {
             return $lserv.GlobalStd();
         }
+        ctrl.sync = () => { return $lserv.GlobalStd().sync };
+        ctrl.cfg_sync = () => { return Enumerable.from(ctrl.sync().Items).where(e => e.id == "Cfg").first() };
+        ctrl.enable_sync = () => { return ctrl.sync() != null };
         ctrl.stds = (std) => {
             return {
                 txt: std == 0 ? "Parado" : std == 1 ? "Running" : std == 2 ? "Error" : std + "???",
@@ -216,20 +219,28 @@ angular.module("sacta_proxy")
         });
 
     /** Funcion Periodica del controlador */
+        var period = 250;
         var timer = $interval(function () {
 
             if (ctrl.std().Status) {
                 msgTableRefresh(ctrl.mainmsg, ctrl.std().Status.service.lst);
                 msgTableRefresh(ctrl.webmsg, ctrl.std().Status.web.lst);
                 msgTableRefresh(ctrl.depmsg, ctrl.seldep().status.global_state.lst);
+                period = 1000;
             }
-        }, pollingTime);
+        }, period);
 
         // Cuando se carga la página....
         $scope.$on('$viewContentLoaded', () => {
             ctrl.mainmsg = msgTableCreate($('#mainmsg'));
             ctrl.webmsg = msgTableCreate($('#webmsg'));
             ctrl.depmsg = msgTableCreate($('#depmsg'));
+            console.log("Status Page Loaded...");
+            if (ctrl.std().Status) {
+                msgTableRefresh(ctrl.mainmsg, ctrl.std().Status.service.lst);
+                msgTableRefresh(ctrl.webmsg, ctrl.std().Status.web.lst);
+                msgTableRefresh(ctrl.depmsg, ctrl.seldep().status.global_state.lst);
+            }
         });
 
         /** Salida del Controlador. Borrado de Variables */

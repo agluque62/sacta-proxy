@@ -98,7 +98,7 @@ namespace sacta_proxy.Managers
                     Logger.Info<ScvManager>($"ScvManager for {Id}. Waiting for Sacta Activity on {Cfg.Comm.If1.Ip}:{Cfg.Comm.ListenPort} ...");
                 }
                 Logger.Info<PsiManager>($"ScvManager for {Id}. Sectores {Cfg.Sectorization.Sectors} Posiciones {Cfg.Sectorization.Positions}");
-                PS.Set(ProcessStates.Running);
+                PS.SignalStart();
             }
             catch (Exception x)
             {
@@ -112,7 +112,7 @@ namespace sacta_proxy.Managers
             Logger.Info<ScvManager>($"Ending ScvManager for {Id}...");
             Dispose();
             Logger.Info<ScvManager>($"ScvManager for {Id} Ended...");
-            PS.Set(ProcessStates.Stopped);
+            PS.SignalStop();
         }
         public void Dispose()
         {

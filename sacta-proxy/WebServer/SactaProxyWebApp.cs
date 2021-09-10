@@ -88,7 +88,7 @@ namespace sacta_proxy.WebServer
                     SecureUris = SecureUris,
                     CfgRest = cfg
                 });
-                stdcontrol.Set(ProcessStates.Running);
+                stdcontrol.SignalStart();
             }
             catch (Exception x)
             {
@@ -101,7 +101,7 @@ namespace sacta_proxy.WebServer
             try
             {
                 base.Stop();
-                stdcontrol.Set(ProcessStates.Stopped);
+                stdcontrol.SignalStop();
             }
             catch (Exception x)
             {

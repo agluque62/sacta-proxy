@@ -190,9 +190,11 @@ namespace sacta_proxy.model
                 Sectorization = new SectorizationDataConfig(bGenerate);
             }
         }
+
         /// <summary>
         /// Datos de Configuracion,
         /// </summary>
+        public DateTime LastModification { get; set; }
         public int ProtocolVersion { get; set; }
         public int InCluster { get; set; }
         public GeneralConfig General { get; set; }
@@ -210,6 +212,10 @@ namespace sacta_proxy.model
                 Dependencies.Add(new DependecyConfig(bGenerate) { Id = "TWR" });
                 Dependencies.Add(new DependecyConfig(bGenerate) { Id = "APP" });
             }
+        }
+        public override string ToString()
+        {
+            return JsonHelper.ToString(this, false);
         }
 
         public static bool MapOfSectorsEntryValid(string input)
@@ -266,7 +272,7 @@ namespace sacta_proxy.model
                 Logger.Exception<ConfigurationManager>(x);
             }
         }
-        public void Set(string ConfigurationData, Action<bool, string> result)
+        public void Set(DateTime date, string ConfigurationData, Action<bool, string> result)
         {
             try
             {
@@ -281,6 +287,7 @@ namespace sacta_proxy.model
                         }
                         else
                         {
+                            cfg.LastModification = date;
                             Write(cfg);
                             result(false, "");
                         }
@@ -302,7 +309,6 @@ namespace sacta_proxy.model
             var data = JsonHelper.ToString(cfg);
             File.WriteAllText(FileName, data);
         }
-
         public void Test(Configuration cfg, Action<bool, string> result)
         {
             var depErrs = new List<string>();

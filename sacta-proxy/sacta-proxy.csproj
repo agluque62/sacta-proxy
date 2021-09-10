@@ -79,6 +79,7 @@
     <Compile Include="Managers\PsiManager.cs" />
     <Compile Include="Managers\SactaMessages.cs" />
     <Compile Include="Managers\ScvManager.cs" />
+    <Compile Include="Managers\DataSyncManager.cs" />
     <Compile Include="model\Configuration.cs" />
     <Compile Include="model\DbControl.cs" />
     <Compile Include="model\History.cs" />

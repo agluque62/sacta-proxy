@@ -130,5 +130,68 @@ namespace sacta_proxy.Properties {
                 return ((int)(this["WebPort"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("192.168.168.1")]
+        public string InternalLanInterface {
+            get {
+                return ((string)(this["InternalLanInterface"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("11")]
+        public int DataSyncSendingPeriod {
+            get {
+                return ((int)(this["DataSyncSendingPeriod"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int DataSyncMaxJitter {
+            get {
+                return ((int)(this["DataSyncMaxJitter"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DataSyncEnable {
+            get {
+                return ((bool)(this["DataSyncEnable"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DataSyncInternalDelay {
+            get {
+                return ((int)(this["DataSyncInternalDelay"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int DataSyncListenerSpvPeriod {
+            get {
+                return ((int)(this["DataSyncListenerSpvPeriod"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("224.100.10.1:1030")]
+        public string DataSyncMulticastGroup {
+            get {
+                return ((string)(this["DataSyncMulticastGroup"]));
+            }
+        }
     }
 }

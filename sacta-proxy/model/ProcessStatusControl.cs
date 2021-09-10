@@ -24,41 +24,49 @@ namespace sacta_proxy.model
             State = ProcessStates.Stopped;
             LastErrors = new List<ProcessMessage>();
         }
-        public void Set(ProcessStates state, string strError="")
-        {
-            State = state;
-            if (LastErrors.Count >= 8)
-                LastErrors.RemoveAt(0);
-            LastErrors.Add(new ProcessMessage() { When = DateTime.Now, Msg = strError });
-        }
         public override string ToString()
         {
                 return $"{String.Join(" ## ", LastErrors)}";
         }
         public void SignalFatal<T>(string cause, History history)
         {
-            Set(ProcessStates.Error, cause);
-            history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
-            Logger.Fatal<T>(cause);
+            if (!RepeatedMessage(cause))
+            {
+                Set(ProcessStates.Error, cause);
+                history?.Add(HistoryItems.ServiceFatalError, "", "", "", "", cause);
+                Logger.Fatal<T>(cause);
+            }
         }
         public void SignalWarning<T>(string cause, History history)
         {
-            Set(State, cause);
-            history?.Add(HistoryItems.ServiceWarning, "", "", "", "", cause);
-            Logger.Warn<T>(cause);
-        }
-        public object Status
-        {
-            get
+            if (!RepeatedMessage(cause))
             {
-                return new { std = State, str = ToString(), lst=LastErrors.Where(i=>i.Msg!=string.Empty).ToList() };
+                Set(State, cause);
+                history?.Add(HistoryItems.ServiceWarning, "", "", "", "", cause);
+                Logger.Warn<T>(cause);
             }
         }
+        public void SignalStart() => Set(ProcessStates.Running);
+        public void SignalStop() => Set(ProcessStates.Stopped);
+        public object Status => new { std = State, str = ToString(), lst = LastErrors.Where(i => i.Msg != string.Empty).ToList() };
+
         //public History History { get; set; }
         public bool IsStarted { get => State != ProcessStates.Stopped; }
-        public void ClearMessages()
+        public void ClearMessages() => LastErrors.Clear();
+        protected void Set(ProcessStates state, string strError = default)
         {
-            LastErrors.Clear();
+            State = state;
+            if (!RepeatedMessage(strError))
+            {
+                if (LastErrors.Count >= 8)
+                    LastErrors.RemoveAt(0);
+                LastErrors.Add(new ProcessMessage() { When = DateTime.Now, Msg = strError });
+            }
+        }
+        protected bool RepeatedMessage(string msg)
+        {
+            var msgs = LastErrors.Select(e => e.Msg).ToList();
+            return msg==default || msgs.Contains(msg);
         }
     }
 }

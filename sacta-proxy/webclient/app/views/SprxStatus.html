@@ -26,6 +26,12 @@
                                 <td style="width: 15%;" class="text-info"><strong>Logica</strong></td>
                                 <td style="width: 25%">{{ctrl.std().logic}}</td>
                             </tr>
+                            <tr ng-show="ctrl.enable_sync()" ng-class="ctrl.stds(ctrl.sync().std).css">
+                                <td style="width: 15%;" class="text-info"><strong>Sincronizacion</strong></td>
+                                <td style="width: 15%;">{{ctrl.cfg_sync().std}}</td>
+                                <td style="width: 15%;" class="text-info"><strong>Configuracion</strong></td>
+                                <td colspan="3">{{ctrl.cfg_sync().dt}}</td>
+                            </tr>
                             <tr ng-class="ctrl.stds(ctrl.std().Status.service.std).css">
                                 <td style="width: 15%;" class="text-info"><strong>Servicio</strong></td>
                                 <td style="width: 15%;">{{ctrl.stds(ctrl.std().Status.service.std).txt}}</td>

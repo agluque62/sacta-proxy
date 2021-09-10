@@ -67,7 +67,7 @@ namespace sacta_proxy
                             GlobalStateManager.DebugMainStandbyModeSet(true, false);
                             break;
                         case '0':
-                            app.Reset();
+                            app.MarkToReset();
                             break;
                     }
 #endif

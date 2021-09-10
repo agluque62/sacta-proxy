@@ -79,6 +79,7 @@
     <Compile Include="ModelTest.cs" />
     <Compile Include="DbTest.cs" />
     <Compile Include="ClusterTests.cs" />
+    <Compile Include="SyncFilesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

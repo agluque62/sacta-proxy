@@ -47,11 +47,14 @@ angular.module("sacta_proxy")
         /**
          * */
         function get_status() {
+            console.log("Getting status...");
             $serv.status((status) => {
                 $lserv.GlobalStd(status);
                 ctrl.user = status.user;
                 ctrl.version = status.version;
                 ctrl.status = ctrl.general_status(status.global).txt;
+
+                console.log("Status Loaded", status);
             });
         }
         function get_inci() {

@@ -140,13 +140,17 @@ namespace sacta_proxy
         }
         protected void MainProcessing()
         {
+
             Logger.Info<SactaProxy>("Arrancando Servicio.");
             
             MainTaskSync = new System.Threading.ManualResetEvent(false);
             EventThread.Start();
+            StartDataSync();
             MainTaskConfigured = ConfigureService();
             StartWebServer();
             History.Add(HistoryItems.ServiceStarted);
+            var actualMode = GlobalStateManager.MainStandbyCheck() ? "ACTIVO" : "RESERVA";
+            Logger.Info<SactaProxy>($"Servicio Arrancado. Dual => {Cfg.InCluster==1}, Modo => {actualMode}, ProtocolVersion => {Cfg.ProtocolVersion}");
             do
             {
                 EventThread.Enqueue("MainProcessing", () =>
@@ -185,14 +189,16 @@ namespace sacta_proxy
                             }
                         });
                     }
-                    catch
+                    catch(Exception x)
                     {
+                        Logger.Exception<SactaProxy>(x);
                     }
                 });
             }
             while (MainTaskSync.WaitOne(TimeSpan.FromSeconds(2)) == false);
 
             StopManagers(true);
+            StopDataSync();
             StopWebServer();
             History.Add(HistoryItems.ServiceEnded);
             EventThread.ControlledStop();
@@ -205,6 +211,7 @@ namespace sacta_proxy
             {
                 // Se utiliza 'siempre' version 0 para CD30 y version 1 para ULISES.
                 cfg.ProtocolVersion = Properties.Settings.Default.ScvType;
+                cfg.InCluster = Properties.Settings.Default.ServerType;
                 History.Configure(cfg.General.HistoryMaxDays, cfg.General.HistoryMaxItems);
                 Managers.Clear();
                 cfg.Psi.Sectorization.Positions = "";
@@ -272,8 +279,8 @@ namespace sacta_proxy
                 ids.Add(cfg.Psi.Id);
                 SectorizationPersistence.Sanitize(ids);
                 Cfg = cfg;
-                cfgManager.Write(Cfg);
-                Logger.Info<SactaProxy>("Servicio Configurado...");
+                CfgSync?.MonitorsFile("Cfg", Cfg.LastModification, Cfg.ToString());
+                Logger.Info<SactaProxy>($"Servicio Configurado. Configuration Date => {Cfg.LastModification}");
             }));
             return true;
         }
@@ -307,7 +314,7 @@ namespace sacta_proxy
                 .Where(g => g.Count() > 1).Select(g => g.Key.ToString()).ToList();
             TestDuplicated(duplicatedPos, duplicatedSec, duplicatedVir, () =>
             {
-                Logger.Info<SactaProxy>($"Arrancando Gestores. ProtocolVersion => {Cfg.ProtocolVersion}, InCluster => {Cfg.InCluster}");
+                Logger.Info<SactaProxy>($"Arrancando Gestores...");
                 // Solo arrancan los gestores cuando no hay duplicados.
                 Managers.ForEach(dependency =>
                 {
@@ -315,7 +322,7 @@ namespace sacta_proxy
                     if (dependency.IsMain)
                         Task.Delay(TimeSpan.FromSeconds(dependency.Cfg.SactaProtocol.TickAlive*2)).Wait();
                 });
-                PS.Set(ProcessStates.Running);
+                PS.SignalStart();
                 Logger.Info<SactaProxy>("Gestores Arrancados.");
             });
         }
@@ -346,8 +353,32 @@ namespace sacta_proxy
                 Managers.Clear();
             }
 
-            PS.Set(ProcessStates.Stopped);
+            PS.SignalStop();
             Logger.Info<SactaProxy>("Gestores Detenidos.");
+        }
+        protected void StartDataSync()
+        {
+            var settings = Properties.Settings.Default;
+            bool CfgSyncDisable = settings.DataSyncEnable == false || settings.ServerType == 0;
+            if (CfgSyncDisable)
+            {
+                CfgSync = null;
+            }
+            else
+            {
+                CfgSync = new DataSyncManager(true, settings.InternalLanInterface, settings.DataSyncMulticastGroup)
+                {
+                    SyncListenerSpvPeriod= settings.DataSyncListenerSpvPeriod,
+                    SyncSendingPeriod = settings.DataSyncSendingPeriod,
+                    InternalDelay = settings.DataSyncInternalDelay,
+                    MaxJitter = settings.DataSyncMaxJitter
+                };
+                CfgSync.FileSyncEvent += OnDataSyncEvent;
+            }        
+        }
+        protected void StopDataSync()
+        {
+            CfgSync?.Dispose();
         }
 
 #region Callbacks Web
@@ -367,7 +398,8 @@ namespace sacta_proxy
                     version = GenericHelper.VersionManagement.AssemblyVersion,
                     logic = Cfg.General.ActivateSactaLogic,
                     global = GlobalStateManager.Info,
-                    Status
+                    Status,
+                    sync = CfgSync == null ? null : CfgSync?.Status
                 }, false));
             }
             else
@@ -397,12 +429,12 @@ namespace sacta_proxy
                 using (var reader = new StreamReader(context.Request.InputStream, context.Request.ContentEncoding))
                 {
                     string strData = reader.ReadToEnd();
-                    cfgManager.Set(strData, (error, errorMsg) =>
+                    cfgManager.Set(DateTime.Now, strData, (error, errorMsg) =>
                     {
                         if (!error)
                         {
                             /** Reiniciar el Servicio */
-                            Reset();
+                            MarkToReset();
                             /** Historico */
                             History.Add(HistoryItems.UserConfigChange, SystemUsers.CurrentUserId, "", "OK");
                             context.Response.StatusCode = 200;
@@ -459,7 +491,7 @@ namespace sacta_proxy
             {
                 if (cmd == "reset")
                 {
-                    Reset();
+                    MarkToReset();
                 }
                 context.Response.StatusCode = 200;
                 sb.Append(JsonHelper.ToString(new { res = "ok"}, false));
@@ -707,6 +739,48 @@ namespace sacta_proxy
                 });
             });
         }
+        protected void OnDataSyncEvent(object sender, FilesSyncManagerEventArgs data)
+        {
+            //todo
+            EventThread.Enqueue("OnDataSyncEvent", () =>
+            {
+                if (data.Error != default)
+                {
+                    var msg = $"DataSyncEvent Error => {data.Error}";
+                    Logger.Error<SactaProxy>(msg);
+                    Message(msg);
+                }
+                else
+                {
+                    try
+                    {
+                        Logger.Debug<SactaProxy>($"DataSyncEvent Actualize {data.Item.Name} ({data.Item.Date}) Received Data => {data.Item.Data.Substring(0, 24)}...");
+                        var cfg = JsonHelper.Parse<Configuration>(data.Item.Data);
+                        /** Mantener la IP de la segunda interfaz, ya que es propietaria. */
+                        cfg.Psi.Comm.If2.Ip = Cfg.Psi.Comm.If2.Ip;
+                        cfgManager.Set(data.Item.Date, cfg.ToString(), (error, errorMsg) =>
+                        {
+                            if (!error)
+                            {
+                                /** Reiniciar el Servicio */
+                                MarkToReset();
+                                /** Historico */
+                                History.Add(HistoryItems.UserConfigChange, "REMOTE", "", "OK");
+                            }
+                            else
+                            {
+                                Message(errorMsg);
+                            }
+                        });
+                    }
+                    catch (Exception x)
+                    {
+                        Logger.Exception<SactaProxy>(x);
+                    }
+                }
+            });
+        }
+
 #endregion EventManagers
         void TestDuplicated(List<string> pos, List<string> sec, List<string> vir, Action continues)
         {
@@ -731,7 +805,7 @@ namespace sacta_proxy
                 };
             }
         }
-        public void Reset()
+        public void MarkToReset()
         {
             EventThread.Enqueue("Reset", () =>
             {
@@ -762,7 +836,7 @@ namespace sacta_proxy
         private readonly Dictionary<string, wasRestCallBack> webCallbacks = new Dictionary<string, wasRestCallBack>();
 
         private readonly ConfigurationManager cfgManager = new ConfigurationManager();
-        private Configuration Cfg { get; set; }
+        private Configuration Cfg { get; set; } = new Configuration();
         private readonly ProcessStatusControl PS = new ProcessStatusControl();
         private List<DependencyControl> Managers = new List<DependencyControl>();
         private DependencyControl MainManager => Managers.Where(d => d.IsMain).FirstOrDefault();
@@ -770,6 +844,7 @@ namespace sacta_proxy
         private History History { get; set; }
         private bool ScvSectorizationAskPending { get; set; } = false;
         private NamedEventsSync ScvSectAskSync { get; set; }
+        private DataSyncManager CfgSync { get; set; } = null;
         #endregion
 
 #if DEBUG
