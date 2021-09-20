@@ -254,7 +254,7 @@ namespace sacta_proxy.Managers
                     else
                     {
                         // Los ordendores no estan sincronizados. Generar un evento de error...
-                        var strError = $"{Id} Los ordenadores no estan sincronizados. Local => {Now}, Remote => {ItemRec.When}, Jitter => {jitter}";
+                        var strError = $"{Id} Los ordenadores no estan sincronizados. Local => {Now}, Remote => {ItemRec.When}, Desviacion => {jitter} Seg.";
                         if (ItemLoc.State != ItemStates.JitterError)
                         {
                             ItemLoc.State = ItemStates.JitterError;
@@ -266,9 +266,9 @@ namespace sacta_proxy.Managers
                 else
                 {
                     // El fichero no está en la lista... Generar un evento de error...
-                    var strError = $"{Id} El fichero recibido no está en la lista. Fichero recibido => {ItemRec.Name}";
+                    var strError = $"{Id} El fichero recibido no esta en la lista. Fichero recibido => {ItemRec.Name}";
                     Logger.Warn<DataSyncManager>(strError);
-                    SafeLaunchEvent<FilesSyncManagerEventArgs>(FileSyncEvent, new FilesSyncManagerEventArgs() { Error = strError });
+                    // SafeLaunchEvent<FilesSyncManagerEventArgs>(FileSyncEvent, new FilesSyncManagerEventArgs() { Error = strError });
                 }
             }
             catch (Exception x)

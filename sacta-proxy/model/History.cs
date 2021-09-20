@@ -58,7 +58,7 @@ namespace sacta_proxy.model
             }
             static readonly List<HistoryItemDesciption> HistoryItemsDesc = new List<HistoryItemDesciption>()
             {
-                new HistoryItemDesciption(){ Code= HistoryItems.ServiceStarted, FormatString="Servicio Iniciado"},
+                new HistoryItemDesciption(){ Code= HistoryItems.ServiceStarted, FormatString="Servicio Iniciado {1}"},
                 new HistoryItemDesciption(){ Code= HistoryItems.ServiceEnded, FormatString="Servicio Detenido"},
                 new HistoryItemDesciption(){ Code= HistoryItems.ServiceFatalError, FormatString="Error Grave en el Servicio {3}"},
                 new HistoryItemDesciption(){ Code= HistoryItems.ServiceInMode, FormatString="Entrando en Modo {1}"},

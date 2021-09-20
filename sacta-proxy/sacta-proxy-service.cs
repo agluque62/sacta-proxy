@@ -148,7 +148,7 @@ namespace sacta_proxy
             StartDataSync();
             MainTaskConfigured = ConfigureService();
             StartWebServer();
-            History.Add(HistoryItems.ServiceStarted);
+            History.Add(HistoryItems.ServiceStarted, "", "", $"Logica {Cfg.General.ActivateSactaLogic}");
             var actualMode = GlobalStateManager.MainStandbyCheck() ? "ACTIVO" : "RESERVA";
             Logger.Info<SactaProxy>($"Servicio Arrancado. Dual => {Cfg.InCluster==1}, Modo => {actualMode}, ProtocolVersion => {Cfg.ProtocolVersion}");
             do
@@ -170,12 +170,12 @@ namespace sacta_proxy
                             {
                                 if (isMain && !PS.IsStarted)
                                 {
-                                    History.Add(HistoryItems.ServiceInMode, "", "", "Master");
+                                    History.Add(HistoryItems.ServiceInMode, "", "", $"Master (Logica {Cfg.General.ActivateSactaLogic})");
                                     StartManagers();
                                 }
                                 else if (!isMain && PS.IsStarted)
                                 {
-                                    History.Add(HistoryItems.ServiceInMode, "", "", "Standby");
+                                    History.Add(HistoryItems.ServiceInMode, "", "", $"Standby (Logica {Cfg.General.ActivateSactaLogic})");
                                     StopManagers();
                                 }
                             }
@@ -183,7 +183,7 @@ namespace sacta_proxy
                             {
                                 if (!PS.IsStarted)
                                 {
-                                    History.Add(HistoryItems.ServiceInMode, "", "", "Simple");
+                                    History.Add(HistoryItems.ServiceInMode, "", "", $"Simple (Logica {Cfg.General.ActivateSactaLogic})");
                                     StartManagers();
                                 }
                             }
