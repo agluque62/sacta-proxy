@@ -137,7 +137,6 @@ namespace sacta_proxy
             MainTaskSync.Set();
             MainTask.Wait(TimeSpan.FromSeconds(5));
             History.Dispose();
-            //Task.Delay(TimeSpan.FromSeconds(Cfg.Psi.SactaProtocol.TimeoutAlive)).Wait();
         }
         protected void MainProcessing()
         {
@@ -728,34 +727,15 @@ namespace sacta_proxy
             EventThread.Enqueue("OnPsiEventScvActivity", () =>
             {
                 Logger.Info<SactaProxy>($"OnPsiEventScvActivity => {data.ToString()}");
-
-                /** Proviene de un reset Rapido del Servicio SACTA SCV */
-                var OnOn = MainManager.Activity && data.OnOff;
-                if (OnOn)
-                {
-                    /** Se genera el Historico de OFF */
-                    History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, "OFF");
-                }
-
                 MainManager.Activity = data.OnOff;
                 /** Historico del Cambio */
                 History.Add(HistoryItems.DepActivityEvent, "", MainManager.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
-                
                 // Si se pierde la conectividad con el SCV real, se simula 'inactividad' en la interfaz sacta.
                 DepManagers.ForEach(dependency =>
                 {
-                    if (OnOn)
-                    {
-                        /** *Se llevan las simuladores a un estado que pidan las sectorizaciones*/
-                        dependency.Manager.TxEnabled = false;
-                        dependency.Manager.TxEnabled = MainManager.Activity;
-                    }
-                    else
-                    {
-                        dependency.Manager.TxEnabled = MainManager.Activity;
+                    dependency.Manager.TxEnabled = MainManager.Activity;
                         /** Historico del Cambio */
-                        History.Add(HistoryItems.DepTxstateChange, "", dependency.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
-                    }
+                    History.Add(HistoryItems.DepTxstateChange, "", dependency.Cfg.Id, MainManager.Activity ? "ON" : "OFF");
                 });
             });
         }
