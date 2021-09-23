@@ -130,7 +130,28 @@ namespace sacta_proxy_tests
                 .ToList();
 
         }
+        [TestMethod]
+        public void TestUnion()
+        {
+            var l1 = "1,2,3,4,5";
+            var l2 = "4,5,6,7,8";
 
+            var union = GenericHelper.Split(l1, ',').Union(GenericHelper.Split(l2, ',')).ToList();
+            var all = l1.Split(',')
+                .Where(e => e != "")
+                .Concat(
+                    l2.Split(',')
+                    .Where(e => e != "")
+                )
+                .ToList();
+            var dup = l1.Split(',')
+                .Where(i => i != "")
+                .Intersect(
+                    l2.Split(',')
+                    .Where(e => e != "")
+                )
+                .ToList();
+        }
     }
 
     public class HMIConfigHelper

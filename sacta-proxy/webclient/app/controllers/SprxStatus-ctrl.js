@@ -38,7 +38,8 @@ angular.module("sacta_proxy")
                         {
                             extend: 'csv',
                             text: 'Exportar a csv',
-                            className: 'btn btn-info'
+                            className: 'btn btn-info',
+                            fieldSeparator: ';'
                         }
                     ],
                     language: {
@@ -152,7 +153,7 @@ angular.module("sacta_proxy")
             var dep = ctrl.deps()[index];
             var lan1 = dep.status.act.lan1.ActivityOnLan1;
             var lan2 = dep.status.act.lan2.ActivityOnLan2;
-            console.log("ctrl.global_state ", dep.id, lan1, lan2);
+            //console.log("ctrl.global_state ", dep.id, lan1, lan2);
             var std = lan1 && lan2 ? "ncc-normal" :
                         !lan1 && !lan2 ? "ncc-fail" : "ncc-warning";
             return { class: active + std };
