@@ -86,6 +86,50 @@ namespace sacta_proxy_tests
         {
             Assert.IsTrue(HMIConfigHelper.CambioModoNocturno("hmi.exe.config", "False", "True"));
         }
+        [TestMethod]
+        public void TestAllIdsOnMap()
+        {
+            int maxIdSect = 9999;
+            int minIdSect = 1;
+            int maxIdPos = 255;
+            int minIdPos = 1;
+
+            var dep = new Configuration.DependecyConfig();
+
+            dep.Sectorization.Sectors = "1,2,3,4";
+            dep.Sectorization.Virtuals = "5";
+            dep.Sectorization.Positions = "11,12,13,14,15,300";
+            dep.Sectorization.PositionsMap = "11:1,12:2,77777777777777777777777777777777:9";
+            dep.Sectorization.SectorsMap = "1:99,2:98,3:97,4:96,5:12987";
+
+            var sectIds = GenericHelper.Split(dep.Sectorization.Sectors, ',').Select(s => GenericHelper.ToInt(s))
+                .Union(GenericHelper.Split(dep.Sectorization.Virtuals, ',').Select(s => GenericHelper.ToInt(s)))
+                .ToList();
+            var posIds = GenericHelper.Split(dep.Sectorization.Positions, ',')
+                .Select(p => GenericHelper.ToInt(p))
+                .ToList();
+
+            var badSectIds = sectIds
+                .Union(GenericHelper.Split(dep.Sectorization.SectorsMap, ':', ',').Select(item => GenericHelper.ToInt(item)))
+                .Where(s => s < minIdSect || s > maxIdSect)
+                .ToList();
+            var badPosIds = posIds
+                .Union(GenericHelper.Split(dep.Sectorization.PositionsMap,':', ',').Select(item => GenericHelper.ToInt(item)))
+                .Where(p => p < minIdPos || p > maxIdPos)
+                .ToList();
+
+            var invsect = GenericHelper.Split(dep.Sectorization.SectorsMap, ',')
+                .Select(p => GenericHelper.Split(p, ':').FirstOrDefault())
+                .Select(s => GenericHelper.ToInt(s))
+                .Where(s => !sectIds.Contains(s))
+                .ToList();
+            var invpos = GenericHelper.Split(dep.Sectorization.PositionsMap, ',')
+                .Select(p => GenericHelper.Split(p, ':').FirstOrDefault())
+                .Select(s => GenericHelper.ToInt(s))
+                .Where(s => !posIds.Contains(s))
+                .ToList();
+
+        }
 
     }
 

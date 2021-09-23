@@ -224,5 +224,10 @@ namespace sacta_proxy.helpers
                 return def;
             }
         }
+        public static string[] Split(string str, params char[] sep)
+        {
+            if (str == "") return new string[] { };
+            return str.Split(sep);
+        }
     }
 }

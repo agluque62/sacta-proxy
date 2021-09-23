@@ -242,7 +242,7 @@ namespace sacta_proxy.model
         {
             if (input == "") return new List<int>();
             var l1 = input.Split(',').ToList();
-            var l2 = l1.Select(i => int.Parse(i)).ToList();
+            var l2 = l1.Select(i => GenericHelper.ToInt(i)).ToList();
             return l2;
         }
 
@@ -316,6 +316,39 @@ namespace sacta_proxy.model
             /** Test de las dependencias... */
             cfg.Dependencies.ForEach(dep =>
             {
+                /** Control de que los ID son correctos */
+                int maxIdSect = 9999, minIdSect = 1;
+                int maxIdPos = 255, minIdPos = 1;
+
+                /** IDs utilizados para sectores */
+                var sectIds = GenericHelper.Split(dep.Sectorization.Sectors, ',').Select(s => GenericHelper.ToInt(s))
+                    .Union(GenericHelper.Split(dep.Sectorization.Virtuals, ',').Select(s => GenericHelper.ToInt(s)))
+                    .Union(GenericHelper.Split(dep.Sectorization.IgnoredSectors, ',').Select(s => GenericHelper.ToInt(s)))
+                    .ToList();
+                /** IDs utilizados para posiciones */
+                var posIds = GenericHelper.Split(dep.Sectorization.Positions, ',')
+                    .Select(p => GenericHelper.ToInt(p))
+                    .ToList();
+
+                var badSectIds = sectIds
+                    .Union(GenericHelper.Split(dep.Sectorization.SectorsMap, ':', ',').Select(item => GenericHelper.ToInt(item)))
+                    .Where(s => s < minIdSect || s > maxIdSect)
+                    .ToList();
+                var badPosIds = posIds
+                    .Union(GenericHelper.Split(dep.Sectorization.PositionsMap, ':', ',').Select(item => GenericHelper.ToInt(item)))
+                    .Where(p => p < minIdPos || p > maxIdPos)
+                    .ToList();
+
+                if (badSectIds.Count>0 || badPosIds.Count > 0)
+                {
+                    var strErr = badSectIds.Count > 0 ? $"Sectores (Reales o Virtuales) fuera de rango => {String.Join(",", badSectIds)}, " : "";
+                    strErr += badPosIds.Count > 0 ? $"Posiciones fuera de rango => {String.Join(",", badPosIds)}, " : "";
+                    strErr = $"En Dependencia {dep.Id}: {strErr}";
+                    depErrs.Add(strErr);
+                    return;
+                }
+
+                /** Detectando Sectores y Posiciones duplicadas...*/
                 var sectors = dep.Sectorization.SectorsList().Select(s => s).ToList();
                 sectors.AddRange(dep.Sectorization.VirtualsList());
 
@@ -340,7 +373,28 @@ namespace sacta_proxy.model
                     strErr += ignReals.Count > 0 ? $"Se estan ignorando sectores reales => {String.Join(",", ignReals)}, " : "";
                     strErr = $"En Dependencia {dep.Id}: {strErr}";
                     depErrs.Add(strErr);
+                    return;
                 }
+                /** Se detectan que los origenes de los mapas estan en la lista de Sectores / Posiciones */
+                var undefSects = GenericHelper.Split(dep.Sectorization.SectorsMap, ',')
+                    .Select(p => GenericHelper.Split(p, ':').FirstOrDefault())
+                    .Select(s => GenericHelper.ToInt(s))
+                    .Where(s => !sectIds.Contains(s))
+                    .ToList();
+                var undefPos = GenericHelper.Split(dep.Sectorization.PositionsMap, ',')
+                    .Select(p => GenericHelper.Split(p, ':').FirstOrDefault())
+                    .Select(s => GenericHelper.ToInt(s))
+                    .Where(s => !posIds.Contains(s))
+                    .ToList();
+                if (undefSects.Count > 0 || undefPos.Count > 0)
+                {
+                    var strErr = undefSects.Count > 0 ? $"Mapa Sectores: Sectores (Reales o Virtuales) no definidos => {String.Join(",", undefSects)}, " : "";
+                    strErr += undefPos.Count > 0 ? $"Mapa de posiciones: Posiciones no definidas => {String.Join(",", undefPos)}, " : "";
+                    strErr = $"En Dependencia {dep.Id}: {strErr}";
+                    depErrs.Add(strErr);
+                    return;
+                }
+
             });
 
             if (depErrs.Count > 0)
@@ -348,6 +402,7 @@ namespace sacta_proxy.model
                 result(true, String.Join("; ", depErrs));
                 return;
             }
+
             /** Las dependencias estan bien Genero la Configuracion PSI desde las mismas */
             var PsiReals = new List<int>();
             var PsiVirts = new List<int>();
