@@ -279,6 +279,8 @@ namespace sacta_proxy.model
                 var cfg = JsonHelper.Parse<Configuration>(ConfigurationData);
                 if (cfg != null)
                 {
+                    ScvConfigurationBuild(cfg);
+
                     Test(cfg, (error, errorMsg) =>
                     {
                         if (error)
@@ -308,6 +310,40 @@ namespace sacta_proxy.model
         {
             var data = JsonHelper.ToString(cfg);
             File.WriteAllText(FileName, data);
+        }
+        public void ScvConfigurationBuild(Configuration cfg)
+        {
+            cfg.Psi.Sectorization.Positions = "";
+            cfg.Psi.Sectorization.Sectors = "";
+            cfg.Psi.Sectorization.Virtuals = "";
+            cfg.Dependencies.ForEach(dep =>
+            {
+                /** Construyendo la configuracion de Sectorizacion general */
+                var sectorsMap = dep.Sectorization.SectorsMap.Split(',')
+                    .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                    .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+                var positionsMap = dep.Sectorization.PositionsMap.Split(',')
+                    .Where(i => Configuration.MapOfSectorsEntryValid(i))
+                    .ToDictionary(k => int.Parse(k.Split(':')[0]), v => int.Parse(v.Split(':')[1]));
+                var virtuals = Configuration.ListString2String(
+                        dep.Sectorization.VirtualsList()
+                            .Select(v => sectorsMap.Keys.Contains(v) ? sectorsMap[v].ToString() : v.ToString())
+                            .ToList());
+                var reals = String.Join(",", dep.Sectorization.SectorsList()
+                    .Select(r => sectorsMap.Keys.Contains(r) ? sectorsMap[r].ToString() : r.ToString())
+                    .ToList());
+                //.Aggregate((i, j) => i + "," + j.ToString());
+                var positions = String.Join(",", dep.Sectorization.PositionsList()
+                    .Select(p => positionsMap.Keys.Contains(p) ? positionsMap[p].ToString() : p.ToString())
+                    .ToList());
+                //.Aggregate((i, j) => i + "," + j.ToString());
+
+                cfg.Psi.Sectorization.Positions = Configuration.AgreggateString(cfg.Psi.Sectorization.Positions, positions);
+                cfg.Psi.Sectorization.Virtuals = Configuration.AgreggateString(cfg.Psi.Sectorization.Virtuals, virtuals);
+                cfg.Psi.Sectorization.Sectors = Configuration.AgreggateString(cfg.Psi.Sectorization.Sectors, reals);
+
+            });
+
         }
         public void Test(Configuration cfg, Action<bool, string> result)
         {
