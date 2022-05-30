@@ -9,10 +9,10 @@
 					"MD5": "8F8B5702D293BC30F4C8AE2EF8D9941B"
 				}
 			],
-			"Name": "Nucleo Sacta Proxy"
+			"Name": "Sacta Proxy"
 		}
 	],
 	"Server": "DF2444",
-	"Version": "1.0.0",
-	"Fecha": "11-1-2021"
+	"Version": "1.0.1",
+	"Fecha": "13-06-2022"
 }

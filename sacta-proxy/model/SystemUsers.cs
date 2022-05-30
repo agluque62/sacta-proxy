@@ -29,7 +29,7 @@ namespace sacta_proxy.model
         {
             bool res = false;
             UserInfo.AccessProfiles profile = UserInfo.AccessProfiles.Operador;
-            if (user == "root" && pwd == "#ncc#")
+            if (user == "root" && pwd == "#scpx#")
             {
                 res = true;
                 profile = UserInfo.AccessProfiles.Tecnico3;

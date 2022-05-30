@@ -1,7 +1,7 @@
 {
 	"res": "ok",
 	"user": "root / Tecnico3",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"logic": "AND",
 	"global": {
 		"server": "Dual",

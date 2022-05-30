@@ -6,8 +6,9 @@
     <ProductVersion>3.10</ProductVersion>
     <ProjectGuid>8b77d474-38ad-4a47-8e6b-74f18cf7f750</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>NuSactaProxySetup</OutputName>
+    <OutputName>SactaProxySetup</OutputName>
     <OutputType>Package</OutputType>
+    <Name>SactaProxySetup</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>

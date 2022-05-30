@@ -23,7 +23,8 @@ body
 .logo {
     height: 85px;
     overflow: hidden;
-    background-position: center;
+    /*background-position: center;*/
+    background-position: left;
     background-repeat: no-repeat;
     background-size: contain;
     background-image: url('/images/corporativo-a.png');

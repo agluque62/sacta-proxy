@@ -10,7 +10,7 @@
   "INDEX_INCI_FECHA": "Date/heure",
   "INDEX_INCI_DESCRIPCION": "Description",
   "INDEX_INCI_RECONOCER": "Acquitter",
-  "INDEX_PIE": "Nucleo Copyright @ 2015-2020. Tous droits réservés.",
+  "INDEX_PIE": "Grupo Amper Copyright @ 2015-2022. Tous droits réservés.",
 
   "SPV_OPC_01": "État global",
   "SPV_OPC_02": "Positions d'opérateur",
@@ -152,7 +152,7 @@
   "HCT_MSG_02": "ULISES-5000 I. RAPPORT DES HISTORIQUES",
   "HCT_MSG_03": "Date",
   "HCT_MSG_04": "Événement",
-  "HCT_MSG_05": "Nucleo. 2015-2020 Tous droits réservés. ",
+  "HCT_MSG_05": "Grupo Amper. 2015-2022 Tous droits réservés. ",
   "HCT_MSG_06": "Page  ",
 
   "CCT_MSG_00": "Souhaitez-vous enregistrer les modifications ?\nLe service de maintenance va se réinitialiser.",

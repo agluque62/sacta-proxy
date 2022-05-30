@@ -3,10 +3,10 @@
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension"
      xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <Product Id="*"
-           Name="Nucleo Sacta Proxy"
+           Name="Sacta Proxy"
            Language="1033"
            Version="1.0.0"
-           Manufacturer="NucleoCC"
+           Manufacturer="Amper"
            UpgradeCode="6FE642B4-2544-48FA-8C30-BE78DB7D7661">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
@@ -48,7 +48,7 @@
     <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
     <WixVariable Id="WixUIBannerBmp" Value="banner-image.jpg" Overridable="yes"/>
 
-    <Feature Id="ProductFeature" Title="NuSactaProxySetup" Level="1">
+    <Feature Id="ProductFeature" Title="SactaProxySetup" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentGroupRef Id="license"/>
       <ComponentGroupRef Id="WebAppComponents"/>
@@ -63,7 +63,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="COMPANYFOLDER" Name="UlisesV5000">
-          <Directory Id="INSTALLFOLDER" Name="NuSactaProxy" >
+          <Directory Id="INSTALLFOLDER" Name="SactaProxy" >
             <Component Id="CreateProgramFolder" Guid="{BF514AB6-756D-4EEE-A1AA-098559B9D8FF}">
               <CreateFolder>
                 <util:PermissionEx User="Users" GenericAll="yes"  />
@@ -242,7 +242,7 @@
       <Publish Dialog="SactaProxyOptionsDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
 
       <!--Dialogo de Opciones -->
-      <Dialog Id="SactaProxyOptionsDlg" Width="370" Height="270" Title="Instalacion de Nucleo Sacta Proxy" NoMinimize="yes">
+      <Dialog Id="SactaProxyOptionsDlg" Width="370" Height="270" Title="Instalacion de Sacta Proxy" NoMinimize="yes">
         <Control Id="ScvTypeLabel" Type="Text"     X="45" Y="60" Width="100" Height="10" TabSkip="no" Text="Tipo de SCV" />
         <Control Id="ScvTypeValue" Type="ComboBox" X="45" Y="70" Width="100" Height="18" Property="SCV_TYPE" ComboList="yes" >
           <ComboBox Property="SCV_TYPE">
