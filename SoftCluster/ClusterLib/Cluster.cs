@@ -238,6 +238,7 @@ namespace ClusterLib
                     SimulatedAdapters == 2 ? 3 : 7;
             }
 
+            _Settings.VirtualIps.ForEach((ipv) => ipv.AdapterIndex = -1);           // Se marcan todos como no disponibles...
             NetworkInterface[] nics = NetworkInterface.GetAllNetworkInterfaces();
             int GlobalAdaptersMaks = 0;
 
@@ -305,8 +306,11 @@ namespace ClusterLib
             else
             {
                 bool GlobalError = false;
-                _Settings.VirtualIps.ForEach(ips =>
-                {
+                _Settings.VirtualIps
+                    .Where(i=>i.AdapterIndex!=-1)           // Se filtran las no presentes para que no den error....
+                    .ToList()
+                    .ForEach(ips =>
+                    {
                     Task<bool> t = Task.Run(() =>
                     {
                         try
