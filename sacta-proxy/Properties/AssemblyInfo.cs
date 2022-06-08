@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("sacta-proxy")]
 [assembly: AssemblyDescription("Servicio de Proxy para Dependencias Sacta.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Nucleo CC")]
-[assembly: AssemblyProduct("Nucleo Sacta Proxy")]
-[assembly: AssemblyCopyright("Copyright ©Nucleocc  2020...2021")]
-[assembly: AssemblyTrademark("Nucleo Sacta Proxy")]
+[assembly: AssemblyCompany("Grupo Amper")]
+[assembly: AssemblyProduct("Sacta Proxy")]
+[assembly: AssemblyCopyright("Copyright ©Grupo Amper  2020...2022")]
+[assembly: AssemblyTrademark("Sacta Proxy")]
 [assembly: AssemblyCulture("")]
 
 // Si establece ComVisible en false, los tipos de este ensamblado no estarán visibles 

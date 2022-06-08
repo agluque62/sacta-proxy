@@ -5,7 +5,7 @@
   <Product Id="*"
            Name="Sacta Proxy"
            Language="1033"
-           Version="1.0.0"
+           Version="1.0.1"
            Manufacturer="Amper"
            UpgradeCode="6FE642B4-2544-48FA-8C30-BE78DB7D7661">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
