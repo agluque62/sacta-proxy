@@ -27,9 +27,10 @@ namespace sacta_proxy.model
         /// <returns></returns>
         static public bool Authenticate(string user, string pwd)
         {
+            // RM#7287. Al testear el LOGIN. El usuario debe ser case insensitive
             bool res = false;
             UserInfo.AccessProfiles profile = UserInfo.AccessProfiles.Operador;
-            if (user == "root" && pwd == "#scpx#")
+            if (user.ToLower() == "root" && pwd == "#scpx#")
             {
                 res = true;
                 profile = UserInfo.AccessProfiles.Tecnico3;
@@ -43,7 +44,7 @@ namespace sacta_proxy.model
                     // Obtener los usuarios, y comprobar si tienen acceso
                     UsersInDb((users) =>
                     {
-                        var founds = users.Where(u => u.Id == user && u.Clave == pwd);
+                        var founds = users.Where(u => u.Id.ToLower() == user.ToLower() && u.Clave == pwd);
                         res = founds.Count() > 0;
                         profile = res ? founds.First().Perfil : 0;
                     });
